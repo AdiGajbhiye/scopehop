@@ -157,7 +157,12 @@ impl Index {
             return;
         }
         self.names.clear();
-        for (path, fd) in &self.files {
+        // Sorted so candidate lists, and every choice made from them (ranking
+        // ties, `type_of` taking the first hit, supertype walk order), do not
+        // depend on the map's random seed.
+        let mut files: Vec<_> = self.files.iter().collect();
+        files.sort_by(|a, b| a.0.cmp(b.0));
+        for (path, fd) in files {
             for (i, d) in fd.summary.defs.iter().enumerate() {
                 self.names
                     .entry(d.name.clone())
@@ -181,9 +186,12 @@ impl Index {
         self.prepare();
         let Some(fd) = self.files.get(path) else { return Vec::new() };
         let Some(t) = target_at(fd, offset) else { return Vec::new() };
-        let mut locs: Vec<Loc> = self.resolve(path, fd, &t, 0).into_iter().map(|r| r.loc).collect();
-        locs.dedup();
-        locs
+        let mut seen = HashSet::new();
+        self.resolve(path, fd, &t, 0)
+            .into_iter()
+            .map(|r| r.loc)
+            .filter(|l| seen.insert(l.clone()))
+            .collect()
     }
 
     pub fn references_at(
@@ -240,7 +248,9 @@ impl Index {
                 }
             }
         }
-        out.sort_by_key(|(_, d)| (d.name.len(), d.name.clone()));
+        out.sort_by(|(pa, a), (pb, b)| {
+            (a.name.len(), &a.name, pa, a.start).cmp(&(b.name.len(), &b.name, pb, b.start))
+        });
         out.truncate(256);
         out
     }
@@ -291,9 +301,12 @@ impl Index {
             }
             None => {}
         }
-        // Inside `fun Foo.ext()`, bare names may be members of Foo.
+        let types_only = lang.in_type_position(t.node);
+        // Inside `fun Foo.ext()`, bare names may be members of Foo. Types are
+        // not: the receiver brings members into scope, not nested classes, and
+        // this would otherwise look `Foo` itself up as a member of `Foo`.
         let mut allow_members = true;
-        if let Some(recv) = lang.extension_receiver_type(t.node, src) {
+        if let Some(recv) = lang.extension_receiver_type(t.node, src).filter(|_| !types_only) {
             let hits: Vec<_> = self
                 .lookup_members(t.name, &Ty::Class(recv), path)
                 .into_iter()
@@ -304,7 +317,6 @@ impl Index {
             }
             allow_members = false;
         }
-        let types_only = lang.in_type_position(t.node);
         self.lookup_global(t.name, path, fd, t.node, allow_members, types_only)
     }
 
@@ -377,8 +389,8 @@ impl Index {
             Expr::Name(n) => {
                 let t = self.target_for(fd, n);
                 let hits = self.resolve(path, fd, &t, depth + 1);
-                if let Some(r) = hits.first() {
-                    return r.ty.clone();
+                if let Some(ty) = likely_type(&hits, path) {
+                    return ty;
                 }
                 // Not in the project: a library class (Modifier) or value.
                 if lang.looks_like_type_name(t.name) {
@@ -391,10 +403,7 @@ impl Index {
             Expr::Call(callee) => self.type_of(path, fd, callee, depth + 1),
             Expr::Member(name) => {
                 let t = self.target_for(fd, name);
-                match self.resolve(path, fd, &t, depth + 1).first() {
-                    Some(r) => r.ty.clone(),
-                    None => Ty::External,
-                }
+                likely_type(&self.resolve(path, fd, &t, depth + 1), path).unwrap_or(Ty::External)
             }
             Expr::Wrapper(inner) => self.type_of(path, fd, inner, depth + 1),
             Expr::Unknown => Ty::Unknown,
@@ -561,6 +570,26 @@ fn fq_name(f: &FileData, d: &Def) -> String {
     }
     parts.push(&d.name);
     parts.join(".")
+}
+
+/// The type most of `hits` agree on, for using a lookup's result as a
+/// receiver. An untyped receiver (`item.manga` with `item` an untyped lambda
+/// param) matches every `manga` member in the project, and voting picks the
+/// common case instead of whichever candidate happens to come first. Hits in
+/// `from` win outright, as they do in `lookup_members`; ties go to the
+/// earlier hit.
+fn likely_type(hits: &[Resolved], from: &Path) -> Option<Ty> {
+    let local: Vec<&Resolved> = hits.iter().filter(|r| r.loc.path == from).collect();
+    let pool = if local.is_empty() { hits.iter().collect() } else { local };
+    let mut votes: Vec<(&Ty, usize)> = Vec::new();
+    for r in pool {
+        match votes.iter_mut().find(|(t, _)| **t == r.ty) {
+            Some(v) => v.1 += 1,
+            None => votes.push((&r.ty, 1)),
+        }
+    }
+    let best = votes.iter().map(|v| v.1).max()?;
+    votes.into_iter().find(|v| v.1 == best).map(|v| v.0.clone())
 }
 
 fn fuzzy_match(name: &str, query: &str) -> bool {
