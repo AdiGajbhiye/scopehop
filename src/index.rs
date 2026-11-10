@@ -273,6 +273,15 @@ impl Index {
             return Vec::new();
         }
         if lang.is_identifier(t.node) {
+            if let Some(fq) = lang.qualified_path(t.node, src) {
+                let last = fq.rsplit('.').next().unwrap_or(&fq);
+                return self
+                    .defs_named(last)
+                    .into_iter()
+                    .filter(|(_, f, d)| fq_name(f, d) == fq)
+                    .map(|(p, _, d)| Self::resolved(p, d))
+                    .collect();
+            }
             if lang.is_declaration_name(t.node) {
                 let ty = self.local_type(path, fd, t.node, depth);
                 return vec![Resolved { loc: here(t.start, t.end), ty }];
@@ -514,8 +523,9 @@ impl Index {
         let tier = |p: &PathBuf, f: &FileData, d: &Def| -> Option<u8> {
             let top = d.container.is_none();
             let fq = fq_name(f, d);
+            // `import a.b.Foo as Bar` makes `Bar` visible, and not `Foo`.
             let imported = fd.summary.imports.iter().any(|i| {
-                (!i.star && i.alias.is_none() && i.path == fq)
+                (!i.star && i.path == fq && i.alias.as_deref().is_none_or(|a| a == name))
                     || (i.star && fq.rsplit_once('.').map(|(q, _)| q) == Some(i.path.as_str()))
             });
             let is_type = d.kind.is_type();

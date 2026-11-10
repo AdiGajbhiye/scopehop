@@ -15,6 +15,7 @@ grammar; see [Roadmap](#roadmap).
     block, class members, then the file's top level.
   - Project-wide lookups only consider what Kotlin can see: same file,
     imports (incl. `*` and `as`), same package, inherited members.
+  - Names on `import` lines resolve to the declaration they import.
   - `x.foo` infers `x`'s type from annotations, `= Foo()`, initializers and
     return types, then looks `foo` up in that class and its supertypes.
     Library receivers don't match project members.
@@ -71,12 +72,43 @@ need a hook for the first.
   language registry
 - `src/kotlin.rs`: the Kotlin implementation (declarations, scopes, type hints)
 - `src/index.rs`: workspace index and resolution, language-neutral
+- `src/snapshot.rs`: text dump of everything the index resolves, for tests
+- `tests/`: resolution tests over a small Kotlin project in
+  `tests/fixtures/kotlin`, plus a snapshot of every lookup in it
 - `src/main.rs`: LSP over stdio (`lsp-server`)
 - `zed/`: Zed extension that launches the server
 - `examples/`: `probe` (one lookup from the CLI), `stats` (resolve every
-  identifier in a project), `dump` (print a syntax tree)
+  identifier in a project), `snapshot` (dump every lookup in a project, to
+  diff two builds), `dump` (print a syntax tree)
 
 ```sh
 cargo run --release --example probe -- <root> <file> <line> <col> [def|refs]
 cargo run --release --example stats -- <root>
 ```
+
+## Testing
+
+```sh
+cargo test
+```
+
+`tests/kotlin.rs` checks specific lookups in `tests/fixtures/kotlin` (scopes,
+members, extensions, imports, packages, references) and compares every lookup
+in that project against `tests/snapshots/kotlin.txt`. After an intended change,
+accept the new snapshot and review its diff:
+
+```sh
+UPDATE_SNAPSHOTS=1 cargo test
+git diff tests/snapshots
+```
+
+To see how a change affects a real project, dump it before and after:
+
+```sh
+cargo run --release --example snapshot -- <root> > before.txt
+# make the change
+cargo run --release --example snapshot -- <root> > after.txt
+diff before.txt after.txt
+```
+
+Pass `--no-refs` to skip references on large projects.

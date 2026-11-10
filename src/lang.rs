@@ -152,6 +152,14 @@ pub trait Language: Sync {
     /// `n` sits where only a type can go.
     fn in_type_position(&self, n: Node) -> bool;
 
+    /// For an identifier in an import or package path, the dotted path up to
+    /// and including it (`com.example.Foo` for `Foo` in
+    /// `import com.example.Foo.bar`). For an import alias, the whole imported
+    /// path. These resolve by fully qualified name, not by scope.
+    fn qualified_path(&self, _ident: Node, _src: &str) -> Option<String> {
+        None
+    }
+
     // --- Scopes ------------------------------------------------------------
 
     /// Walks outwards from `from` to the local declaration of `name`. Stops

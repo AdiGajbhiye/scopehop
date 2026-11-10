@@ -230,6 +230,13 @@ fn supertypes(class: Node, src: &str) -> Vec<String> {
         .collect()
 }
 
+/// `a.Foo.Companion.bar` -> `a.Foo.bar`. Companion members are indexed as
+/// members of the enclosing class, so that is their qualified name.
+fn drop_companion(path: &str) -> String {
+    let parts: Vec<&str> = path.split('.').filter(|p| *p != "Companion").collect();
+    parts.join(".")
+}
+
 /// Package, imports and top-level/member declarations of a file.
 fn summarize(root: Node, src: &str) -> Summary {
     let mut s = Summary::default();
@@ -252,7 +259,7 @@ fn summarize(root: Node, src: &str) -> Summary {
                 let path: String = path.split_whitespace().collect();
                 let star = path.ends_with(".*");
                 s.imports.push(Import {
-                    path: path.trim_end_matches(".*").to_string(),
+                    path: drop_companion(path.trim_end_matches(".*")),
                     star,
                     alias,
                 });
@@ -599,6 +606,26 @@ impl Language for Kotlin {
 
     fn in_type_position(&self, n: Node) -> bool {
         n.parent().is_some_and(|p| p.kind() == "user_type")
+    }
+
+    fn qualified_path(&self, ident: Node, src: &str) -> Option<String> {
+        let parent = ident.parent()?;
+        // `yell` in `import a.b.shout as yell`
+        let (path, upto) = match parent.kind() {
+            "import" => (child_of_kind(parent, "qualified_identifier")?, None),
+            "qualified_identifier" if matches!(parent.parent()?.kind(), "import" | "package_header") => {
+                (parent, Some(ident.id()))
+            }
+            _ => return None,
+        };
+        let mut parts = Vec::new();
+        for seg in named_children(path) {
+            parts.push(text(seg, src));
+            if Some(seg.id()) == upto {
+                break;
+            }
+        }
+        Some(drop_companion(&parts.join(".")))
     }
 
     fn find_in_scopes<'t>(&self, from: Node<'t>, name: &str, src: &str) -> Option<Scoped<'t>> {
