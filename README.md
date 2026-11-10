@@ -52,17 +52,25 @@ extension finds `scopehop` on `PATH`, or set
 
 ## Roadmap
 
-To support more languages, the Kotlin-specific parts in `src/kotlin.rs`
-(which nodes declare names, which nodes open scopes, where type hints live)
-move behind a per-language trait. The index, ranking, references and LSP layer
-stay shared. Adding a language then means adding a grammar crate plus that
-mapping, ideally driven by tree-sitter `locals.scm`/`tags.scm` queries where
-the grammar ships them.
+Grammar-specific knowledge sits behind the `Language` trait in `src/lang.rs`:
+which nodes declare names, which open scopes, where type hints live and what
+shape an expression has. The index, ranking, references and LSP layer only
+talk to that trait. Adding a language means adding a grammar crate, a type
+implementing `Language`, and an entry in `lang::LANGUAGES` (plus the language
+name in `zed/extension.toml`). Where a grammar ships `locals.scm`/`tags.scm`
+queries, a query-driven implementation could cover most of the trait.
+
+Two pieces of `src/index.rs` still assume a JVM-style language: visibility
+ranking uses packages and imports, and top-level functions can match as
+members (extension functions). Languages that import modules by path will
+need a hook for the first.
 
 ## Layout
 
-- `src/kotlin.rs`: grammar-specific bits (declarations, scopes, type hints)
-- `src/index.rs`: workspace index and resolution
+- `src/lang.rs`: the `Language` trait, the shared declaration model and the
+  language registry
+- `src/kotlin.rs`: the Kotlin implementation (declarations, scopes, type hints)
+- `src/index.rs`: workspace index and resolution, language-neutral
 - `src/main.rs`: LSP over stdio (`lsp-server`)
 - `zed/`: Zed extension that launches the server
 - `examples/`: `probe` (one lookup from the CLI), `stats` (resolve every

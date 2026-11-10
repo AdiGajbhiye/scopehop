@@ -2,7 +2,7 @@ fn main() {
     let path = std::env::args().nth(1).unwrap();
     let src = std::fs::read_to_string(&path).unwrap();
     let mut p = tree_sitter::Parser::new();
-    p.set_language(&tree_sitter_kotlin_ng::LANGUAGE.into()).unwrap();
+    p.set_language(&scopehop::lang::for_path(path.as_ref()).expect("unsupported file type").grammar()).unwrap();
     let tree = p.parse(&src, None).unwrap();
     let mut c = tree.walk();
     let mut depth = 0;

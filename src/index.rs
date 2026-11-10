@@ -1,6 +1,11 @@
-//! Workspace index: every Kotlin file parsed once, plus a name -> declarations
+//! Workspace index: every source file parsed once, plus a name -> declarations
 //! map. Definition = scope walk in the current file, then the index ranked by
 //! imports/package. References = whole-word hits that resolve to the same place.
+//!
+//! Nothing here looks at node kinds; syntax questions go to the file's
+//! [`Language`]. What is still language-shaped is the visibility model in
+//! `lookup_global` (package + imports) and treating top-level functions as
+//! possible members in `lookup_members` (extension functions).
 
 use std::collections::{HashMap, HashSet};
 use std::path::{Path, PathBuf};
@@ -8,7 +13,7 @@ use std::time::{Duration, Instant, SystemTime};
 
 use tree_sitter::{Node, Parser, Tree};
 
-use crate::kotlin::{self, Def, DefKind, Summary};
+use crate::lang::{self, Def, DefKind, Expr, Language, Scoped, Summary};
 use crate::text::{self, LineIndex};
 
 #[derive(Clone, Debug, PartialEq, Eq, Hash, PartialOrd, Ord)]
@@ -19,6 +24,7 @@ pub struct Loc {
 }
 
 pub struct FileData {
+    pub lang: &'static dyn Language,
     pub text: String,
     pub tree: Tree,
     pub summary: Summary,
@@ -71,35 +77,33 @@ pub struct Index {
 }
 
 pub fn is_source(path: &Path) -> bool {
-    matches!(path.extension().and_then(|e| e.to_str()), Some("kt" | "kts"))
+    lang::for_path(path).is_some()
 }
 
 impl Index {
     pub fn new(roots: Vec<PathBuf>) -> Self {
-        let mut parser = Parser::new();
-        parser
-            .set_language(&kotlin::language())
-            .expect("kotlin grammar");
         Self {
             roots,
             files: HashMap::new(),
             names: HashMap::new(),
             names_dirty: true,
-            parser,
+            parser: Parser::new(),
             last_scan: None,
         }
     }
 
-    fn build(&mut self, text: String, mtime: Option<SystemTime>, open: bool) -> Option<FileData> {
+    fn build(&mut self, path: &Path, text: String, mtime: Option<SystemTime>, open: bool) -> Option<FileData> {
+        let lang = lang::for_path(path)?;
+        self.parser.set_language(&lang.grammar()).ok()?;
         let tree = self.parser.parse(&text, None)?;
-        let summary = kotlin::summarize(tree.root_node(), &text);
+        let summary = lang.summarize(tree.root_node(), &text);
         let lines = LineIndex::new(&text);
-        Some(FileData { text, tree, summary, lines, mtime, open })
+        Some(FileData { lang, text, tree, summary, lines, mtime, open })
     }
 
     /// didOpen / didChange: the editor's copy wins over the disk.
     pub fn set_open(&mut self, path: PathBuf, text: String) {
-        if let Some(fd) = self.build(text, None, true) {
+        if let Some(fd) = self.build(&path, text, None, true) {
             self.files.insert(path, fd);
             self.names_dirty = true;
         }
@@ -135,7 +139,7 @@ impl Index {
                     _ => {}
                 }
                 let Ok(text) = std::fs::read_to_string(&path) else { continue };
-                if let Some(fd) = self.build(text, mtime, false) {
+                if let Some(fd) = self.build(&path, text, mtime, false) {
                     self.files.insert(path, fd);
                     self.names_dirty = true;
                 }
@@ -253,41 +257,43 @@ impl Index {
 
     fn resolve(&self, path: &Path, fd: &FileData, t: &Target, depth: u32) -> Vec<Resolved> {
         let src = fd.text.as_str();
+        let lang = fd.lang;
         let here = |s, e| Loc { path: path.to_path_buf(), start: s, end: e };
         if depth > MAX_DEPTH {
             return Vec::new();
         }
-        if t.node.kind() == "identifier" {
-            if kotlin::is_declaration_name(t.node) {
+        if lang.is_identifier(t.node) {
+            if lang.is_declaration_name(t.node) {
                 let ty = self.local_type(path, fd, t.node, depth);
                 return vec![Resolved { loc: here(t.start, t.end), ty }];
             }
-            if let Some(call) = kotlin::named_argument_call(t.node) {
+            if let Some(call) = lang.named_argument_call(t.node) {
                 return self.named_argument(path, fd, call, t.name, depth);
             }
-            if let Some(recv) = kotlin::member_receiver(t.node) {
+            if let Some(recv) = lang.member_receiver(t.node) {
                 let ty = self.type_of(path, fd, recv, depth + 1);
                 return self.lookup_members(t.name, &ty, path);
             }
             // Outer.Inner in a type: Inner is a member of Outer.
-            if t.node.parent().is_some_and(|p| p.kind() == "user_type") {
-                if let Some(prev) = t.node.prev_named_sibling().filter(|n| n.kind() == "identifier") {
-                    let outer = Ty::Class(kotlin::text(prev, src).to_string());
-                    return self.lookup_members(t.name, &outer, path);
-                }
+            if let Some(outer) = lang.type_qualifier(t.node) {
+                let outer = Ty::Class(lang::text(outer, src).to_string());
+                return self.lookup_members(t.name, &outer, path);
             }
         }
-        if let Some(d) = kotlin::find_in_scopes(t.node, t.name, src) {
-            if d.kind() == "lambda_literal" {
-                let loc = here(d.start_byte(), d.start_byte() + 1);
+        match lang.find_in_scopes(t.node, t.name, src) {
+            Some(Scoped::Implicit(n)) => {
+                let loc = here(n.start_byte(), n.start_byte() + 1);
                 return vec![Resolved { loc, ty: Ty::Unknown }];
             }
-            let ty = self.local_type(path, fd, d, depth);
-            return vec![Resolved { loc: here(d.start_byte(), d.end_byte()), ty }];
+            Some(Scoped::Decl(d)) => {
+                let ty = self.local_type(path, fd, d, depth);
+                return vec![Resolved { loc: here(d.start_byte(), d.end_byte()), ty }];
+            }
+            None => {}
         }
         // Inside `fun Foo.ext()`, bare names may be members of Foo.
         let mut allow_members = true;
-        if let Some(recv) = kotlin::extension_receiver_type(t.node, src) {
+        if let Some(recv) = lang.extension_receiver_type(t.node, src) {
             let hits: Vec<_> = self
                 .lookup_members(t.name, &Ty::Class(recv), path)
                 .into_iter()
@@ -298,7 +304,7 @@ impl Index {
             }
             allow_members = false;
         }
-        let types_only = t.node.parent().is_some_and(|p| p.kind() == "user_type");
+        let types_only = lang.in_type_position(t.node);
         self.lookup_global(t.name, path, fd, t.node, allow_members, types_only)
     }
 
@@ -313,10 +319,10 @@ impl Index {
 
     /// Type of a declared name: annotation, `= Foo()`, or the initializer's type.
     fn local_type(&self, path: &Path, fd: &FileData, name: Node, depth: u32) -> Ty {
-        if let Some(t) = kotlin::decl_type_name(name, &fd.text) {
+        if let Some(t) = fd.lang.decl_type_name(name, &fd.text) {
             return Ty::Class(t);
         }
-        match kotlin::decl_initializer(name) {
+        match fd.lang.decl_initializer(name) {
             Some(init) => self.type_of(path, fd, init, depth + 1),
             None => Ty::Unknown,
         }
@@ -324,29 +330,17 @@ impl Index {
 
     /// `label` in `callee(label = x)`: the callee's parameter.
     fn named_argument(&self, path: &Path, fd: &FileData, call: Node, label: &str, depth: u32) -> Vec<Resolved> {
-        let Some(callee) = call.named_child(0) else { return Vec::new() };
-        let callee = match callee.kind() {
-            "navigation_expression" => {
-                match callee.named_child((callee.named_child_count().saturating_sub(1)) as _) {
-                    Some(n) => n,
-                    None => return Vec::new(),
-                }
-            }
-            _ => callee,
-        };
-        if callee.kind() != "identifier" {
-            return Vec::new();
-        }
+        let Some(callee) = fd.lang.callee_name(call) else { return Vec::new() };
         let t = self.target_for(fd, callee);
         let mut out = Vec::new();
         for r in self.resolve(path, fd, &t, depth + 1) {
             let Some(f) = self.files.get(&r.loc.path) else { continue };
             let Some(name) = f.tree.root_node().descendant_for_byte_range(r.loc.start, r.loc.end) else { continue };
-            for p in kotlin::params_of(name) {
-                if kotlin::text(p, &f.text) == label {
+            for p in f.lang.params_of(name) {
+                if lang::text(p, &f.text) == label {
                     out.push(Resolved {
                         loc: Loc { path: r.loc.path.clone(), start: p.start_byte(), end: p.end_byte() },
-                        ty: Ty::from(kotlin::decl_type_name(p, &f.text)),
+                        ty: Ty::from(f.lang.decl_type_name(p, &f.text)),
                     });
                 }
             }
@@ -369,55 +363,41 @@ impl Index {
             return Ty::Unknown;
         }
         let src = fd.text.as_str();
-        if kotlin::is_literal(expr.kind()) {
-            return Ty::External;
-        }
-        match expr.kind() {
-            "this_expression" => Ty::from(
-                kotlin::extension_receiver_type(expr, src)
-                    .or_else(|| kotlin::enclosing_class(expr).and_then(|c| kotlin::class_name(c, src))),
+        let lang = fd.lang;
+        match lang.classify_expr(expr) {
+            Expr::Literal => Ty::External,
+            Expr::This => Ty::from(
+                lang.extension_receiver_type(expr, src)
+                    .or_else(|| lang.enclosing_class(expr).and_then(|c| lang.class_name(c, src))),
             ),
-            "super_expression" => Ty::from(
-                kotlin::enclosing_class(expr)
-                    .and_then(|c| kotlin::class_supertypes(c, src).into_iter().next()),
+            Expr::Super => Ty::from(
+                lang.enclosing_class(expr)
+                    .and_then(|c| lang.class_supertypes(c, src).into_iter().next()),
             ),
-            "identifier" => {
-                let t = self.target_for(fd, expr);
+            Expr::Name(n) => {
+                let t = self.target_for(fd, n);
                 let hits = self.resolve(path, fd, &t, depth + 1);
                 if let Some(r) = hits.first() {
                     return r.ty.clone();
                 }
                 // Not in the project: a library class (Modifier) or value.
-                if t.name.starts_with(|c: char| c.is_uppercase()) {
+                if lang.looks_like_type_name(t.name) {
                     Ty::Class(t.name.to_string())
                 } else {
                     Ty::External
                 }
             }
             // Foo(...) -> Foo, makeFoo() -> declared return type
-            "call_expression" => match expr.named_child(0) {
-                Some(callee) => self.type_of(path, fd, callee, depth + 1),
-                None => Ty::Unknown,
-            },
-            "navigation_expression" => {
-                let Some(last) = expr.named_child((expr.named_child_count().saturating_sub(1)) as _) else {
-                    return Ty::Unknown;
-                };
-                if last.kind() != "identifier" {
-                    return Ty::Unknown;
-                }
-                let t = self.target_for(fd, last);
+            Expr::Call(callee) => self.type_of(path, fd, callee, depth + 1),
+            Expr::Member(name) => {
+                let t = self.target_for(fd, name);
                 match self.resolve(path, fd, &t, depth + 1).first() {
                     Some(r) => r.ty.clone(),
                     None => Ty::External,
                 }
             }
-            // (x), x!!, and similar wrappers
-            _ if expr.named_child_count() == 1 => match expr.named_child(0) {
-                Some(inner) => self.type_of(path, fd, inner, depth + 1),
-                None => Ty::Unknown,
-            },
-            _ => Ty::Unknown,
+            Expr::Wrapper(inner) => self.type_of(path, fd, inner, depth + 1),
+            Expr::Unknown => Ty::Unknown,
         }
     }
 
@@ -473,7 +453,7 @@ impl Index {
                     return rank(hits);
                 }
                 for (_, _, d) in self.defs_named(&cls) {
-                    if matches!(d.kind, DefKind::Class | DefKind::Object) {
+                    if d.kind.is_class_like() {
                         queue.extend(d.supertypes.iter().cloned());
                     }
                 }
@@ -509,17 +489,19 @@ impl Index {
             }
         }
         if types_only {
-            defs.retain(|(_, _, d)| matches!(d.kind, DefKind::Class | DefKind::Object | DefKind::TypeAlias));
+            defs.retain(|(_, _, d)| d.kind.is_type());
         }
         if defs.is_empty() {
             return Vec::new();
         }
         let pkg = &fd.summary.package;
-        let enclosing_supers: HashSet<String> = kotlin::enclosing_class(at)
-            .map(|c| self.supertype_closure(&c, &fd.text))
+        let enclosing_supers: HashSet<String> = fd
+            .lang
+            .enclosing_class(at)
+            .map(|c| self.supertype_closure(fd, c))
             .unwrap_or_default();
 
-        // Lower is better; None means Kotlin would not see it from here.
+        // Lower is better; None means the language would not see it from here.
         let tier = |p: &PathBuf, f: &FileData, d: &Def| -> Option<u8> {
             let top = d.container.is_none();
             let fq = fq_name(f, d);
@@ -527,7 +509,7 @@ impl Index {
                 (!i.star && i.alias.is_none() && i.path == fq)
                     || (i.star && fq.rsplit_once('.').map(|(q, _)| q) == Some(i.path.as_str()))
             });
-            let is_type = matches!(d.kind, DefKind::Class | DefKind::Object | DefKind::TypeAlias);
+            let is_type = d.kind.is_type();
             if top && p.as_path() == from {
                 Some(0)
             } else if imported {
@@ -552,15 +534,15 @@ impl Index {
             .collect()
     }
 
-    fn supertype_closure(&self, class: &Node, src: &str) -> HashSet<String> {
+    fn supertype_closure(&self, fd: &FileData, class: Node) -> HashSet<String> {
         let mut out = HashSet::new();
-        let mut queue = kotlin::class_supertypes(*class, src);
+        let mut queue = fd.lang.class_supertypes(class, &fd.text);
         while let Some(c) = queue.pop() {
             if out.len() > 32 || !out.insert(c.clone()) {
                 continue;
             }
             for (_, _, d) in self.defs_named(&c) {
-                if matches!(d.kind, DefKind::Class | DefKind::Object) {
+                if d.kind.is_class_like() {
                     queue.extend(d.supertypes.iter().cloned());
                 }
             }
@@ -588,14 +570,6 @@ fn fuzzy_match(name: &str, query: &str) -> bool {
 
 fn target_at(fd: &FileData, offset: usize) -> Option<Target<'_>> {
     let (s, e) = text::word_at(&fd.text, offset)?;
-    let node = fd.tree.root_node().descendant_for_byte_range(s, e)?;
-    let name = &fd.text[s..e];
-    if node.kind() == "identifier" && node.start_byte() == s && node.end_byte() == e {
-        return Some(Target { node, start: s, end: e, name });
-    }
-    // "$name" string templates are plain string content in this grammar.
-    if node.kind() == "string_content" && s > 0 && fd.text.as_bytes()[s - 1] == b'$' {
-        return Some(Target { node, start: s, end: e, name });
-    }
-    None
+    let node = fd.lang.name_node(fd.tree.root_node(), &fd.text, s, e)?;
+    Some(Target { node, start: s, end: e, name: &fd.text[s..e] })
 }

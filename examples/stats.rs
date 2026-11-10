@@ -23,7 +23,7 @@ fn main() {
             let mut c = fd.tree.walk();
             'w: loop {
                 let n = c.node();
-                if n.kind() == "identifier" { v.push(n.start_byte()); }
+                if fd.lang.is_identifier(n) { v.push(n.start_byte()); }
                 if c.goto_first_child() { continue; }
                 while !c.goto_next_sibling() { if !c.goto_parent() { break 'w; } }
             }

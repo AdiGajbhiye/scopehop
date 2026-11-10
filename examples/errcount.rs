@@ -1,9 +1,10 @@
 fn main() {
     let mut p = tree_sitter::Parser::new();
-    p.set_language(&tree_sitter_kotlin_ng::LANGUAGE.into()).unwrap();
     let (mut files, mut bad) = (0, 0);
     for path in std::env::args().skip(1) {
+        let Some(lang) = scopehop::lang::for_path(path.as_ref()) else { continue };
         let Ok(src) = std::fs::read_to_string(&path) else { continue };
+        p.set_language(&lang.grammar()).unwrap();
         files += 1;
         let tree = p.parse(&src, None).unwrap();
         if tree.root_node().has_error() {

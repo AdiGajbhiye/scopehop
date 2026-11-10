@@ -11,7 +11,7 @@ use lsp_types::{
     TextDocumentSyncCapability, TextDocumentSyncKind, Uri, WorkspaceSymbolParams,
 };
 use scopehop::index::{self, Index, Loc};
-use scopehop::kotlin::DefKind;
+use scopehop::lang::DefKind;
 use scopehop::text::{self, Encoding};
 
 fn main() -> Result<()> {

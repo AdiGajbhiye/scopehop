@@ -1,15 +1,12 @@
-//! Kotlin syntax helpers on top of tree-sitter-kotlin-ng: which identifiers
-//! declare things, which scopes they live in, and cheap type hints.
+//! Kotlin on top of tree-sitter-kotlin-ng: which identifiers declare things,
+//! which scopes they live in, and cheap type hints. Everything here is reached
+//! through the [`Language`] impl at the bottom.
 
-use tree_sitter::{Language, Node};
+use tree_sitter::Node;
 
-pub fn language() -> Language {
-    tree_sitter_kotlin_ng::LANGUAGE.into()
-}
+use crate::lang::{text, Def, DefKind, Expr, Import, Language, Scoped, Summary};
 
-pub fn text<'a>(n: Node, src: &'a str) -> &'a str {
-    &src[n.byte_range()]
-}
+pub struct Kotlin;
 
 fn named_children<'t>(n: Node<'t>) -> Vec<Node<'t>> {
     let mut c = n.walk();
@@ -30,46 +27,6 @@ fn is_type_node(kind: &str) -> bool {
 // ---------------------------------------------------------------------------
 // Declarations
 // ---------------------------------------------------------------------------
-
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub enum DefKind {
-    Class,
-    Object,
-    Function,
-    Property,
-    EnumEntry,
-    TypeAlias,
-}
-
-/// A declaration visible outside its file (top level or class member).
-#[derive(Clone, Debug)]
-pub struct Def {
-    pub name: String,
-    pub kind: DefKind,
-    pub start: usize,
-    pub end: usize,
-    /// Enclosing class/object name, `None` for top-level declarations.
-    pub container: Option<String>,
-    /// Declared or obvious type (`val x: Foo`, `val x = Foo()`).
-    pub type_name: Option<String>,
-    /// Supertypes, for classes and objects.
-    pub supertypes: Vec<String>,
-}
-
-#[derive(Clone, Debug, Default)]
-pub struct Import {
-    /// Full path without the trailing `.*`, e.g. `com.example.Foo`.
-    pub path: String,
-    pub star: bool,
-    pub alias: Option<String>,
-}
-
-#[derive(Clone, Debug, Default)]
-pub struct Summary {
-    pub package: String,
-    pub imports: Vec<Import>,
-    pub defs: Vec<Def>,
-}
 
 /// Identifiers declared by a `variable_declaration` or destructuring declaration.
 fn var_names<'t>(n: Node<'t>, out: &mut Vec<Node<'t>>) {
@@ -171,7 +128,7 @@ fn param_names_of_list<'t>(list: Node<'t>) -> Vec<Node<'t>> {
 }
 
 /// True if `ident` is the name being declared (not a use).
-pub fn is_declaration_name(ident: Node) -> bool {
+fn is_declaration_name(ident: Node) -> bool {
     let Some(p) = ident.parent() else { return false };
     let first_ident = || child_of_kind(p, "identifier").map(|n| n.id()) == Some(ident.id());
     match p.kind() {
@@ -232,7 +189,7 @@ fn constructor_call_type(expr: Node, src: &str) -> Option<String> {
 }
 
 /// Type hint for a declared name: explicit annotation first, then `= Foo(...)`.
-pub fn decl_type_name(name_node: Node, src: &str) -> Option<String> {
+fn decl_type_name(name_node: Node, src: &str) -> Option<String> {
     let p = name_node.parent()?;
     match p.kind() {
         "class_declaration" | "object_declaration" => return Some(text(name_node, src).into()),
@@ -274,7 +231,7 @@ fn supertypes(class: Node, src: &str) -> Vec<String> {
 }
 
 /// Package, imports and top-level/member declarations of a file.
-pub fn summarize(root: Node, src: &str) -> Summary {
+fn summarize(root: Node, src: &str) -> Summary {
     let mut s = Summary::default();
     for c in named_children(root) {
         match c.kind() {
@@ -404,7 +361,7 @@ fn collect_defs(n: Node, src: &str, container: Option<&str>, out: &mut Vec<Def>)
 
 /// Walks outwards from `from` and returns the node that declares `name`:
 /// usually its name identifier, or the lambda itself for an implicit `it`.
-pub fn find_in_scopes<'t>(from: Node<'t>, name: &str, src: &str) -> Option<Node<'t>> {
+fn find_in_scopes<'t>(from: Node<'t>, name: &str, src: &str) -> Option<Node<'t>> {
     let pos = from.start_byte();
     let mut cur = from.parent();
     while let Some(scope) = cur {
@@ -475,7 +432,7 @@ fn lookup_scope<'t>(scope: Node<'t>, name: &str, src: &str, pos: usize) -> Optio
 
 /// If `ident` is the member part of `recv.ident`, `recv::ident` or the
 /// function of an infix call `recv ident arg`, returns `recv`.
-pub fn member_receiver(ident: Node) -> Option<Node> {
+fn member_receiver(ident: Node) -> Option<Node> {
     let p = ident.parent()?;
     match p.kind() {
         "navigation_expression" | "callable_reference" => {
@@ -491,7 +448,7 @@ pub fn member_receiver(ident: Node) -> Option<Node> {
 }
 
 /// For the label of a named argument (`foo(label = x)`), the call expression.
-pub fn named_argument_call(ident: Node) -> Option<Node> {
+fn named_argument_call(ident: Node) -> Option<Node> {
     let arg = ident.parent()?;
     if arg.kind() != "value_argument" || arg.named_child(0)?.id() != ident.id() {
         return None;
@@ -504,7 +461,7 @@ pub fn named_argument_call(ident: Node) -> Option<Node> {
 }
 
 /// `foo` in `val x = foo`, for type inference.
-pub fn decl_initializer(name_node: Node) -> Option<Node> {
+fn decl_initializer(name_node: Node) -> Option<Node> {
     let var = name_node.parent()?;
     if var.kind() != "variable_declaration" {
         return None;
@@ -525,7 +482,7 @@ pub fn decl_initializer(name_node: Node) -> Option<Node> {
 }
 
 /// Receiver type of the nearest enclosing extension function (`fun Dp.f()`).
-pub fn extension_receiver_type(n: Node, src: &str) -> Option<String> {
+fn extension_receiver_type(n: Node, src: &str) -> Option<String> {
     let mut cur = n.parent();
     while let Some(p) = cur {
         match p.kind() {
@@ -547,7 +504,7 @@ pub fn extension_receiver_type(n: Node, src: &str) -> Option<String> {
     None
 }
 
-pub fn is_literal(kind: &str) -> bool {
+fn is_literal(kind: &str) -> bool {
     matches!(
         kind,
         "string_literal" | "number_literal" | "float_literal" | "boolean_literal"
@@ -556,7 +513,7 @@ pub fn is_literal(kind: &str) -> bool {
 }
 
 /// Parameter name nodes of the function or class whose name node is given.
-pub fn params_of(decl_name: Node) -> Vec<Node> {
+fn params_of(decl_name: Node) -> Vec<Node> {
     let Some(decl) = decl_name.parent() else { return Vec::new() };
     match decl.kind() {
         "function_declaration" => param_names(decl),
@@ -568,7 +525,7 @@ pub fn params_of(decl_name: Node) -> Vec<Node> {
     }
 }
 
-pub fn enclosing_class<'t>(n: Node<'t>) -> Option<Node<'t>> {
+fn enclosing_class<'t>(n: Node<'t>) -> Option<Node<'t>> {
     let mut cur = n.parent();
     while let Some(p) = cur {
         if matches!(p.kind(), "class_declaration" | "object_declaration") {
@@ -579,10 +536,131 @@ pub fn enclosing_class<'t>(n: Node<'t>) -> Option<Node<'t>> {
     None
 }
 
-pub fn class_name(class: Node, src: &str) -> Option<String> {
-    class.child_by_field_name("name").map(|n| text(n, src).to_string())
+/// Last named child, e.g. `bar` in the navigation expression `foo.bar`.
+fn last_named_child(n: Node) -> Option<Node> {
+    n.named_child(n.named_child_count().saturating_sub(1) as _)
 }
 
-pub fn class_supertypes(class: Node, src: &str) -> Vec<String> {
-    supertypes(class, src)
+// ---------------------------------------------------------------------------
+// The Language impl
+// ---------------------------------------------------------------------------
+
+impl Language for Kotlin {
+    fn name(&self) -> &'static str {
+        "Kotlin"
+    }
+
+    fn grammar(&self) -> tree_sitter::Language {
+        tree_sitter_kotlin_ng::LANGUAGE.into()
+    }
+
+    fn extensions(&self) -> &'static [&'static str] {
+        &["kt", "kts"]
+    }
+
+    fn summarize(&self, root: Node, src: &str) -> Summary {
+        summarize(root, src)
+    }
+
+    fn name_node<'t>(&self, root: Node<'t>, src: &str, start: usize, end: usize) -> Option<Node<'t>> {
+        let node = root.descendant_for_byte_range(start, end)?;
+        if node.kind() == "identifier" && node.start_byte() == start && node.end_byte() == end {
+            return Some(node);
+        }
+        // "$name" string templates are plain string content in this grammar.
+        if node.kind() == "string_content" && start > 0 && src.as_bytes()[start - 1] == b'$' {
+            return Some(node);
+        }
+        None
+    }
+
+    fn is_identifier(&self, n: Node) -> bool {
+        n.kind() == "identifier"
+    }
+
+    fn is_declaration_name(&self, ident: Node) -> bool {
+        is_declaration_name(ident)
+    }
+
+    fn named_argument_call<'t>(&self, ident: Node<'t>) -> Option<Node<'t>> {
+        named_argument_call(ident)
+    }
+
+    fn member_receiver<'t>(&self, ident: Node<'t>) -> Option<Node<'t>> {
+        member_receiver(ident)
+    }
+
+    fn type_qualifier<'t>(&self, ident: Node<'t>) -> Option<Node<'t>> {
+        if !self.in_type_position(ident) {
+            return None;
+        }
+        ident.prev_named_sibling().filter(|n| n.kind() == "identifier")
+    }
+
+    fn in_type_position(&self, n: Node) -> bool {
+        n.parent().is_some_and(|p| p.kind() == "user_type")
+    }
+
+    fn find_in_scopes<'t>(&self, from: Node<'t>, name: &str, src: &str) -> Option<Scoped<'t>> {
+        find_in_scopes(from, name, src).map(|n| match n.kind() {
+            "lambda_literal" => Scoped::Implicit(n),
+            _ => Scoped::Decl(n),
+        })
+    }
+
+    fn decl_type_name(&self, name: Node, src: &str) -> Option<String> {
+        decl_type_name(name, src)
+    }
+
+    fn decl_initializer<'t>(&self, name: Node<'t>) -> Option<Node<'t>> {
+        decl_initializer(name)
+    }
+
+    fn classify_expr<'t>(&self, expr: Node<'t>) -> Expr<'t> {
+        if is_literal(expr.kind()) {
+            return Expr::Literal;
+        }
+        match expr.kind() {
+            "this_expression" => Expr::This,
+            "super_expression" => Expr::Super,
+            "identifier" => Expr::Name(expr),
+            "call_expression" => expr.named_child(0).map_or(Expr::Unknown, Expr::Call),
+            "navigation_expression" => match last_named_child(expr) {
+                Some(last) if last.kind() == "identifier" => Expr::Member(last),
+                _ => Expr::Unknown,
+            },
+            // (x), x!!, and similar wrappers
+            _ if expr.named_child_count() == 1 => expr.named_child(0).map_or(Expr::Unknown, Expr::Wrapper),
+            _ => Expr::Unknown,
+        }
+    }
+
+    fn callee_name<'t>(&self, call: Node<'t>) -> Option<Node<'t>> {
+        let callee = call.named_child(0)?;
+        let callee = match callee.kind() {
+            "navigation_expression" => last_named_child(callee)?,
+            _ => callee,
+        };
+        (callee.kind() == "identifier").then_some(callee)
+    }
+
+    fn params_of<'t>(&self, decl_name: Node<'t>) -> Vec<Node<'t>> {
+        params_of(decl_name)
+    }
+
+    fn enclosing_class<'t>(&self, n: Node<'t>) -> Option<Node<'t>> {
+        enclosing_class(n)
+    }
+
+    fn class_name(&self, class: Node, src: &str) -> Option<String> {
+        class.child_by_field_name("name").map(|n| text(n, src).to_string())
+    }
+
+    fn class_supertypes(&self, class: Node, src: &str) -> Vec<String> {
+        supertypes(class, src)
+    }
+
+    fn extension_receiver_type(&self, n: Node, src: &str) -> Option<String> {
+        extension_receiver_type(n, src)
+    }
 }
