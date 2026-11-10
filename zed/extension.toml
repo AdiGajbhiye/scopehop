@@ -1,10 +1,10 @@
-id = "treenav"
-name = "treenav"
+id = "scopehop"
+name = "scopehop"
 version = "0.1.0"
 schema_version = 1
 authors = []
-description = "Lightweight tree-sitter go-to-definition and find-references for Kotlin, no JVM language server"
+description = "Scope-aware go-to-definition and find-references built on tree-sitter, no heavyweight language server"
 
-[language_servers.treenav]
-name = "treenav"
+[language_servers.scopehop]
+name = "scopehop"
 languages = ["Kotlin"]

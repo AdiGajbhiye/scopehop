@@ -10,13 +10,13 @@ use lsp_types::{
     ServerCapabilities, SymbolInformation, SymbolKind, TextDocumentPositionParams,
     TextDocumentSyncCapability, TextDocumentSyncKind, Uri, WorkspaceSymbolParams,
 };
-use treenav::index::{self, Index, Loc};
-use treenav::kotlin::DefKind;
-use treenav::text::{self, Encoding};
+use scopehop::index::{self, Index, Loc};
+use scopehop::kotlin::DefKind;
+use scopehop::text::{self, Encoding};
 
 fn main() -> Result<()> {
     if std::env::args().any(|a| a == "--version") {
-        println!("treenav {}", env!("CARGO_PKG_VERSION"));
+        println!("scopehop {}", env!("CARGO_PKG_VERSION"));
         return Ok(());
     }
     let (conn, io) = Connection::stdio();
@@ -55,14 +55,14 @@ fn main() -> Result<()> {
         id,
         serde_json::json!({
             "capabilities": caps,
-            "serverInfo": { "name": "treenav", "version": env!("CARGO_PKG_VERSION") },
+            "serverInfo": { "name": "scopehop", "version": env!("CARGO_PKG_VERSION") },
         }),
     )?;
 
     let mut index = Index::new(roots.clone());
     let t = Instant::now();
     index.refresh();
-    eprintln!("treenav: indexed {} files under {:?} in {:?}", index.files.len(), roots, t.elapsed());
+    eprintln!("scopehop: indexed {} files under {:?} in {:?}", index.files.len(), roots, t.elapsed());
 
     for msg in &conn.receiver {
         match msg {

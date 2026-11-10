@@ -1,6 +1,6 @@
 //! probe <root> <file> <line> <col> [def|refs]   (1-based line, 1-based byte col)
 use std::path::PathBuf;
-use treenav::{index::Index, text::Encoding};
+use scopehop::{index::Index, text::Encoding};
 
 fn main() {
     let a: Vec<String> = std::env::args().collect();

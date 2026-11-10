@@ -1,7 +1,8 @@
 [package]
-name = "treenav"
+name = "scopehop"
 version = "0.1.0"
 edition = "2024"
+description = "Scope-aware go-to-definition and find-references built on tree-sitter"
 
 [dependencies]
 anyhow = "1.0.104"

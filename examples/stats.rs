@@ -1,7 +1,7 @@
 //! Resolve every identifier in a project; report counts, timing and samples.
 use std::collections::HashMap;
 use std::path::PathBuf;
-use treenav::{index::Index, text::Encoding};
+use scopehop::{index::Index, text::Encoding};
 
 fn main() {
     let root = PathBuf::from(std::env::args().nth(1).unwrap());

@@ -1,10 +1,13 @@
-# treenav
+# scopehop
 
-A lightweight language server for Kotlin: go-to-definition and find-references
-using tree-sitter and the files in your workspace. No JVM, no Gradle sync, no
-type checker. Starts in a fraction of a second.
+A lightweight, scope-aware language server: go-to-definition and
+find-references using tree-sitter and the files in your workspace. No
+compiler, no build sync, no type checker. Starts in a fraction of a second.
 
-## What it does
+**Languages:** Kotlin today. The goal is any language with a tree-sitter
+grammar; see [Roadmap](#roadmap).
+
+## What it does (Kotlin)
 
 - **Definition** (`textDocument/definition`)
   - Scope-aware: lambda params (incl. implicit `it`), function params,
@@ -29,7 +32,7 @@ candidates.
 ## Install
 
 ```sh
-cargo install --path . --root ~/.local   # puts treenav in ~/.local/bin
+cargo install --path . --root ~/.local   # puts scopehop in ~/.local/bin
 ```
 
 ### Zed
@@ -39,13 +42,22 @@ cargo install --path . --root ~/.local   # puts treenav in ~/.local/bin
 
 ```json
 "languages": {
-  "Kotlin": { "language_servers": ["treenav"] }
+  "Kotlin": { "language_servers": ["scopehop"] }
 }
 ```
 
 Add `"..."` to the list to keep other Kotlin servers running alongside. The
-extension finds `treenav` on `PATH`, or set
-`"lsp": { "treenav": { "binary": { "path": "/abs/path/treenav" } } }`.
+extension finds `scopehop` on `PATH`, or set
+`"lsp": { "scopehop": { "binary": { "path": "/abs/path/scopehop" } } }`.
+
+## Roadmap
+
+To support more languages, the Kotlin-specific parts in `src/kotlin.rs`
+(which nodes declare names, which nodes open scopes, where type hints live)
+move behind a per-language trait. The index, ranking, references and LSP layer
+stay shared. Adding a language then means adding a grammar crate plus that
+mapping, ideally driven by tree-sitter `locals.scm`/`tags.scm` queries where
+the grammar ships them.
 
 ## Layout
 
