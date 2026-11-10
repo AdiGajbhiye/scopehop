@@ -250,6 +250,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "scopehop"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "ignore",
+ "lsp-server",
+ "lsp-types",
+ "memchr",
+ "serde",
+ "serde_json",
+ "tree-sitter",
+ "tree-sitter-kotlin-ng",
+]
+
+[[package]]
 name = "serde"
 version = "1.0.229"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -356,21 +371,6 @@ name = "tree-sitter-language"
 version = "0.1.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d0af592be68c579aa78a16846bd19422978c3c52e438523d45ff5d1bff1f9d4a"
-
-[[package]]
-name = "treenav"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "ignore",
- "lsp-server",
- "lsp-types",
- "memchr",
- "serde",
- "serde_json",
- "tree-sitter",
- "tree-sitter-kotlin-ng",
-]
 
 [[package]]
 name = "unicode-ident"
