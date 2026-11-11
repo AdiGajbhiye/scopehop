@@ -343,6 +343,12 @@ impl Index {
         if let Some(t) = fd.lang.decl_type_name(name, &fd.text) {
             return Ty::Class(t);
         }
+        // A member found by the scope walk (a method called without a
+        // receiver): the index knows its return type.
+        let indexed = fd.summary.defs.iter().find(|d| d.start == name.start_byte());
+        if let Some(t) = indexed.and_then(|d| d.type_name.clone()) {
+            return Ty::Class(t);
+        }
         match fd.lang.decl_initializer(name) {
             Some(init) => self.type_of(path, fd, init, depth + 1),
             None => Ty::Unknown,

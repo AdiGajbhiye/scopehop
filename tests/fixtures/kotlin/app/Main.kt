@@ -34,8 +34,12 @@ class App(private val start: Circle) {
         val (first, second) = Pair(r, d)
         val greeting = "radius is $r"
         val mode: Mode = Mode.List
+        // A method of this class, called without a receiver.
+        val picked = pick().area()
         return count + first.toInt() + second.toInt()
     }
+
+    fun pick(): Circle = start
 
     fun shadow(): Int {
         val count = 10

@@ -4,8 +4,9 @@ A lightweight, scope-aware language server: go-to-definition and
 find-references using tree-sitter and the files in your workspace. No
 compiler, no build sync, no type checker. Starts in a fraction of a second.
 
-**Languages:** Kotlin today. The goal is any language with a tree-sitter
-grammar; see [Roadmap](#roadmap).
+**Languages:** Kotlin and Java, including mixed projects where each calls the
+other. The goal is any language with a tree-sitter grammar; see
+[Roadmap](#roadmap).
 
 ## What it does (Kotlin)
 
@@ -26,9 +27,32 @@ grammar; see [Roadmap](#roadmap).
   only hits that resolve to the same declaration.
 - **Document highlights** and **workspace symbols**.
 
+## What it does (Java)
+
+The same requests, with the same rules where Java has them:
+
+- Scopes: lambda params, method and constructor params, `for`/enhanced `for`,
+  `catch`, try-with-resources, `instanceof` pattern variables, locals declared
+  earlier in the block, members of the class (and of anonymous classes).
+- Imports: single-type, `*`, `static` member and `static *` imports; same
+  package; inherited members. Names on `import` lines resolve too.
+- Types come from declarations, `var x = new Foo()`, casts, return types
+  (also of calls without a receiver) and fields. Arrays are not their element
+  type. Constructors and `new Foo()` go to the class; records' components work
+  as fields and accessors (`p.x()`).
+
+Kotlin and Java files share one index, so `import com.example.JavaThing` in
+Kotlin and `new KotlinThing()` in Java both resolve. Kotlin's property syntax
+for Java getters (`thing.name` for `getName()`) does not resolve yet.
+
+## Limits
+
 When a type can't be inferred (e.g. untyped lambda params), member lookups fall
-back to every project member with that name, so results can include extra
-candidates.
+back to every project member with that name, and the receiver type is whatever
+most of those members agree on, so results can include extra candidates. Not
+handled yet: Java `switch` pattern variables (`case Circle c ->`), and imports
+of types nested two levels deep (`Outer.Middle.Inner`), since a declaration
+only records its immediate container.
 
 ## Install
 
@@ -43,11 +67,12 @@ cargo install --path . --root ~/.local   # puts scopehop in ~/.local/bin
 
 ```json
 "languages": {
-  "Kotlin": { "language_servers": ["scopehop"] }
+  "Kotlin": { "language_servers": ["scopehop"] },
+  "Java": { "language_servers": ["scopehop"] }
 }
 ```
 
-Add `"..."` to the list to keep other Kotlin servers running alongside. The
+Add `"..."` to a list to keep that language's other servers running alongside. The
 extension finds `scopehop` on `PATH`, or set
 `"lsp": { "scopehop": { "binary": { "path": "/abs/path/scopehop" } } }`.
 
@@ -70,11 +95,12 @@ need a hook for the first.
 
 - `src/lang.rs`: the `Language` trait, the shared declaration model and the
   language registry
-- `src/kotlin.rs`: the Kotlin implementation (declarations, scopes, type hints)
+- `src/kotlin.rs`, `src/java.rs`: the two implementations (declarations,
+  scopes, type hints)
 - `src/index.rs`: workspace index and resolution, language-neutral
 - `src/snapshot.rs`: text dump of everything the index resolves, for tests
-- `tests/`: resolution tests over a small Kotlin project in
-  `tests/fixtures/kotlin`, plus a snapshot of every lookup in it
+- `tests/`: resolution tests over small Kotlin, Java and mixed projects in
+  `tests/fixtures/`, plus a snapshot of every lookup in each
 - `src/main.rs`: LSP over stdio (`lsp-server`)
 - `zed/`: Zed extension that launches the server
 - `examples/`: `probe` (one lookup from the CLI), `stats` (resolve every
@@ -92,10 +118,11 @@ cargo run --release --example stats -- <root>
 cargo test
 ```
 
-`tests/kotlin.rs` checks specific lookups in `tests/fixtures/kotlin` (scopes,
-members, extensions, imports, packages, references) and compares every lookup
-in that project against `tests/snapshots/kotlin.txt`. After an intended change,
-accept the new snapshot and review its diff:
+`tests/kotlin.rs`, `tests/java.rs` and `tests/mixed.rs` each check specific
+lookups in their project under `tests/fixtures/` (scopes, members, imports,
+packages, references) and compare every lookup in it against
+`tests/snapshots/<name>.txt`. After an intended change, accept the new
+snapshots and review their diff:
 
 ```sh
 UPDATE_SNAPSHOTS=1 cargo test

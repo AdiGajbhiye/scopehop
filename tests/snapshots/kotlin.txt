@@ -27,10 +27,10 @@ app/Main.kt:7:42 MAX -> util/Strings.kt:12:19
 app/Main.kt:9:7 App -> app/Main.kt:9:7
 app/Main.kt:9:7 App <- 
 app/Main.kt:9:23 start -> app/Main.kt:9:23
-app/Main.kt:9:23 start <- app/Main.kt:16:17
+app/Main.kt:9:23 start <- app/Main.kt:16:17 app/Main.kt:42:26
 app/Main.kt:9:30 Circle -> model/Shapes.kt:12:7
 app/Main.kt:10:17 count -> app/Main.kt:10:17
-app/Main.kt:10:17 count <- app/Main.kt:28:14 app/Main.kt:29:33 app/Main.kt:31:32 app/Main.kt:37:16
+app/Main.kt:10:17 count <- app/Main.kt:28:14 app/Main.kt:29:33 app/Main.kt:31:32 app/Main.kt:39:16
 app/Main.kt:12:9 run -> app/Main.kt:12:9
 app/Main.kt:12:9 run <- 
 app/Main.kt:12:16 Int -> 
@@ -117,9 +117,9 @@ app/Main.kt:33:34 Circle -> model/Shapes.kt:12:7
 app/Main.kt:33:44 s -> app/Main.kt:33:19
 app/Main.kt:33:46 radius -> model/Shapes.kt:12:18
 app/Main.kt:34:14 first -> app/Main.kt:34:14
-app/Main.kt:34:14 first <- app/Main.kt:37:24
+app/Main.kt:34:14 first <- app/Main.kt:39:24
 app/Main.kt:34:21 second -> app/Main.kt:34:21
-app/Main.kt:34:21 second <- app/Main.kt:37:40
+app/Main.kt:34:21 second <- app/Main.kt:39:40
 app/Main.kt:34:31 Pair -> 
 app/Main.kt:34:36 r -> app/Main.kt:14:13
 app/Main.kt:34:39 d -> app/Main.kt:15:13
@@ -130,49 +130,57 @@ app/Main.kt:36:13 mode <-
 app/Main.kt:36:19 Mode -> model/Shapes.kt:39:18
 app/Main.kt:36:26 Mode -> model/Shapes.kt:39:18
 app/Main.kt:36:31 List -> model/Shapes.kt:40:17
-app/Main.kt:37:16 count -> app/Main.kt:10:17
-app/Main.kt:37:24 first -> app/Main.kt:34:14
-app/Main.kt:37:30 toInt -> 
-app/Main.kt:37:40 second -> app/Main.kt:34:21
-app/Main.kt:37:47 toInt -> 
-app/Main.kt:40:9 shadow -> app/Main.kt:40:9
-app/Main.kt:40:9 shadow <- 
-app/Main.kt:40:19 Int -> 
-app/Main.kt:41:13 count -> app/Main.kt:41:13
-app/Main.kt:41:13 count <- app/Main.kt:42:16
-app/Main.kt:42:16 count -> app/Main.kt:41:13
-app/Main.kt:46:5 limit -> app/Main.kt:46:5
-app/Main.kt:46:5 limit <- 
-app/Main.kt:46:14 Int -> 
-app/Main.kt:46:20 MAX -> util/Strings.kt:12:19
-app/Main.kt:48:5 total -> app/Main.kt:48:5
-app/Main.kt:48:5 total <- 
-app/Main.kt:48:11 shapes -> app/Main.kt:48:11
-app/Main.kt:48:11 shapes <- app/Main.kt:48:40
-app/Main.kt:48:19 ShapeList -> model/Shapes.kt:31:11
-app/Main.kt:48:31 Double -> 
-app/Main.kt:48:40 shapes -> app/Main.kt:48:11
-app/Main.kt:48:47 totalArea -> model/Extensions.kt:8:17
-app/Main.kt:50:5 untyped -> app/Main.kt:50:5
-app/Main.kt:50:5 untyped <- 
-app/Main.kt:50:13 items -> app/Main.kt:50:13
-app/Main.kt:50:13 items <- app/Main.kt:53:5
-app/Main.kt:50:20 List -> 
-app/Main.kt:50:25 Any -> 
-app/Main.kt:53:5 items -> app/Main.kt:50:13
-app/Main.kt:53:11 forEach -> 
-app/Main.kt:53:21 h -> app/Main.kt:53:21
-app/Main.kt:53:21 h <- app/Main.kt:53:26
-app/Main.kt:53:26 h -> app/Main.kt:53:21
-app/Main.kt:53:28 shape -> model/Boxes.kt:5:24 model/Holders.kt:4:23 model/Holders.kt:5:26
-app/Main.kt:53:34 radius -> model/Shapes.kt:12:18
-app/Main.kt:56:7 Shout -> app/Main.kt:56:7
-app/Main.kt:56:7 Shout <- 
-app/Main.kt:56:15 Shape -> model/Shapes.kt:7:12
-app/Main.kt:57:18 area -> app/Main.kt:57:18
-app/Main.kt:57:18 area <- model/Extensions.kt:8:50
-app/Main.kt:57:26 Double -> 
-app/Main.kt:57:41 area -> model/Shapes.kt:9:14
+app/Main.kt:38:13 picked -> app/Main.kt:38:13
+app/Main.kt:38:13 picked <- 
+app/Main.kt:38:22 pick -> app/Main.kt:42:9
+app/Main.kt:38:29 area -> model/Shapes.kt:13:18
+app/Main.kt:39:16 count -> app/Main.kt:10:17
+app/Main.kt:39:24 first -> app/Main.kt:34:14
+app/Main.kt:39:30 toInt -> 
+app/Main.kt:39:40 second -> app/Main.kt:34:21
+app/Main.kt:39:47 toInt -> 
+app/Main.kt:42:9 pick -> app/Main.kt:42:9
+app/Main.kt:42:9 pick <- app/Main.kt:38:22
+app/Main.kt:42:17 Circle -> model/Shapes.kt:12:7
+app/Main.kt:42:26 start -> app/Main.kt:9:23
+app/Main.kt:44:9 shadow -> app/Main.kt:44:9
+app/Main.kt:44:9 shadow <- 
+app/Main.kt:44:19 Int -> 
+app/Main.kt:45:13 count -> app/Main.kt:45:13
+app/Main.kt:45:13 count <- app/Main.kt:46:16
+app/Main.kt:46:16 count -> app/Main.kt:45:13
+app/Main.kt:50:5 limit -> app/Main.kt:50:5
+app/Main.kt:50:5 limit <- 
+app/Main.kt:50:14 Int -> 
+app/Main.kt:50:20 MAX -> util/Strings.kt:12:19
+app/Main.kt:52:5 total -> app/Main.kt:52:5
+app/Main.kt:52:5 total <- 
+app/Main.kt:52:11 shapes -> app/Main.kt:52:11
+app/Main.kt:52:11 shapes <- app/Main.kt:52:40
+app/Main.kt:52:19 ShapeList -> model/Shapes.kt:31:11
+app/Main.kt:52:31 Double -> 
+app/Main.kt:52:40 shapes -> app/Main.kt:52:11
+app/Main.kt:52:47 totalArea -> model/Extensions.kt:8:17
+app/Main.kt:54:5 untyped -> app/Main.kt:54:5
+app/Main.kt:54:5 untyped <- 
+app/Main.kt:54:13 items -> app/Main.kt:54:13
+app/Main.kt:54:13 items <- app/Main.kt:57:5
+app/Main.kt:54:20 List -> 
+app/Main.kt:54:25 Any -> 
+app/Main.kt:57:5 items -> app/Main.kt:54:13
+app/Main.kt:57:11 forEach -> 
+app/Main.kt:57:21 h -> app/Main.kt:57:21
+app/Main.kt:57:21 h <- app/Main.kt:57:26
+app/Main.kt:57:26 h -> app/Main.kt:57:21
+app/Main.kt:57:28 shape -> model/Boxes.kt:5:24 model/Holders.kt:4:23 model/Holders.kt:5:26
+app/Main.kt:57:34 radius -> model/Shapes.kt:12:18
+app/Main.kt:60:7 Shout -> app/Main.kt:60:7
+app/Main.kt:60:7 Shout <- 
+app/Main.kt:60:15 Shape -> model/Shapes.kt:7:12
+app/Main.kt:61:18 area -> app/Main.kt:61:18
+app/Main.kt:61:18 area <- model/Extensions.kt:8:50
+app/Main.kt:61:26 Double -> 
+app/Main.kt:61:41 area -> model/Shapes.kt:9:14
 app/Other.kt:1:9 com -> 
 app/Other.kt:1:13 example -> 
 app/Other.kt:1:21 app -> 
@@ -200,7 +208,7 @@ model/Boxes.kt:1:21 model ->
 model/Boxes.kt:5:7 SquareHolder -> model/Boxes.kt:5:7
 model/Boxes.kt:5:7 SquareHolder <- 
 model/Boxes.kt:5:24 shape -> model/Boxes.kt:5:24
-model/Boxes.kt:5:24 shape <- app/Main.kt:53:28
+model/Boxes.kt:5:24 shape <- app/Main.kt:57:28
 model/Boxes.kt:5:31 Square -> model/Shapes.kt:20:7
 model/Extensions.kt:1:9 com -> 
 model/Extensions.kt:1:13 example -> 
@@ -213,11 +221,11 @@ model/Extensions.kt:4:33 radius -> model/Shapes.kt:12:18
 model/Extensions.kt:8:5 List -> 
 model/Extensions.kt:8:10 Shape -> model/Shapes.kt:7:12
 model/Extensions.kt:8:17 totalArea -> model/Extensions.kt:8:17
-model/Extensions.kt:8:17 totalArea <- app/Main.kt:48:47
+model/Extensions.kt:8:17 totalArea <- app/Main.kt:52:47
 model/Extensions.kt:8:30 Double -> 
 model/Extensions.kt:8:39 sumOf -> 
 model/Extensions.kt:8:47 it -> model/Extensions.kt:8:45
-model/Extensions.kt:8:50 area -> app/Main.kt:57:18 model/Shapes.kt:9:14 model/Shapes.kt:13:18 model/Shapes.kt:21:18
+model/Extensions.kt:8:50 area -> app/Main.kt:61:18 model/Shapes.kt:9:14 model/Shapes.kt:13:18 model/Shapes.kt:21:18
 model/Extensions.kt:11:5 Shape -> model/Shapes.kt:7:12
 model/Extensions.kt:11:11 describe -> model/Extensions.kt:11:11
 model/Extensions.kt:11:11 describe <- 
@@ -229,12 +237,12 @@ model/Holders.kt:1:21 model ->
 model/Holders.kt:4:7 RoundHolder -> model/Holders.kt:4:7
 model/Holders.kt:4:7 RoundHolder <- 
 model/Holders.kt:4:23 shape -> model/Holders.kt:4:23
-model/Holders.kt:4:23 shape <- app/Main.kt:53:28
+model/Holders.kt:4:23 shape <- app/Main.kt:57:28
 model/Holders.kt:4:30 Circle -> model/Shapes.kt:12:7
 model/Holders.kt:5:7 BigRoundHolder -> model/Holders.kt:5:7
 model/Holders.kt:5:7 BigRoundHolder <- 
 model/Holders.kt:5:26 shape -> model/Holders.kt:5:26
-model/Holders.kt:5:26 shape <- app/Main.kt:53:28
+model/Holders.kt:5:26 shape <- app/Main.kt:57:28
 model/Holders.kt:5:33 Circle -> model/Shapes.kt:12:7
 model/Shapes.kt:1:9 com -> 
 model/Shapes.kt:1:13 example -> 
@@ -245,7 +253,7 @@ model/Shapes.kt:4:9 label -> model/Shapes.kt:4:9
 model/Shapes.kt:4:9 label <- 
 model/Shapes.kt:4:16 String -> 
 model/Shapes.kt:7:12 Shape -> model/Shapes.kt:7:12
-model/Shapes.kt:7:12 Shape <- app/Main.kt:56:15 model/Extensions.kt:8:10 model/Extensions.kt:11:5 model/Shapes.kt:12:36 model/Shapes.kt:20:34 model/Shapes.kt:31:28
+model/Shapes.kt:7:12 Shape <- app/Main.kt:60:15 model/Extensions.kt:8:10 model/Extensions.kt:11:5 model/Shapes.kt:12:36 model/Shapes.kt:20:34 model/Shapes.kt:31:28
 model/Shapes.kt:7:22 name -> model/Shapes.kt:7:22
 model/Shapes.kt:7:22 name <- app/Main.kt:17:19 model/Extensions.kt:11:34 model/Shapes.kt:8:40
 model/Shapes.kt:7:28 String -> 
@@ -255,16 +263,16 @@ model/Shapes.kt:8:18 label <- app/Main.kt:18:19
 model/Shapes.kt:8:25 String -> 
 model/Shapes.kt:8:40 name -> model/Shapes.kt:7:22
 model/Shapes.kt:9:14 area -> model/Shapes.kt:9:14
-model/Shapes.kt:9:14 area <- app/Main.kt:57:41 model/Extensions.kt:8:50 model/Extensions.kt:11:50
+model/Shapes.kt:9:14 area <- app/Main.kt:61:41 model/Extensions.kt:8:50 model/Extensions.kt:11:50
 model/Shapes.kt:9:22 Double -> 
 model/Shapes.kt:12:7 Circle -> model/Shapes.kt:12:7
-model/Shapes.kt:12:7 Circle <- app/Main.kt:9:30 app/Main.kt:13:17 app/Main.kt:20:20 app/Main.kt:33:34 app/Other.kt:3:26 app/Other.kt:8:53 app/Other.kt:8:62 model/Extensions.kt:4:5 model/Holders.kt:4:30 model/Holders.kt:5:33 model/Shapes.kt:16:21 model/Shapes.kt:16:30
+model/Shapes.kt:12:7 Circle <- app/Main.kt:9:30 app/Main.kt:13:17 app/Main.kt:20:20 app/Main.kt:33:34 app/Main.kt:42:17 app/Other.kt:3:26 app/Other.kt:8:53 app/Other.kt:8:62 model/Extensions.kt:4:5 model/Holders.kt:4:30 model/Holders.kt:5:33 model/Shapes.kt:16:21 model/Shapes.kt:16:30
 model/Shapes.kt:12:18 radius -> model/Shapes.kt:12:18
-model/Shapes.kt:12:18 radius <- app/Main.kt:14:19 app/Main.kt:30:44 app/Main.kt:33:46 app/Main.kt:53:34 model/Extensions.kt:4:33 model/Shapes.kt:13:42 model/Shapes.kt:13:51
+model/Shapes.kt:12:18 radius <- app/Main.kt:14:19 app/Main.kt:30:44 app/Main.kt:33:46 app/Main.kt:57:34 model/Extensions.kt:4:33 model/Shapes.kt:13:42 model/Shapes.kt:13:51
 model/Shapes.kt:12:26 Double -> 
 model/Shapes.kt:12:36 Shape -> model/Shapes.kt:7:12
 model/Shapes.kt:13:18 area -> model/Shapes.kt:13:18
-model/Shapes.kt:13:18 area <- app/Main.kt:16:23 app/Main.kt:32:20 model/Extensions.kt:8:50
+model/Shapes.kt:13:18 area <- app/Main.kt:16:23 app/Main.kt:32:20 app/Main.kt:38:29 model/Extensions.kt:8:50
 model/Shapes.kt:13:26 Double -> 
 model/Shapes.kt:13:42 radius -> model/Shapes.kt:12:18
 model/Shapes.kt:13:51 radius -> model/Shapes.kt:12:18
@@ -298,7 +306,7 @@ model/Shapes.kt:28:18 String ->
 model/Shapes.kt:28:27 hex -> model/Shapes.kt:24:22
 model/Shapes.kt:28:31 uppercase -> 
 model/Shapes.kt:31:11 ShapeList -> model/Shapes.kt:31:11
-model/Shapes.kt:31:11 ShapeList <- app/Main.kt:48:19
+model/Shapes.kt:31:11 ShapeList <- app/Main.kt:52:19
 model/Shapes.kt:31:23 List -> 
 model/Shapes.kt:31:28 Shape -> model/Shapes.kt:7:12
 model/Shapes.kt:33:7 Outer -> model/Shapes.kt:33:7
@@ -351,4 +359,4 @@ util/Strings.kt:8:11 VERSION <- app/Main.kt:6:25 app/Main.kt:26:14
 util/Strings.kt:10:7 Limits -> util/Strings.kt:10:7
 util/Strings.kt:10:7 Limits <- app/Main.kt:7:25
 util/Strings.kt:12:19 MAX -> util/Strings.kt:12:19
-util/Strings.kt:12:19 MAX <- app/Main.kt:7:42 app/Main.kt:46:20
+util/Strings.kt:12:19 MAX <- app/Main.kt:7:42 app/Main.kt:50:20

@@ -4,18 +4,9 @@
 
 use tree_sitter::Node;
 
-use crate::lang::{text, Def, DefKind, Expr, Import, Language, Scoped, Summary};
+use crate::lang::{child_of_kind, named_children, text, Def, DefKind, Expr, Import, Language, Scoped, Summary};
 
 pub struct Kotlin;
-
-fn named_children<'t>(n: Node<'t>) -> Vec<Node<'t>> {
-    let mut c = n.walk();
-    n.named_children(&mut c).collect()
-}
-
-fn child_of_kind<'t>(n: Node<'t>, kind: &str) -> Option<Node<'t>> {
-    named_children(n).into_iter().find(|c| c.kind() == kind)
-}
 
 fn is_type_node(kind: &str) -> bool {
     matches!(

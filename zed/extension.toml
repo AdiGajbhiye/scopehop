@@ -7,4 +7,4 @@ description = "Scope-aware go-to-definition and find-references built on tree-si
 
 [language_servers.scopehop]
 name = "scopehop"
-languages = ["Kotlin"]
+languages = ["Kotlin", "Java"]

@@ -1,0 +1,79 @@
+app/App.kt:1:9 com -> 
+app/App.kt:1:13 example -> 
+app/App.kt:1:21 app -> 
+app/App.kt:3:8 com -> 
+app/App.kt:3:12 example -> 
+app/App.kt:3:20 lib -> 
+app/App.kt:3:24 Greeter -> lib/Greeter.java:5:14
+app/App.kt:6:5 main -> app/App.kt:6:5
+app/App.kt:6:5 main <- 
+app/App.kt:7:9 g -> app/App.kt:7:9
+app/App.kt:7:9 g <- app/App.kt:8:5 app/App.kt:11:26
+app/App.kt:7:13 Greeter -> lib/Greeter.java:5:14
+app/App.kt:8:5 g -> app/App.kt:7:9
+app/App.kt:8:7 greet -> lib/Greeter.java:14:19
+app/App.kt:9:5 Greeter -> lib/Greeter.java:5:14
+app/App.kt:9:13 of -> lib/Greeter.java:18:27
+app/App.kt:9:21 greet -> lib/Greeter.java:14:19
+app/App.kt:10:5 println -> 
+app/App.kt:10:13 Greeter -> lib/Greeter.java:5:14
+app/App.kt:10:21 HELLO -> lib/Greeter.java:6:32
+app/App.kt:11:9 b -> app/App.kt:11:9
+app/App.kt:11:9 b <- app/App.kt:12:5
+app/App.kt:11:12 Badge -> app/Badge.kt:3:7
+app/App.kt:11:20 Badge -> app/Badge.kt:3:7
+app/App.kt:11:26 g -> app/App.kt:7:9
+app/App.kt:11:28 badged -> lib/Greeter.java:23:19
+app/App.kt:12:5 b -> app/App.kt:11:9
+app/App.kt:12:7 label -> app/Badge.kt:4:9
+app/Badge.kt:1:9 com -> 
+app/Badge.kt:1:13 example -> 
+app/Badge.kt:1:21 app -> 
+app/Badge.kt:3:7 Badge -> app/Badge.kt:3:7
+app/Badge.kt:3:7 Badge <- app/App.kt:11:12 app/App.kt:11:20 lib/Greeter.java:3:24 lib/Greeter.java:24:20
+app/Badge.kt:3:17 text -> app/Badge.kt:3:17
+app/Badge.kt:3:17 text <- app/Badge.kt:4:30
+app/Badge.kt:3:23 String -> 
+app/Badge.kt:4:9 label -> app/Badge.kt:4:9
+app/Badge.kt:4:9 label <- app/App.kt:12:7 lib/Greeter.java:24:32
+app/Badge.kt:4:18 String -> 
+lib/Greeter.java:1:9 com -> 
+lib/Greeter.java:1:13 example -> 
+lib/Greeter.java:1:21 lib -> 
+lib/Greeter.java:3:8 com -> 
+lib/Greeter.java:3:12 example -> 
+lib/Greeter.java:3:20 app -> 
+lib/Greeter.java:3:24 Badge -> app/Badge.kt:3:7
+lib/Greeter.java:5:14 Greeter -> lib/Greeter.java:5:14
+lib/Greeter.java:5:14 Greeter <- app/App.kt:3:24 app/App.kt:7:13 app/App.kt:9:5 app/App.kt:10:13 lib/Greeter.java:10:12 lib/Greeter.java:18:19 lib/Greeter.java:19:20
+lib/Greeter.java:6:25 String -> 
+lib/Greeter.java:6:32 HELLO -> lib/Greeter.java:6:32
+lib/Greeter.java:6:32 HELLO <- app/App.kt:10:21 lib/Greeter.java:15:16
+lib/Greeter.java:8:19 String -> 
+lib/Greeter.java:8:26 name -> lib/Greeter.java:8:26
+lib/Greeter.java:8:26 name <- lib/Greeter.java:11:14 lib/Greeter.java:15:30 lib/Greeter.java:24:26
+lib/Greeter.java:10:12 Greeter -> lib/Greeter.java:5:14
+lib/Greeter.java:10:20 String -> 
+lib/Greeter.java:10:27 name -> lib/Greeter.java:10:27
+lib/Greeter.java:10:27 name <- lib/Greeter.java:11:21
+lib/Greeter.java:11:14 name -> lib/Greeter.java:8:26
+lib/Greeter.java:11:21 name -> lib/Greeter.java:10:27
+lib/Greeter.java:14:12 String -> 
+lib/Greeter.java:14:19 greet -> lib/Greeter.java:14:19
+lib/Greeter.java:14:19 greet <- app/App.kt:8:7 app/App.kt:9:21
+lib/Greeter.java:15:16 HELLO -> lib/Greeter.java:6:32
+lib/Greeter.java:15:30 name -> lib/Greeter.java:8:26
+lib/Greeter.java:18:19 Greeter -> lib/Greeter.java:5:14
+lib/Greeter.java:18:27 of -> lib/Greeter.java:18:27
+lib/Greeter.java:18:27 of <- app/App.kt:9:13
+lib/Greeter.java:18:30 String -> 
+lib/Greeter.java:18:37 name -> lib/Greeter.java:18:37
+lib/Greeter.java:18:37 name <- lib/Greeter.java:19:28
+lib/Greeter.java:19:20 Greeter -> lib/Greeter.java:5:14
+lib/Greeter.java:19:28 name -> lib/Greeter.java:18:37
+lib/Greeter.java:23:12 String -> 
+lib/Greeter.java:23:19 badged -> lib/Greeter.java:23:19
+lib/Greeter.java:23:19 badged <- app/App.kt:11:28
+lib/Greeter.java:24:20 Badge -> app/Badge.kt:3:7
+lib/Greeter.java:24:26 name -> lib/Greeter.java:8:26
+lib/Greeter.java:24:32 label -> app/Badge.kt:4:9

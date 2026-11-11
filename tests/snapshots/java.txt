@@ -1,0 +1,423 @@
+app/Main.java:1:9 com -> 
+app/Main.java:1:13 example -> 
+app/Main.java:1:21 app -> 
+app/Main.java:3:8 com -> 
+app/Main.java:3:12 example -> 
+app/Main.java:3:20 model -> 
+app/Main.java:4:8 com -> 
+app/Main.java:4:12 example -> 
+app/Main.java:4:20 model -> 
+app/Main.java:4:26 Outer -> model/Outer.java:3:14
+app/Main.java:4:32 Inner -> model/Outer.java:4:25
+app/Main.java:5:8 java -> 
+app/Main.java:5:13 util -> 
+app/Main.java:5:18 List -> 
+app/Main.java:6:15 com -> 
+app/Main.java:6:19 example -> 
+app/Main.java:6:27 util -> 
+app/Main.java:6:32 Strings -> util/Strings.java:3:20
+app/Main.java:6:40 shout -> util/Strings.java:6:26
+app/Main.java:7:15 com -> 
+app/Main.java:7:19 example -> 
+app/Main.java:7:27 util -> 
+app/Main.java:7:32 Strings -> util/Strings.java:3:20
+app/Main.java:7:40 VERSION -> util/Strings.java:4:32
+app/Main.java:9:14 Main -> app/Main.java:9:14
+app/Main.java:9:14 Main <- app/Main.java:13:12
+app/Main.java:10:17 count -> app/Main.java:10:17
+app/Main.java:10:17 count <- app/Main.java:33:14 app/Main.java:37:60 app/Main.java:40:13 app/Main.java:67:16
+app/Main.java:11:19 Circle -> model/Circle.java:3:14
+app/Main.java:11:26 start -> app/Main.java:11:26
+app/Main.java:11:26 start <- app/Main.java:14:14 app/Main.java:21:20 app/Main.java:71:16
+app/Main.java:13:12 Main -> app/Main.java:9:14
+app/Main.java:13:17 Circle -> model/Circle.java:3:14
+app/Main.java:13:24 start -> app/Main.java:13:24
+app/Main.java:13:24 start <- app/Main.java:14:22
+app/Main.java:14:14 start -> app/Main.java:11:26
+app/Main.java:14:22 start -> app/Main.java:13:24
+app/Main.java:17:16 run -> app/Main.java:17:16
+app/Main.java:17:16 run <- 
+app/Main.java:17:20 List -> 
+app/Main.java:17:25 Object -> 
+app/Main.java:17:33 items -> app/Main.java:17:33
+app/Main.java:17:33 items <- app/Main.java:36:9 app/Main.java:42:25
+app/Main.java:18:9 var -> 
+app/Main.java:18:13 c -> app/Main.java:18:13
+app/Main.java:18:13 c <- app/Main.java:20:20 app/Main.java:22:20 app/Main.java:23:20 app/Main.java:63:25
+app/Main.java:18:21 Circle -> model/Circle.java:3:14
+app/Main.java:19:9 Circle -> model/Circle.java:3:14
+app/Main.java:19:16 typed -> app/Main.java:19:16
+app/Main.java:19:16 typed <- app/Main.java:63:28 app/Main.java:67:29
+app/Main.java:19:24 Circle -> model/Circle.java:3:14
+app/Main.java:19:31 unit -> model/Circle.java:16:26
+app/Main.java:20:16 r -> app/Main.java:20:16
+app/Main.java:20:16 r <- 
+app/Main.java:20:20 c -> app/Main.java:18:13
+app/Main.java:20:22 radius -> model/Circle.java:4:25
+app/Main.java:21:16 a -> app/Main.java:21:16
+app/Main.java:21:16 a <- 
+app/Main.java:21:20 start -> app/Main.java:11:26
+app/Main.java:21:26 area -> model/Circle.java:12:19
+app/Main.java:22:9 String -> 
+app/Main.java:22:16 n -> app/Main.java:22:16
+app/Main.java:22:16 n <- 
+app/Main.java:22:20 c -> app/Main.java:18:13
+app/Main.java:22:22 getName -> model/Shape.java:10:19
+app/Main.java:23:9 String -> 
+app/Main.java:23:16 l -> app/Main.java:23:16
+app/Main.java:23:16 l <- 
+app/Main.java:23:20 c -> app/Main.java:18:13
+app/Main.java:23:22 label -> model/Shape.java:23:19
+app/Main.java:24:9 String -> 
+app/Main.java:24:16 d -> app/Main.java:24:16
+app/Main.java:24:16 d <- 
+app/Main.java:24:20 Named -> model/Named.java:3:18
+app/Main.java:24:26 DEFAULT -> model/Named.java:4:12
+app/Main.java:25:9 Circle -> model/Circle.java:3:14
+app/Main.java:25:16 made -> app/Main.java:25:16
+app/Main.java:25:16 made <- app/Main.java:52:22
+app/Main.java:25:23 Other -> app/Other.java:6:14
+app/Main.java:25:29 make -> app/Other.java:11:26
+app/Main.java:26:9 Outer -> model/Outer.java:3:14
+app/Main.java:26:15 Inner -> model/Outer.java:4:25
+app/Main.java:26:21 nested -> app/Main.java:26:21
+app/Main.java:26:21 nested <- app/Main.java:28:9
+app/Main.java:26:34 Outer -> model/Outer.java:3:14
+app/Main.java:26:40 Inner -> model/Outer.java:4:25
+app/Main.java:27:9 Inner -> model/Outer.java:4:25
+app/Main.java:27:15 inner -> app/Main.java:27:15
+app/Main.java:27:15 inner <- app/Main.java:29:9
+app/Main.java:27:27 Inner -> model/Outer.java:4:25
+app/Main.java:28:9 nested -> app/Main.java:26:21
+app/Main.java:28:16 ping -> model/Outer.java:5:20
+app/Main.java:29:9 inner -> app/Main.java:27:15
+app/Main.java:29:15 ping -> model/Outer.java:5:20
+app/Main.java:30:9 Color -> model/Color.java:3:13
+app/Main.java:30:15 RED -> model/Color.java:4:5
+app/Main.java:30:19 shout -> model/Color.java:13:19
+app/Main.java:31:9 shout -> util/Strings.java:6:26
+app/Main.java:31:15 VERSION -> util/Strings.java:4:32
+app/Main.java:32:9 Other -> app/Other.java:6:14
+app/Main.java:32:15 helper -> app/Other.java:7:23
+app/Main.java:33:14 count -> app/Main.java:10:17
+app/Main.java:34:9 Point -> model/Point.java:3:15
+app/Main.java:34:15 p -> app/Main.java:34:15
+app/Main.java:34:15 p <- app/Main.java:35:18 app/Main.java:35:26
+app/Main.java:34:23 Point -> model/Point.java:3:15
+app/Main.java:35:13 px -> app/Main.java:35:13
+app/Main.java:35:13 px <- app/Main.java:67:24
+app/Main.java:35:18 p -> app/Main.java:34:15
+app/Main.java:35:20 x -> model/Point.java:3:25
+app/Main.java:35:26 p -> app/Main.java:34:15
+app/Main.java:35:28 sum -> model/Point.java:4:16
+app/Main.java:36:9 items -> app/Main.java:17:33
+app/Main.java:36:15 forEach -> 
+app/Main.java:36:23 item -> app/Main.java:36:23
+app/Main.java:36:23 item <- app/Main.java:36:50
+app/Main.java:36:31 System -> 
+app/Main.java:36:38 out -> 
+app/Main.java:36:42 println -> 
+app/Main.java:36:50 item -> app/Main.java:36:23
+app/Main.java:37:9 java -> 
+app/Main.java:37:14 util -> 
+app/Main.java:37:19 function -> 
+app/Main.java:37:28 IntUnaryOperator -> 
+app/Main.java:37:45 inc -> app/Main.java:37:45
+app/Main.java:37:45 inc <- 
+app/Main.java:37:51 x -> app/Main.java:37:51
+app/Main.java:37:51 x <- app/Main.java:37:56
+app/Main.java:37:56 x -> app/Main.java:37:51
+app/Main.java:37:60 count -> app/Main.java:10:17
+app/Main.java:38:9 java -> 
+app/Main.java:38:14 util -> 
+app/Main.java:38:19 function -> 
+app/Main.java:38:28 IntBinaryOperator -> 
+app/Main.java:38:46 add -> app/Main.java:38:46
+app/Main.java:38:46 add <- 
+app/Main.java:38:53 u -> app/Main.java:38:53
+app/Main.java:38:53 u <- app/Main.java:38:62
+app/Main.java:38:56 v -> app/Main.java:38:56
+app/Main.java:38:56 v <- app/Main.java:38:66
+app/Main.java:38:62 u -> app/Main.java:38:53
+app/Main.java:38:66 v -> app/Main.java:38:56
+app/Main.java:39:18 i -> app/Main.java:39:18
+app/Main.java:39:18 i <- app/Main.java:39:25 app/Main.java:39:32 app/Main.java:40:22
+app/Main.java:39:25 i -> app/Main.java:39:18
+app/Main.java:39:32 i -> app/Main.java:39:18
+app/Main.java:40:13 count -> app/Main.java:10:17
+app/Main.java:40:22 i -> app/Main.java:39:18
+app/Main.java:42:14 Object -> 
+app/Main.java:42:21 o -> app/Main.java:42:21
+app/Main.java:42:21 o <- app/Main.java:43:17
+app/Main.java:42:25 items -> app/Main.java:17:33
+app/Main.java:43:17 o -> app/Main.java:42:21
+app/Main.java:43:30 Circle -> model/Circle.java:3:14
+app/Main.java:43:37 circle -> app/Main.java:43:37
+app/Main.java:43:37 circle <- app/Main.java:43:47 app/Main.java:44:17
+app/Main.java:43:47 circle -> app/Main.java:43:37
+app/Main.java:43:54 radius -> model/Circle.java:4:25
+app/Main.java:44:17 circle -> app/Main.java:43:37
+app/Main.java:44:24 area -> model/Circle.java:12:19
+app/Main.java:47:14 var -> 
+app/Main.java:47:18 reader -> app/Main.java:47:18
+app/Main.java:47:18 reader <- app/Main.java:48:13
+app/Main.java:47:31 java -> 
+app/Main.java:47:36 io -> 
+app/Main.java:47:39 StringReader -> 
+app/Main.java:48:13 reader -> app/Main.java:47:18
+app/Main.java:48:20 read -> 
+app/Main.java:49:18 java -> 
+app/Main.java:49:23 io -> 
+app/Main.java:49:26 IOException -> 
+app/Main.java:49:38 e -> app/Main.java:49:38
+app/Main.java:49:38 e <- app/Main.java:50:13
+app/Main.java:50:13 e -> app/Main.java:49:38
+app/Main.java:50:15 getMessage -> 
+app/Main.java:52:9 Object -> 
+app/Main.java:52:16 any -> app/Main.java:52:16
+app/Main.java:52:16 any <- app/Main.java:53:33
+app/Main.java:52:22 made -> app/Main.java:25:16
+app/Main.java:53:16 cast -> app/Main.java:53:16
+app/Main.java:53:16 cast <- 
+app/Main.java:53:25 Circle -> model/Circle.java:3:14
+app/Main.java:53:33 any -> app/Main.java:52:16
+app/Main.java:53:38 radius -> model/Circle.java:4:25
+app/Main.java:54:9 Runnable -> 
+app/Main.java:54:18 task -> app/Main.java:54:18
+app/Main.java:54:18 task <- 
+app/Main.java:54:29 Runnable -> 
+app/Main.java:55:17 ticks -> app/Main.java:55:17
+app/Main.java:55:17 ticks <- app/Main.java:58:17
+app/Main.java:57:25 run -> app/Main.java:57:25
+app/Main.java:57:25 run <- 
+app/Main.java:58:17 ticks -> app/Main.java:55:17
+app/Main.java:61:9 java -> 
+app/Main.java:61:14 util -> 
+app/Main.java:61:19 function -> 
+app/Main.java:61:28 IntSupplier -> 
+app/Main.java:61:40 ref -> app/Main.java:61:40
+app/Main.java:61:40 ref <- 
+app/Main.java:61:52 shadow -> app/Main.java:74:9
+app/Main.java:63:9 Circle -> model/Circle.java:3:14
+app/Main.java:63:18 all -> app/Main.java:63:18
+app/Main.java:63:18 all <- app/Main.java:64:23
+app/Main.java:63:25 c -> app/Main.java:18:13
+app/Main.java:63:28 typed -> app/Main.java:19:16
+app/Main.java:64:13 howMany -> app/Main.java:64:13
+app/Main.java:64:13 howMany <- 
+app/Main.java:64:23 all -> app/Main.java:63:18
+app/Main.java:64:27 length -> 
+app/Main.java:66:16 picked -> app/Main.java:66:16
+app/Main.java:66:16 picked <- 
+app/Main.java:66:25 pick -> app/Main.java:70:12
+app/Main.java:66:32 area -> model/Circle.java:12:19
+app/Main.java:67:16 count -> app/Main.java:10:17
+app/Main.java:67:24 px -> app/Main.java:35:13
+app/Main.java:67:29 typed -> app/Main.java:19:16
+app/Main.java:67:35 hashCode -> 
+app/Main.java:70:5 Circle -> model/Circle.java:3:14
+app/Main.java:70:12 pick -> app/Main.java:70:12
+app/Main.java:70:12 pick <- app/Main.java:66:25
+app/Main.java:71:16 start -> app/Main.java:11:26
+app/Main.java:74:9 shadow -> app/Main.java:74:9
+app/Main.java:74:9 shadow <- app/Main.java:61:52
+app/Main.java:75:13 count -> app/Main.java:75:13
+app/Main.java:75:13 count <- app/Main.java:76:16
+app/Main.java:76:16 count -> app/Main.java:75:13
+app/Main.java:79:13 T -> app/Main.java:79:13
+app/Main.java:79:13 T <- app/Main.java:79:16 app/Main.java:79:29 app/Main.java:80:9
+app/Main.java:79:16 T -> app/Main.java:79:13
+app/Main.java:79:18 first -> app/Main.java:79:18
+app/Main.java:79:18 first <- 
+app/Main.java:79:24 List -> 
+app/Main.java:79:29 T -> app/Main.java:79:13
+app/Main.java:79:32 list -> app/Main.java:79:32
+app/Main.java:79:32 list <- app/Main.java:80:18
+app/Main.java:80:9 T -> app/Main.java:79:13
+app/Main.java:80:11 item -> app/Main.java:80:11
+app/Main.java:80:11 item <- app/Main.java:81:16
+app/Main.java:80:18 list -> app/Main.java:79:32
+app/Main.java:80:23 get -> 
+app/Main.java:81:16 item -> app/Main.java:80:11
+app/Main.java:84:18 Shout -> app/Main.java:84:18
+app/Main.java:84:18 Shout <- app/Main.java:85:9
+app/Main.java:84:32 Shape -> model/Shape.java:3:23
+app/Main.java:85:9 Shout -> app/Main.java:84:18
+app/Main.java:89:10 Override -> 
+app/Main.java:90:23 area -> app/Main.java:90:23
+app/Main.java:90:23 area <- 
+app/Main.java:91:26 area -> model/Shape.java:14:19
+app/Main.java:91:35 count -> app/Main.java:95:16
+app/Main.java:95:16 count -> app/Main.java:95:16
+app/Main.java:95:16 count <- app/Main.java:91:35
+app/Main.java:96:20 getName -> model/Shape.java:10:19
+app/Main.java:96:30 length -> 
+app/Other.java:1:9 com -> 
+app/Other.java:1:13 example -> 
+app/Other.java:1:21 app -> 
+app/Other.java:3:8 com -> 
+app/Other.java:3:12 example -> 
+app/Other.java:3:20 model -> 
+app/Other.java:3:26 Circle -> model/Circle.java:3:14
+app/Other.java:6:14 Other -> app/Other.java:6:14
+app/Other.java:6:14 Other <- app/Main.java:25:23 app/Main.java:32:9
+app/Other.java:7:23 helper -> app/Other.java:7:23
+app/Other.java:7:23 helper <- app/Main.java:32:15
+app/Other.java:11:19 Circle -> model/Circle.java:3:14
+app/Other.java:11:26 make -> app/Other.java:11:26
+app/Other.java:11:26 make <- app/Main.java:25:29
+app/Other.java:11:38 radius -> app/Other.java:11:38
+app/Other.java:11:38 radius <- app/Other.java:12:27
+app/Other.java:12:20 Circle -> model/Circle.java:3:14
+app/Other.java:12:27 radius -> app/Other.java:11:38
+model/Circle.java:1:9 com -> 
+model/Circle.java:1:13 example -> 
+model/Circle.java:1:21 model -> 
+model/Circle.java:3:14 Circle -> model/Circle.java:3:14
+model/Circle.java:3:14 Circle <- app/Main.java:11:19 app/Main.java:13:17 app/Main.java:18:21 app/Main.java:19:9 app/Main.java:19:24 app/Main.java:25:9 app/Main.java:43:30 app/Main.java:53:25 app/Main.java:63:9 app/Main.java:70:5 app/Other.java:3:26 app/Other.java:11:19 app/Other.java:12:20 model/Circle.java:6:12 model/Circle.java:16:19 model/Circle.java:17:20
+model/Circle.java:3:29 Shape -> model/Shape.java:3:23
+model/Circle.java:4:25 radius -> model/Circle.java:4:25
+model/Circle.java:4:25 radius <- app/Main.java:20:22 app/Main.java:43:54 app/Main.java:53:38 model/Circle.java:8:14 model/Circle.java:13:23 model/Circle.java:13:32
+model/Circle.java:6:12 Circle -> model/Circle.java:3:14
+model/Circle.java:6:26 radius -> model/Circle.java:6:26
+model/Circle.java:6:26 radius <- model/Circle.java:8:23
+model/Circle.java:8:14 radius -> model/Circle.java:4:25
+model/Circle.java:8:23 radius -> model/Circle.java:6:26
+model/Circle.java:11:6 Override -> 
+model/Circle.java:12:19 area -> model/Circle.java:12:19
+model/Circle.java:12:19 area <- app/Main.java:21:26 app/Main.java:44:24 app/Main.java:66:32
+model/Circle.java:13:23 radius -> model/Circle.java:4:25
+model/Circle.java:13:32 radius -> model/Circle.java:4:25
+model/Circle.java:16:19 Circle -> model/Circle.java:3:14
+model/Circle.java:16:26 unit -> model/Circle.java:16:26
+model/Circle.java:16:26 unit <- app/Main.java:19:31
+model/Circle.java:17:20 Circle -> model/Circle.java:3:14
+model/Color.java:1:9 com -> 
+model/Color.java:1:13 example -> 
+model/Color.java:1:21 model -> 
+model/Color.java:3:13 Color -> model/Color.java:3:13
+model/Color.java:3:13 Color <- app/Main.java:30:9 model/Color.java:9:5
+model/Color.java:4:5 RED -> model/Color.java:4:5
+model/Color.java:4:5 RED <- app/Main.java:30:15
+model/Color.java:5:5 GREEN -> model/Color.java:5:5
+model/Color.java:5:5 GREEN <- 
+model/Color.java:7:19 String -> 
+model/Color.java:7:26 hex -> model/Color.java:7:26
+model/Color.java:7:26 hex <- model/Color.java:10:14 model/Color.java:14:16
+model/Color.java:9:5 Color -> model/Color.java:3:13
+model/Color.java:9:11 String -> 
+model/Color.java:9:18 hex -> model/Color.java:9:18
+model/Color.java:9:18 hex <- model/Color.java:10:20
+model/Color.java:10:14 hex -> model/Color.java:7:26
+model/Color.java:10:20 hex -> model/Color.java:9:18
+model/Color.java:13:12 String -> 
+model/Color.java:13:19 shout -> model/Color.java:13:19
+model/Color.java:13:19 shout <- app/Main.java:30:19
+model/Color.java:14:16 hex -> model/Color.java:7:26
+model/Color.java:14:20 toUpperCase -> 
+model/Named.java:1:9 com -> 
+model/Named.java:1:13 example -> 
+model/Named.java:1:21 model -> 
+model/Named.java:3:18 Named -> model/Named.java:3:18
+model/Named.java:3:18 Named <- app/Main.java:24:20 model/Shape.java:3:40
+model/Named.java:4:5 String -> 
+model/Named.java:4:12 DEFAULT -> model/Named.java:4:12
+model/Named.java:4:12 DEFAULT <- app/Main.java:24:26
+model/Named.java:6:5 String -> 
+model/Named.java:6:12 label -> model/Named.java:6:12
+model/Named.java:6:12 label <- 
+model/Outer.java:1:9 com -> 
+model/Outer.java:1:13 example -> 
+model/Outer.java:1:21 model -> 
+model/Outer.java:3:14 Outer -> model/Outer.java:3:14
+model/Outer.java:3:14 Outer <- app/Main.java:4:26 app/Main.java:26:9 app/Main.java:26:34
+model/Outer.java:4:25 Inner -> model/Outer.java:4:25
+model/Outer.java:4:25 Inner <- app/Main.java:4:32 app/Main.java:26:15 app/Main.java:26:40 app/Main.java:27:9 app/Main.java:27:27
+model/Outer.java:5:20 ping -> model/Outer.java:5:20
+model/Outer.java:5:20 ping <- app/Main.java:28:16 app/Main.java:29:15
+model/Point.java:1:9 com -> 
+model/Point.java:1:13 example -> 
+model/Point.java:1:21 model -> 
+model/Point.java:3:15 Point -> model/Point.java:3:15
+model/Point.java:3:15 Point <- app/Main.java:34:9 app/Main.java:34:23
+model/Point.java:3:25 x -> model/Point.java:3:25
+model/Point.java:3:25 x <- app/Main.java:35:20 model/Point.java:5:16
+model/Point.java:3:32 y -> model/Point.java:3:32
+model/Point.java:3:32 y <- model/Point.java:5:20
+model/Point.java:4:16 sum -> model/Point.java:4:16
+model/Point.java:4:16 sum <- app/Main.java:35:28
+model/Point.java:5:16 x -> model/Point.java:3:25
+model/Point.java:5:20 y -> model/Point.java:3:32
+model/Shape.java:1:9 com -> 
+model/Shape.java:1:13 example -> 
+model/Shape.java:1:21 model -> 
+model/Shape.java:3:23 Shape -> model/Shape.java:3:23
+model/Shape.java:3:23 Shape <- app/Main.java:84:32 model/Circle.java:3:29 model/Shape.java:6:15 model/Square.java:3:29
+model/Shape.java:3:40 Named -> model/Named.java:3:18
+model/Shape.java:4:21 String -> 
+model/Shape.java:4:28 name -> model/Shape.java:4:28
+model/Shape.java:4:28 name <- model/Shape.java:7:14 model/Shape.java:11:16 model/Shape.java:19:16 model/Shape.java:24:16
+model/Shape.java:6:15 Shape -> model/Shape.java:3:23
+model/Shape.java:6:21 String -> 
+model/Shape.java:6:28 name -> model/Shape.java:6:28
+model/Shape.java:6:28 name <- model/Shape.java:7:21
+model/Shape.java:7:14 name -> model/Shape.java:4:28
+model/Shape.java:7:21 name -> model/Shape.java:6:28
+model/Shape.java:10:12 String -> 
+model/Shape.java:10:19 getName -> model/Shape.java:10:19
+model/Shape.java:10:19 getName <- app/Main.java:22:22 app/Main.java:96:20
+model/Shape.java:11:16 name -> model/Shape.java:4:28
+model/Shape.java:14:19 area -> model/Shape.java:14:19
+model/Shape.java:14:19 area <- app/Main.java:91:26
+model/Shape.java:18:16 length -> model/Shape.java:18:16
+model/Shape.java:18:16 length <- 
+model/Shape.java:19:16 name -> model/Shape.java:4:28
+model/Shape.java:19:21 length -> 
+model/Shape.java:22:6 Override -> 
+model/Shape.java:23:12 String -> 
+model/Shape.java:23:19 label -> model/Shape.java:23:19
+model/Shape.java:23:19 label <- app/Main.java:23:22
+model/Shape.java:24:16 name -> model/Shape.java:4:28
+model/Square.java:1:9 com -> 
+model/Square.java:1:13 example -> 
+model/Square.java:1:21 model -> 
+model/Square.java:3:14 Square -> model/Square.java:3:14
+model/Square.java:3:14 Square <- model/Square.java:6:12
+model/Square.java:3:29 Shape -> model/Shape.java:3:23
+model/Square.java:4:25 side -> model/Square.java:4:25
+model/Square.java:4:25 side <- model/Square.java:8:14 model/Square.java:13:16 model/Square.java:13:23
+model/Square.java:6:12 Square -> model/Square.java:3:14
+model/Square.java:6:26 side -> model/Square.java:6:26
+model/Square.java:6:26 side <- model/Square.java:8:21
+model/Square.java:8:14 side -> model/Square.java:4:25
+model/Square.java:8:21 side -> model/Square.java:6:26
+model/Square.java:11:6 Override -> 
+model/Square.java:12:19 area -> model/Square.java:12:19
+model/Square.java:12:19 area <- 
+model/Square.java:13:16 side -> model/Square.java:4:25
+model/Square.java:13:23 side -> model/Square.java:4:25
+other/Circle.java:1:9 com -> 
+other/Circle.java:1:13 example -> 
+other/Circle.java:1:21 other -> 
+other/Circle.java:5:14 Circle -> other/Circle.java:5:14
+other/Circle.java:5:14 Circle <- 
+other/Circle.java:6:19 r -> other/Circle.java:6:19
+other/Circle.java:6:19 r <- 
+util/Strings.java:1:9 com -> 
+util/Strings.java:1:13 example -> 
+util/Strings.java:1:21 util -> 
+util/Strings.java:3:20 Strings -> util/Strings.java:3:20
+util/Strings.java:3:20 Strings <- app/Main.java:6:32 app/Main.java:7:32
+util/Strings.java:4:25 String -> 
+util/Strings.java:4:32 VERSION -> util/Strings.java:4:32
+util/Strings.java:4:32 VERSION <- app/Main.java:7:40 app/Main.java:31:15
+util/Strings.java:6:19 String -> 
+util/Strings.java:6:26 shout -> util/Strings.java:6:26
+util/Strings.java:6:26 shout <- app/Main.java:6:40 app/Main.java:31:9
+util/Strings.java:6:32 String -> 
+util/Strings.java:6:39 s -> util/Strings.java:6:39
+util/Strings.java:6:39 s <- util/Strings.java:7:16
+util/Strings.java:7:16 s -> util/Strings.java:6:39
+util/Strings.java:7:18 toUpperCase -> 
+util/Strings.java:11:23 helper -> util/Strings.java:11:23
+util/Strings.java:11:23 helper <- 
