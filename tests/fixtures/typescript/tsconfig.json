@@ -1,0 +1,8 @@
+{
+  // Path aliases, as most apps have.
+  "compilerOptions": {
+    "strict": true,
+    "jsx": "react-jsx",
+    "paths": { "@/*": ["./src/*"], },
+  },
+}

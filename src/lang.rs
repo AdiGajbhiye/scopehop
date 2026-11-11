@@ -6,8 +6,8 @@
 //! The shared data model ([`Summary`], [`Def`], [`Import`]) is a package plus
 //! imports model. [`Visibility`] says how a language reads it: JVM packages
 //! (many files share one, members are visible bare) or modules (Python's
-//! files, Go's package directories: only the module's own names and what the
-//! file imports).
+//! and TypeScript's files, Go's package directories: only the module's own
+//! names and what the file imports).
 
 use std::path::{Path, PathBuf};
 
@@ -17,9 +17,10 @@ use crate::go::Go;
 use crate::java::Java;
 use crate::kotlin::Kotlin;
 use crate::python::Python;
+use crate::typescript::{Tsx, TypeScript};
 
 /// Every language scopehop understands, picked by file extension.
-pub static LANGUAGES: &[&dyn Language] = &[&Kotlin, &Java, &Python, &Go];
+pub static LANGUAGES: &[&dyn Language] = &[&Kotlin, &Java, &Python, &Go, &TypeScript, &Tsx];
 
 pub fn for_path(path: &Path) -> Option<&'static dyn Language> {
     let ext = path.extension()?.to_str()?;
@@ -95,8 +96,9 @@ pub enum Visibility {
     /// declarations, inherited members are visible as bare names, and
     /// top-level functions can be called as members (extension functions).
     Packages,
-    /// Python and Go: every file belongs to the module named by
-    /// [`Summary::package`] (one file in Python, a directory in Go). A bare
+    /// Python, Go and TypeScript: every file belongs to the module named by
+    /// [`Summary::package`] (one file in Python and TypeScript, a directory
+    /// in Go). A bare
     /// name is the file's own, its module's, or imported (`from m import x`,
     /// `import m`, `from m import *`, Go's dot imports), and imports follow
     /// re-exports. A module can be a receiver (`m.x`). Type names may be
@@ -144,6 +146,9 @@ pub enum Expr<'t> {
     Wrapper(Node<'t>),
     /// An element of a container: `xs[i]`, Go's `<-ch`. Holds the container.
     Index(Node<'t>),
+    /// A type written out, as [`Def::type_name`] would spell it
+    /// (TypeScript's `Circle[]` or `{ a: Circle }` in `x as ...`).
+    TypeName(String),
     Unknown,
 }
 
@@ -170,6 +175,13 @@ pub trait Language: Sync {
 
     /// Package, imports and the declarations other files can see.
     fn summarize(&self, root: Node, src: &str) -> Summary;
+
+    /// A copy of `src` with the same length and line breaks, to parse
+    /// instead when the grammar fails on valid code. It is used only when
+    /// it parses with fewer errors.
+    fn repair(&self, _src: &str) -> Option<String> {
+        None
+    }
 
     /// Fills in what depends on where the file lives, after [`summarize`]:
     /// Python's module name comes from its path, and relative imports become
@@ -238,6 +250,13 @@ pub trait Language: Sync {
     /// is the first of the loop's variables (Go's `k` in `for k, v := range
     /// xs`).
     fn range_element<'t>(&self, _name: Node<'t>) -> Option<(Node<'t>, bool)> {
+        None
+    }
+
+    /// For a name bound by destructuring (`const { a: { b } } = x`, or a
+    /// parameter `{ b }: T`), the expression or type node it is taken from
+    /// and the member names leading to it (`x`, `["a", "b"]`).
+    fn destructured<'t>(&self, _name: Node<'t>, _src: &str) -> Option<(Node<'t>, Vec<String>)> {
         None
     }
 

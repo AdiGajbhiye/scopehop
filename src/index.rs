@@ -102,7 +102,16 @@ impl Index {
     fn build(&mut self, path: &Path, text: String, mtime: Option<SystemTime>, open: bool) -> Option<FileData> {
         let lang = lang::for_path(path)?;
         self.parser.set_language(&lang.grammar()).ok()?;
-        let tree = self.parser.parse(&text, None)?;
+        let mut tree = self.parser.parse(&text, None)?;
+        // A grammar that trips over valid code may parse a repaired copy
+        // better; offsets are the same, so the tree goes with `text`.
+        if tree.root_node().has_error()
+            && let Some(fixed) = lang.repair(&text)
+            && let Some(better) = self.parser.parse(&fixed, None)
+            && error_count(&better) < error_count(&tree)
+        {
+            tree = better;
+        }
         let mut summary = lang.summarize(tree.root_node(), &text);
         lang.place(&mut summary, path, &self.roots);
         let lines = LineIndex::new(&text);
@@ -134,7 +143,9 @@ impl Index {
         self.last_scan = Some(Instant::now());
         let mut seen = HashSet::new();
         for root in self.roots.clone() {
-            for entry in ignore::WalkBuilder::new(&root).build().flatten() {
+            // Installed packages are libraries, even when not gitignored.
+            let walk = ignore::WalkBuilder::new(&root).filter_entry(|e| e.file_name() != "node_modules").build();
+            for entry in walk.flatten() {
                 let path = entry.path();
                 if !entry.file_type().is_some_and(|t| t.is_file()) || !is_source(path) {
                     continue;
@@ -385,6 +396,14 @@ impl Index {
             let ty = self.type_of(path, fd, over, depth + 1);
             return self.element_of(fd.lang, ty, first, depth);
         }
+        if let Some((from, keys)) = fd.lang.destructured(name, &fd.text) {
+            let mut ty = self.type_of(path, fd, from, depth + 1);
+            for key in keys {
+                let hits = self.lookup_members(fd.lang, &key, &self.settle(ty, depth), path);
+                ty = likely_type(&hits, path).unwrap_or(Ty::Unknown);
+            }
+            return self.settle(ty, depth);
+        }
         match fd.lang.decl_initializer(name) {
             Some(init) => self.type_of(path, fd, init, depth + 1),
             None => Ty::Unknown,
@@ -493,6 +512,7 @@ impl Index {
                 self.settle(ty, depth)
             }
             Expr::Wrapper(inner) => self.type_of(path, fd, inner, depth + 1),
+            Expr::TypeName(t) => self.class_ty(Some(t), path),
             Expr::Index(container) => {
                 let ty = self.type_of(path, fd, container, depth + 1);
                 self.element_of(lang, ty, false, depth)
@@ -755,9 +775,15 @@ impl Index {
             // extension functions can match.
             return extensions_only();
         }
+        // An unknown receiver can be any class, but not an object literal or
+        // anonymous struct (synthetic `@` names): those are only reached
+        // through a value known to be them.
         rank(
             defs.iter()
-                .filter(|(_, _, d)| d.container.is_some() || (extensions && d.kind == DefKind::Function))
+                .filter(|(_, _, d)| match &d.container {
+                    Some(c) => !c.contains('@'),
+                    None => extensions && d.kind == DefKind::Function,
+                })
                 .map(|(p, _, d)| (*p, *d))
                 .collect(),
         )
@@ -847,6 +873,25 @@ impl Index {
 
 /// The name an import binds: `Bar` for `import a.Foo as Bar`, else the last
 /// part of the path.
+fn error_count(tree: &Tree) -> usize {
+    let mut c = tree.walk();
+    let mut n = 0;
+    'walk: loop {
+        let node = c.node();
+        if node.is_error() || node.is_missing() {
+            n += 1;
+        } else if node.has_error() && c.goto_first_child() {
+            continue;
+        }
+        while !c.goto_next_sibling() {
+            if !c.goto_parent() {
+                break 'walk;
+            }
+        }
+    }
+    n
+}
+
 fn binding(i: &Import) -> &str {
     i.alias.as_deref().unwrap_or_else(|| i.path.rsplit('.').next().unwrap_or(&i.path))
 }

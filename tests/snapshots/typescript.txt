@@ -1,0 +1,542 @@
+py/shapes.py:1:7 Circle -> py/shapes.py:1:7
+py/shapes.py:1:7 Circle <- 
+py/shapes.py:2:9 area -> py/shapes.py:2:9
+py/shapes.py:2:9 area <- 
+py/shapes.py:2:14 self -> py/shapes.py:2:14
+py/shapes.py:2:14 self <- 
+src/app/advanced.ts:1:10 Circle -> src/models/shapes.ts:14:14
+src/app/advanced.ts:1:18 makeCircle -> src/models/shapes.ts:51:17
+src/app/advanced.ts:5:18 Factory -> src/app/advanced.ts:5:18
+src/app/advanced.ts:5:18 Factory <- 
+src/app/advanced.ts:6:4 T -> src/app/advanced.ts:6:4
+src/app/advanced.ts:6:4 T <- src/app/advanced.ts:6:28 src/app/advanced.ts:6:32
+src/app/advanced.ts:6:14 Circle -> src/models/shapes.ts:14:14
+src/app/advanced.ts:6:22 seed -> src/app/advanced.ts:6:22
+src/app/advanced.ts:6:22 seed <- 
+src/app/advanced.ts:6:28 T -> src/app/advanced.ts:6:4
+src/app/advanced.ts:6:32 T -> src/app/advanced.ts:6:4
+src/app/advanced.ts:7:4 radius -> src/app/advanced.ts:7:4
+src/app/advanced.ts:7:4 radius <- 
+src/app/advanced.ts:7:21 Circle -> src/models/shapes.ts:14:14
+src/app/advanced.ts:10:13 Unwrap -> src/app/advanced.ts:10:13
+src/app/advanced.ts:10:13 Unwrap <- 
+src/app/advanced.ts:10:20 P -> src/app/advanced.ts:10:20
+src/app/advanced.ts:10:20 P <- src/app/advanced.ts:10:25
+src/app/advanced.ts:10:25 P -> src/app/advanced.ts:10:20
+src/app/advanced.ts:10:37 value -> src/app/advanced.ts:10:37
+src/app/advanced.ts:10:37 value <- 
+src/app/advanced.ts:10:50 V -> src/app/advanced.ts:10:50
+src/app/advanced.ts:10:50 V <- src/app/advanced.ts:10:56
+src/app/advanced.ts:10:56 V -> src/app/advanced.ts:10:50
+src/app/advanced.ts:12:13 Flags -> src/app/advanced.ts:12:13
+src/app/advanced.ts:12:13 Flags <- 
+src/app/advanced.ts:12:19 T -> src/app/advanced.ts:12:19
+src/app/advanced.ts:12:19 T <- src/app/advanced.ts:12:38 src/app/advanced.ts:12:42
+src/app/advanced.ts:12:27 K -> src/app/advanced.ts:12:27
+src/app/advanced.ts:12:27 K <- src/app/advanced.ts:12:44
+src/app/advanced.ts:12:38 T -> src/app/advanced.ts:12:19
+src/app/advanced.ts:12:42 T -> src/app/advanced.ts:12:19
+src/app/advanced.ts:12:44 K -> src/app/advanced.ts:12:27
+src/app/advanced.ts:14:14 Registry -> src/app/advanced.ts:14:14
+src/app/advanced.ts:14:14 Registry <- src/app/advanced.ts:26:32
+src/app/advanced.ts:15:3 find -> src/app/advanced.ts:15:3
+src/app/advanced.ts:15:3 find <- src/app/advanced.ts:27:21
+src/app/advanced.ts:15:8 name -> src/app/advanced.ts:15:8
+src/app/advanced.ts:15:8 name <- 
+src/app/advanced.ts:15:23 Circle -> src/models/shapes.ts:14:14
+src/app/advanced.ts:16:3 find -> src/app/advanced.ts:16:3
+src/app/advanced.ts:16:3 find <- 
+src/app/advanced.ts:16:8 name -> src/app/advanced.ts:16:8
+src/app/advanced.ts:16:8 name <- 
+src/app/advanced.ts:16:22 fallback -> src/app/advanced.ts:16:22
+src/app/advanced.ts:16:22 fallback <- 
+src/app/advanced.ts:16:32 Circle -> src/models/shapes.ts:14:14
+src/app/advanced.ts:16:41 Circle -> src/models/shapes.ts:14:14
+src/app/advanced.ts:17:3 find -> src/app/advanced.ts:17:3
+src/app/advanced.ts:17:3 find <- 
+src/app/advanced.ts:17:8 name -> src/app/advanced.ts:17:8
+src/app/advanced.ts:17:8 name <- 
+src/app/advanced.ts:17:22 fallback -> src/app/advanced.ts:17:22
+src/app/advanced.ts:17:22 fallback <- src/app/advanced.ts:18:12
+src/app/advanced.ts:17:33 Circle -> src/models/shapes.ts:14:14
+src/app/advanced.ts:17:42 Circle -> src/models/shapes.ts:14:14
+src/app/advanced.ts:18:12 fallback -> src/app/advanced.ts:17:22
+src/app/advanced.ts:18:24 makeCircle -> src/models/shapes.ts:51:17
+src/app/advanced.ts:21:3 load -> src/app/advanced.ts:21:3
+src/app/advanced.ts:21:3 load <- src/app/advanced.ts:28:28
+src/app/advanced.ts:21:14 Circle -> src/models/shapes.ts:14:14
+src/app/advanced.ts:21:23 Promise -> 
+src/app/advanced.ts:21:31 Circle -> src/models/shapes.ts:14:14
+src/app/advanced.ts:21:42 makeCircle -> src/models/shapes.ts:51:17
+src/app/advanced.ts:23:3 build -> src/app/advanced.ts:23:3
+src/app/advanced.ts:23:3 build <- src/app/advanced.ts:29:21
+src/app/advanced.ts:23:11 radius -> src/app/advanced.ts:23:11
+src/app/advanced.ts:23:11 radius <- 
+src/app/advanced.ts:23:30 Circle -> src/models/shapes.ts:14:14
+src/app/advanced.ts:23:39 makeCircle -> src/models/shapes.ts:51:17
+src/app/advanced.ts:26:23 use -> src/app/advanced.ts:26:23
+src/app/advanced.ts:26:23 use <- 
+src/app/advanced.ts:26:27 reg -> src/app/advanced.ts:26:27
+src/app/advanced.ts:26:27 reg <- src/app/advanced.ts:27:17 src/app/advanced.ts:28:24 src/app/advanced.ts:29:17
+src/app/advanced.ts:26:32 Registry -> src/app/advanced.ts:14:14
+src/app/advanced.ts:26:42 cached -> src/app/advanced.ts:26:42
+src/app/advanced.ts:26:42 cached <- src/app/advanced.ts:30:18
+src/app/advanced.ts:26:51 Circle -> src/models/shapes.ts:14:14
+src/app/advanced.ts:27:9 found -> src/app/advanced.ts:27:9
+src/app/advanced.ts:27:9 found <- src/app/advanced.ts:30:28 src/app/advanced.ts:32:11
+src/app/advanced.ts:27:17 reg -> src/app/advanced.ts:26:27
+src/app/advanced.ts:27:21 find -> src/app/advanced.ts:15:3
+src/app/advanced.ts:28:9 loaded -> src/app/advanced.ts:28:9
+src/app/advanced.ts:28:9 loaded <- src/app/advanced.ts:32:25
+src/app/advanced.ts:28:24 reg -> src/app/advanced.ts:26:27
+src/app/advanced.ts:28:28 load -> src/app/advanced.ts:21:3
+src/app/advanced.ts:29:9 built -> src/app/advanced.ts:29:9
+src/app/advanced.ts:29:9 built <- src/app/advanced.ts:32:40
+src/app/advanced.ts:29:17 reg -> src/app/advanced.ts:26:27
+src/app/advanced.ts:29:21 build -> src/app/advanced.ts:23:3
+src/app/advanced.ts:30:9 either -> src/app/advanced.ts:30:9
+src/app/advanced.ts:30:9 either <- src/app/advanced.ts:32:54
+src/app/advanced.ts:30:18 cached -> src/app/advanced.ts:26:42
+src/app/advanced.ts:30:28 found -> src/app/advanced.ts:27:9
+src/app/advanced.ts:31:9 settings -> src/app/advanced.ts:31:9
+src/app/advanced.ts:31:9 settings <- src/app/advanced.ts:32:69
+src/app/advanced.ts:31:22 headers -> src/app/advanced.ts:31:22
+src/app/advanced.ts:31:22 headers <- src/app/advanced.ts:32:78
+src/app/advanced.ts:31:33 accept -> src/app/advanced.ts:31:33
+src/app/advanced.ts:31:33 accept <- src/app/advanced.ts:32:86
+src/app/advanced.ts:32:11 found -> src/app/advanced.ts:27:9
+src/app/advanced.ts:32:17 radius -> src/models/shapes.ts:18:22
+src/app/advanced.ts:32:25 loaded -> src/app/advanced.ts:28:9
+src/app/advanced.ts:32:32 radius -> src/models/shapes.ts:18:22
+src/app/advanced.ts:32:40 built -> src/app/advanced.ts:29:9
+src/app/advanced.ts:32:46 radius -> src/models/shapes.ts:18:22
+src/app/advanced.ts:32:54 either -> src/app/advanced.ts:30:9
+src/app/advanced.ts:32:61 radius -> src/models/shapes.ts:18:22
+src/app/advanced.ts:32:69 settings -> src/app/advanced.ts:31:9
+src/app/advanced.ts:32:78 headers -> src/app/advanced.ts:31:22
+src/app/advanced.ts:32:86 accept -> src/app/advanced.ts:31:33
+src/app/advanced.ts:35:17 untyped -> src/app/advanced.ts:35:17
+src/app/advanced.ts:35:17 untyped <- 
+src/app/advanced.ts:35:25 res -> src/app/advanced.ts:35:25
+src/app/advanced.ts:35:25 res <- src/app/advanced.ts:36:11
+src/app/advanced.ts:35:35 other -> src/app/advanced.ts:35:35
+src/app/advanced.ts:35:35 other <- src/app/advanced.ts:36:24
+src/app/advanced.ts:36:11 res -> src/app/advanced.ts:35:25
+src/app/advanced.ts:36:15 headers -> 
+src/app/advanced.ts:36:24 other -> src/app/advanced.ts:35:35
+src/app/advanced.ts:36:30 headers -> 
+src/app/helper.ts:1:15 Canvas -> src/app/main.ts:9:14
+src/app/helper.ts:3:17 helper -> src/app/helper.ts:3:17
+src/app/helper.ts:3:17 helper <- src/app/main.ts:5:10 src/app/main.ts:73:3
+src/app/helper.ts:3:24 canvas -> src/app/helper.ts:3:24
+src/app/helper.ts:3:24 canvas <- src/app/helper.ts:4:10
+src/app/helper.ts:3:32 Canvas -> src/app/main.ts:9:14
+src/app/helper.ts:4:10 canvas -> src/app/helper.ts:3:24
+src/app/helper.ts:4:17 total -> src/app/main.ts:18:3
+src/app/main.ts:1:10 Circle -> src/models/shapes.ts:14:14
+src/app/main.ts:1:18 makeCircle -> src/models/shapes.ts:51:17
+src/app/main.ts:1:30 Colour -> src/models/color.ts:1:13
+src/app/main.ts:1:38 DEFAULT -> src/models/shapes.ts:55:14
+src/app/main.ts:1:47 Palette -> src/models/color.ts:6:22
+src/app/main.ts:1:56 loadCircles -> src/models/shapes.ts:57:23
+src/app/main.ts:1:74 Shape -> src/models/shapes.ts:4:18
+src/app/main.ts:1:86 Point -> src/models/shapes.ts:12:13
+src/app/main.ts:2:13 strings -> src/util/strings.ts:1:1
+src/app/main.ts:3:8 whisper -> src/util/strings.ts:9:25
+src/app/main.ts:3:19 countWords -> src/util/strings.ts:5:17
+src/app/main.ts:3:33 words -> src/util/strings.ts:5:17
+src/app/main.ts:4:10 Circle -> src/other/shapes.ts:2:14
+src/app/main.ts:4:20 Decoy -> src/other/shapes.ts:2:14
+src/app/main.ts:5:10 helper -> src/app/helper.ts:3:17
+src/app/main.ts:7:5 counter -> src/app/main.ts:7:5
+src/app/main.ts:7:5 counter <- src/app/main.ts:15:5 src/app/main.ts:74:24
+src/app/main.ts:9:14 Canvas -> src/app/main.ts:9:14
+src/app/main.ts:9:14 Canvas <- src/app/helper.ts:1:15 src/app/helper.ts:3:32 src/app/main.ts:73:14
+src/app/main.ts:10:3 shapes -> src/app/main.ts:10:3
+src/app/main.ts:10:3 shapes <- src/app/main.ts:14:10 src/app/main.ts:20:26
+src/app/main.ts:10:11 Shape -> src/models/shapes.ts:4:18
+src/app/main.ts:11:11 circle -> src/app/main.ts:11:11
+src/app/main.ts:11:11 circle <- src/app/main.ts:27:17
+src/app/main.ts:11:20 Circle -> src/models/shapes.ts:14:14
+src/app/main.ts:13:3 add -> src/app/main.ts:13:3
+src/app/main.ts:13:3 add <- 
+src/app/main.ts:13:7 s -> src/app/main.ts:13:7
+src/app/main.ts:13:7 s <- src/app/main.ts:14:22
+src/app/main.ts:13:10 Shape -> src/models/shapes.ts:4:18
+src/app/main.ts:14:10 shapes -> src/app/main.ts:10:3
+src/app/main.ts:14:17 push -> 
+src/app/main.ts:14:22 s -> src/app/main.ts:13:7
+src/app/main.ts:15:5 counter -> src/app/main.ts:7:5
+src/app/main.ts:18:3 total -> src/app/main.ts:18:3
+src/app/main.ts:18:3 total <- src/app/helper.ts:4:17
+src/app/main.ts:19:9 sum -> src/app/main.ts:19:9
+src/app/main.ts:19:9 sum <- src/app/main.ts:21:7 src/app/main.ts:23:12
+src/app/main.ts:20:16 s -> src/app/main.ts:20:16
+src/app/main.ts:20:16 s <- src/app/main.ts:21:14
+src/app/main.ts:20:26 shapes -> src/app/main.ts:10:3
+src/app/main.ts:21:7 sum -> src/app/main.ts:19:9
+src/app/main.ts:21:14 s -> src/app/main.ts:20:16
+src/app/main.ts:21:16 area -> src/models/shapes.ts:5:3
+src/app/main.ts:23:12 sum -> src/app/main.ts:19:9
+src/app/main.ts:26:3 first -> src/app/main.ts:26:3
+src/app/main.ts:26:3 first <- 
+src/app/main.ts:26:12 Circle -> src/models/shapes.ts:14:14
+src/app/main.ts:27:17 circle -> src/app/main.ts:11:11
+src/app/main.ts:31:10 scopes -> src/app/main.ts:31:10
+src/app/main.ts:31:10 scopes <- src/app/main.ts:74:10
+src/app/main.ts:31:17 items -> src/app/main.ts:31:17
+src/app/main.ts:31:17 items <- src/app/main.ts:33:23 src/app/main.ts:34:18 src/app/main.ts:49:37 src/app/main.ts:50:29
+src/app/main.ts:31:24 Circle -> src/models/shapes.ts:14:14
+src/app/main.ts:31:34 limit -> src/app/main.ts:31:34
+src/app/main.ts:31:34 limit <- src/app/main.ts:40:15 src/app/main.ts:51:23
+src/app/main.ts:32:7 total -> src/app/main.ts:32:7
+src/app/main.ts:32:7 total <- src/app/main.ts:34:5 src/app/main.ts:40:7 src/app/main.ts:41:16 src/app/main.ts:53:16
+src/app/main.ts:33:12 i -> src/app/main.ts:33:12
+src/app/main.ts:33:12 i <- src/app/main.ts:33:19 src/app/main.ts:33:37 src/app/main.ts:34:14 src/app/main.ts:34:24
+src/app/main.ts:33:19 i -> src/app/main.ts:33:12
+src/app/main.ts:33:23 items -> src/app/main.ts:31:17
+src/app/main.ts:33:29 length -> 
+src/app/main.ts:33:37 i -> src/app/main.ts:33:12
+src/app/main.ts:34:5 total -> src/app/main.ts:32:7
+src/app/main.ts:34:14 i -> src/app/main.ts:33:12
+src/app/main.ts:34:18 items -> src/app/main.ts:31:17
+src/app/main.ts:34:24 i -> src/app/main.ts:33:12
+src/app/main.ts:34:27 radius -> src/models/shapes.ts:18:22
+src/app/main.ts:37:11 total -> src/app/main.ts:37:11
+src/app/main.ts:37:11 total <- src/app/main.ts:38:17
+src/app/main.ts:38:5 console -> 
+src/app/main.ts:38:13 log -> 
+src/app/main.ts:38:17 total -> src/app/main.ts:37:11
+src/app/main.ts:40:7 total -> src/app/main.ts:32:7
+src/app/main.ts:40:15 limit -> src/app/main.ts:31:34
+src/app/main.ts:41:9 late -> src/app/main.ts:41:9
+src/app/main.ts:41:9 late <- src/app/main.ts:46:22
+src/app/main.ts:41:16 total -> src/app/main.ts:32:7
+src/app/main.ts:44:5 JSON -> 
+src/app/main.ts:44:10 parse -> 
+src/app/main.ts:45:12 err -> src/app/main.ts:45:12
+src/app/main.ts:45:12 err <- src/app/main.ts:46:17
+src/app/main.ts:46:5 console -> 
+src/app/main.ts:46:13 log -> 
+src/app/main.ts:46:17 err -> src/app/main.ts:45:12
+src/app/main.ts:46:22 late -> src/app/main.ts:41:9
+src/app/main.ts:48:9 twice -> src/app/main.ts:48:9
+src/app/main.ts:48:9 twice <- src/app/main.ts:53:10
+src/app/main.ts:48:18 v -> src/app/main.ts:48:18
+src/app/main.ts:48:18 v <- src/app/main.ts:48:32
+src/app/main.ts:48:32 v -> src/app/main.ts:48:18
+src/app/main.ts:49:11 radius -> src/app/main.ts:49:11
+src/app/main.ts:49:11 radius <- src/app/main.ts:53:25
+src/app/main.ts:49:19 center -> 
+src/app/main.ts:49:29 x -> src/app/main.ts:49:29
+src/app/main.ts:49:29 x <- src/app/main.ts:53:34
+src/app/main.ts:49:37 items -> src/app/main.ts:31:17
+src/app/main.ts:50:3 outer -> src/app/main.ts:50:3
+src/app/main.ts:50:3 outer <- src/app/main.ts:51:36
+src/app/main.ts:50:21 item -> src/app/main.ts:50:21
+src/app/main.ts:50:21 item <- src/app/main.ts:51:9
+src/app/main.ts:50:29 items -> src/app/main.ts:31:17
+src/app/main.ts:51:9 item -> src/app/main.ts:50:21
+src/app/main.ts:51:14 radius -> src/models/shapes.ts:18:22
+src/app/main.ts:51:23 limit -> src/app/main.ts:31:34
+src/app/main.ts:51:36 outer -> src/app/main.ts:50:3
+src/app/main.ts:53:10 twice -> src/app/main.ts:48:9
+src/app/main.ts:53:16 total -> src/app/main.ts:32:7
+src/app/main.ts:53:25 radius -> src/app/main.ts:49:11
+src/app/main.ts:53:34 x -> src/app/main.ts:49:29
+src/app/main.ts:56:16 main -> src/app/main.ts:56:16
+src/app/main.ts:56:16 main <- src/app/main.ts:77:1
+src/app/main.ts:57:9 c -> src/app/main.ts:57:9
+src/app/main.ts:57:9 c <- src/app/main.ts:58:15 src/app/main.ts:58:25 src/app/main.ts:58:35 src/app/main.ts:59:17 src/app/main.ts:61:15 src/app/main.ts:72:4 src/app/main.ts:74:18
+src/app/main.ts:57:13 makeCircle -> src/models/shapes.ts:51:17
+src/app/main.ts:58:3 console -> 
+src/app/main.ts:58:11 log -> 
+src/app/main.ts:58:15 c -> src/app/main.ts:57:9
+src/app/main.ts:58:17 area -> src/models/shapes.ts:20:3
+src/app/main.ts:58:25 c -> src/app/main.ts:57:9
+src/app/main.ts:58:27 radius -> src/models/shapes.ts:18:22
+src/app/main.ts:58:35 c -> src/app/main.ts:57:9
+src/app/main.ts:58:37 name -> src/models/shapes.ts:15:3
+src/app/main.ts:59:9 grown -> src/app/main.ts:59:9
+src/app/main.ts:59:9 grown <- src/app/main.ts:60:15 src/app/main.ts:60:29
+src/app/main.ts:59:17 c -> src/app/main.ts:57:9
+src/app/main.ts:59:19 grow -> src/models/shapes.ts:24:3
+src/app/main.ts:60:3 console -> 
+src/app/main.ts:60:11 log -> 
+src/app/main.ts:60:15 grown -> src/app/main.ts:59:9
+src/app/main.ts:60:21 radius -> src/models/shapes.ts:18:22
+src/app/main.ts:60:29 grown -> src/app/main.ts:59:9
+src/app/main.ts:60:35 diameter -> src/models/shapes.ts:28:7
+src/app/main.ts:61:3 console -> 
+src/app/main.ts:61:11 log -> 
+src/app/main.ts:61:15 c -> src/app/main.ts:57:9
+src/app/main.ts:61:17 center -> src/models/shapes.ts:16:3
+src/app/main.ts:61:24 x -> src/models/shapes.ts:12:23
+src/app/main.ts:61:27 Circle -> src/models/shapes.ts:14:14
+src/app/main.ts:61:34 unit -> src/models/shapes.ts:36:10
+src/app/main.ts:61:41 radius -> src/models/shapes.ts:18:22
+src/app/main.ts:61:49 DEFAULT -> src/models/shapes.ts:55:14
+src/app/main.ts:61:57 area -> src/models/shapes.ts:20:3
+src/app/main.ts:62:9 p -> src/app/main.ts:62:9
+src/app/main.ts:62:9 p <- src/app/main.ts:65:15
+src/app/main.ts:62:12 Point -> src/models/shapes.ts:12:13
+src/app/main.ts:62:22 x -> src/models/shapes.ts:12:23
+src/app/main.ts:62:28 y -> src/models/shapes.ts:12:34
+src/app/main.ts:63:9 pts -> src/app/main.ts:63:9
+src/app/main.ts:63:9 pts <- src/app/main.ts:65:20
+src/app/main.ts:63:14 Point -> src/models/shapes.ts:12:13
+src/app/main.ts:63:27 x -> src/models/shapes.ts:12:23
+src/app/main.ts:63:33 y -> src/models/shapes.ts:12:34
+src/app/main.ts:64:9 config -> src/app/main.ts:64:9
+src/app/main.ts:64:9 config <- src/app/main.ts:65:30 src/app/main.ts:65:46 src/app/main.ts:65:62
+src/app/main.ts:64:20 port -> src/app/main.ts:64:20
+src/app/main.ts:64:20 port <- src/app/main.ts:65:69
+src/app/main.ts:64:32 db -> src/app/main.ts:64:32
+src/app/main.ts:64:32 db <- src/app/main.ts:65:37
+src/app/main.ts:64:38 host -> src/app/main.ts:64:38
+src/app/main.ts:64:38 host <- src/app/main.ts:65:40
+src/app/main.ts:64:59 start -> src/app/main.ts:64:59
+src/app/main.ts:64:59 start <- src/app/main.ts:65:53
+src/app/main.ts:65:3 console -> 
+src/app/main.ts:65:11 log -> 
+src/app/main.ts:65:15 p -> src/app/main.ts:62:9
+src/app/main.ts:65:17 x -> src/models/shapes.ts:12:23
+src/app/main.ts:65:20 pts -> src/app/main.ts:63:9
+src/app/main.ts:65:27 y -> src/models/shapes.ts:12:34
+src/app/main.ts:65:30 config -> src/app/main.ts:64:9
+src/app/main.ts:65:37 db -> src/app/main.ts:64:32
+src/app/main.ts:65:40 host -> src/app/main.ts:64:38
+src/app/main.ts:65:46 config -> src/app/main.ts:64:9
+src/app/main.ts:65:53 start -> src/app/main.ts:64:59
+src/app/main.ts:65:62 config -> src/app/main.ts:64:9
+src/app/main.ts:65:69 port -> src/app/main.ts:64:20
+src/app/main.ts:66:9 circles -> src/app/main.ts:66:9
+src/app/main.ts:66:9 circles <- src/app/main.ts:67:21
+src/app/main.ts:66:25 loadCircles -> src/models/shapes.ts:57:23
+src/app/main.ts:67:14 one -> src/app/main.ts:67:14
+src/app/main.ts:67:14 one <- src/app/main.ts:68:17
+src/app/main.ts:67:21 circles -> src/app/main.ts:66:9
+src/app/main.ts:68:5 console -> 
+src/app/main.ts:68:13 log -> 
+src/app/main.ts:68:17 one -> src/app/main.ts:67:14
+src/app/main.ts:68:21 describe -> src/models/shapes.ts:32:3
+src/app/main.ts:70:3 console -> 
+src/app/main.ts:70:11 log -> 
+src/app/main.ts:70:15 Colour -> src/models/color.ts:1:13
+src/app/main.ts:70:22 Red -> src/models/color.ts:2:3
+src/app/main.ts:70:31 Palette -> src/models/color.ts:6:22
+src/app/main.ts:70:41 first -> src/models/color.ts:9:3
+src/app/main.ts:70:50 strings -> src/util/strings.ts:1:1
+src/app/main.ts:70:58 shout -> src/util/strings.ts:1:17
+src/app/main.ts:70:71 words -> src/util/strings.ts:5:17
+src/app/main.ts:70:85 whisper -> src/util/strings.ts:9:25
+src/app/main.ts:71:3 console -> 
+src/app/main.ts:71:11 log -> 
+src/app/main.ts:71:19 Decoy -> src/other/shapes.ts:2:14
+src/app/main.ts:71:27 area -> src/other/shapes.ts:5:3
+src/app/main.ts:72:4 c -> src/app/main.ts:57:9
+src/app/main.ts:72:7 forEach -> 
+src/app/main.ts:72:16 shape -> src/app/main.ts:72:16
+src/app/main.ts:72:16 shape <- src/app/main.ts:72:26
+src/app/main.ts:72:26 shape -> src/app/main.ts:72:16
+src/app/main.ts:72:32 area -> src/models/shapes.ts:5:3 src/models/shapes.ts:20:3 src/models/shapes.ts:46:3 src/other/shapes.ts:5:3
+src/app/main.ts:73:3 helper -> src/app/helper.ts:3:17
+src/app/main.ts:73:14 Canvas -> src/app/main.ts:9:14
+src/app/main.ts:74:10 scopes -> src/app/main.ts:31:10
+src/app/main.ts:74:18 c -> src/app/main.ts:57:9
+src/app/main.ts:74:24 counter -> src/app/main.ts:7:5
+src/app/main.ts:77:1 main -> src/app/main.ts:56:16
+src/app/view.tsx:1:10 Circle -> src/models/shapes.ts:14:14
+src/app/view.tsx:3:6 Props -> src/app/view.tsx:3:6
+src/app/view.tsx:3:6 Props <- src/app/view.tsx:5:42
+src/app/view.tsx:3:16 circle -> src/app/view.tsx:3:16
+src/app/view.tsx:3:16 circle <- 
+src/app/view.tsx:3:24 Circle -> src/models/shapes.ts:14:14
+src/app/view.tsx:3:32 label -> src/app/view.tsx:3:32
+src/app/view.tsx:3:32 label <- 
+src/app/view.tsx:5:17 Badge -> src/app/view.tsx:5:17
+src/app/view.tsx:5:17 Badge <- src/app/view.tsx:12:11
+src/app/view.tsx:5:25 circle -> src/app/view.tsx:5:25
+src/app/view.tsx:5:25 circle <- src/app/view.tsx:6:16
+src/app/view.tsx:5:33 label -> src/app/view.tsx:5:33
+src/app/view.tsx:5:33 label <- src/app/view.tsx:7:22
+src/app/view.tsx:5:42 Props -> src/app/view.tsx:3:6
+src/app/view.tsx:6:9 size -> src/app/view.tsx:6:9
+src/app/view.tsx:6:9 size <- src/app/view.tsx:7:30
+src/app/view.tsx:6:16 circle -> src/app/view.tsx:5:25
+src/app/view.tsx:6:23 radius -> src/models/shapes.ts:18:22
+src/app/view.tsx:7:11 div -> 
+src/app/view.tsx:7:15 title -> 
+src/app/view.tsx:7:22 label -> src/app/view.tsx:5:33
+src/app/view.tsx:7:30 size -> src/app/view.tsx:6:9
+src/app/view.tsx:7:37 div -> 
+src/app/view.tsx:10:17 App -> src/app/view.tsx:10:17
+src/app/view.tsx:10:17 App <- 
+src/app/view.tsx:11:9 label -> src/app/view.tsx:11:9
+src/app/view.tsx:11:9 label <- src/app/view.tsx:12:47
+src/app/view.tsx:12:11 Badge -> src/app/view.tsx:5:17
+src/app/view.tsx:12:17 circle -> 
+src/app/view.tsx:12:25 Circle -> src/models/shapes.ts:14:14
+src/app/view.tsx:12:32 unit -> src/models/shapes.ts:36:10
+src/app/view.tsx:12:40 label -> 
+src/app/view.tsx:12:47 label -> src/app/view.tsx:11:9
+src/legacy/old.js:1:7 strings -> src/util/strings.ts:1:1
+src/legacy/old.js:1:17 require -> 
+src/legacy/old.js:2:9 shout -> src/util/strings.ts:1:17
+src/legacy/old.js:2:19 require -> 
+src/legacy/old.js:4:7 Counter -> src/legacy/old.js:4:7
+src/legacy/old.js:4:7 Counter <- src/legacy/old.js:16:17 src/legacy/old.js:21:20
+src/legacy/old.js:5:3 constructor -> src/legacy/old.js:5:3
+src/legacy/old.js:5:3 constructor <- 
+src/legacy/old.js:6:10 count -> src/legacy/old.js:6:10
+src/legacy/old.js:6:10 count <- src/legacy/old.js:10:10 src/legacy/old.js:18:47
+src/legacy/old.js:9:3 increment -> src/legacy/old.js:9:3
+src/legacy/old.js:9:3 increment <- src/legacy/old.js:17:5 src/legacy/old.js:17:17
+src/legacy/old.js:10:10 count -> src/legacy/old.js:6:10
+src/legacy/old.js:15:10 run -> src/legacy/old.js:15:10
+src/legacy/old.js:15:10 run <- src/legacy/old.js:21:29
+src/legacy/old.js:16:9 c -> src/legacy/old.js:16:9
+src/legacy/old.js:16:9 c <- src/legacy/old.js:17:3 src/legacy/old.js:18:45
+src/legacy/old.js:16:17 Counter -> src/legacy/old.js:4:7
+src/legacy/old.js:17:3 c -> src/legacy/old.js:16:9
+src/legacy/old.js:17:5 increment -> src/legacy/old.js:9:3
+src/legacy/old.js:17:17 increment -> src/legacy/old.js:9:3
+src/legacy/old.js:18:10 strings -> src/util/strings.ts:1:1
+src/legacy/old.js:18:18 countWords -> src/util/strings.ts:5:17
+src/legacy/old.js:18:29 shout -> src/util/strings.ts:1:17
+src/legacy/old.js:18:45 c -> src/legacy/old.js:16:9
+src/legacy/old.js:18:47 count -> src/legacy/old.js:6:10
+src/legacy/old.js:21:1 module -> 
+src/legacy/old.js:21:8 exports -> 
+src/legacy/old.js:21:20 Counter -> src/legacy/old.js:4:7
+src/legacy/old.js:21:29 run -> src/legacy/old.js:15:10
+src/models/color.ts:1:13 Color -> src/models/color.ts:1:13
+src/models/color.ts:1:13 Color <- src/models/color.ts:7:11 src/models/color.ts:9:12 src/models/index.ts:2:10
+src/models/color.ts:2:3 Red -> src/models/color.ts:2:3
+src/models/color.ts:2:3 Red <- src/app/main.ts:70:22
+src/models/color.ts:3:3 Green -> src/models/color.ts:3:3
+src/models/color.ts:3:3 Green <- 
+src/models/color.ts:6:22 Palette -> src/models/color.ts:6:22
+src/models/color.ts:6:22 Palette <- src/app/main.ts:1:47 src/app/main.ts:70:31 src/models/index.ts:3:21
+src/models/color.ts:7:3 colors -> src/models/color.ts:7:3
+src/models/color.ts:7:3 colors <- src/models/color.ts:10:17
+src/models/color.ts:7:11 Color -> src/models/color.ts:1:13
+src/models/color.ts:9:3 first -> src/models/color.ts:9:3
+src/models/color.ts:9:3 first <- src/app/main.ts:70:41
+src/models/color.ts:9:12 Color -> src/models/color.ts:1:13
+src/models/color.ts:10:17 colors -> src/models/color.ts:7:3
+src/models/index.ts:2:10 Color -> src/models/color.ts:1:13
+src/models/index.ts:2:19 Colour -> src/models/color.ts:1:13
+src/models/index.ts:3:10 default -> src/models/color.ts:6:22
+src/models/index.ts:3:21 Palette -> src/models/color.ts:6:22
+src/models/shapes.ts:1:10 shout -> src/util/strings.ts:1:17
+src/models/shapes.ts:4:18 Shape -> src/models/shapes.ts:4:18
+src/models/shapes.ts:4:18 Shape <- src/app/main.ts:1:74 src/app/main.ts:10:11 src/app/main.ts:13:10 src/models/shapes.ts:14:32
+src/models/shapes.ts:4:32 Named -> src/models/shapes.ts:8:18
+src/models/shapes.ts:5:3 area -> src/models/shapes.ts:5:3
+src/models/shapes.ts:5:3 area <- src/app/main.ts:21:16 src/app/main.ts:72:32
+src/models/shapes.ts:8:18 Named -> src/models/shapes.ts:8:18
+src/models/shapes.ts:8:18 Named <- src/models/shapes.ts:4:32
+src/models/shapes.ts:9:3 name -> src/models/shapes.ts:9:3
+src/models/shapes.ts:9:3 name <- 
+src/models/shapes.ts:12:13 Point -> src/models/shapes.ts:12:13
+src/models/shapes.ts:12:13 Point <- src/app/main.ts:1:86 src/app/main.ts:62:12 src/app/main.ts:63:14 src/models/shapes.ts:16:11
+src/models/shapes.ts:12:23 x -> src/models/shapes.ts:12:23
+src/models/shapes.ts:12:23 x <- src/app/main.ts:61:24 src/app/main.ts:62:22 src/app/main.ts:63:27 src/app/main.ts:65:17
+src/models/shapes.ts:12:34 y -> src/models/shapes.ts:12:34
+src/models/shapes.ts:12:34 y <- src/app/main.ts:62:28 src/app/main.ts:63:33 src/app/main.ts:65:27
+src/models/shapes.ts:14:14 Circle -> src/models/shapes.ts:14:14
+src/models/shapes.ts:14:14 Circle <- src/app/advanced.ts:1:10 src/app/advanced.ts:6:14 src/app/advanced.ts:7:21 src/app/advanced.ts:15:23 src/app/advanced.ts:16:32 src/app/advanced.ts:16:41 src/app/advanced.ts:17:33 src/app/advanced.ts:17:42 src/app/advanced.ts:21:14 src/app/advanced.ts:21:31 src/app/advanced.ts:23:30 src/app/advanced.ts:26:51 src/app/main.ts:1:10 src/app/main.ts:11:20 src/app/main.ts:26:12 src/app/main.ts:31:24 src/app/main.ts:61:27 src/app/view.tsx:1:10 src/app/view.tsx:3:24 src/app/view.tsx:12:25 src/models/shapes.ts:24:21 src/models/shapes.ts:25:16 src/models/shapes.ts:36:18 src/models/shapes.ts:37:16 src/models/shapes.ts:41:27 src/models/shapes.ts:51:40 src/models/shapes.ts:52:14 src/models/shapes.ts:57:46 src/models/shapes.ts:58:11
+src/models/shapes.ts:14:32 Shape -> src/models/shapes.ts:4:18
+src/models/shapes.ts:15:3 name -> src/models/shapes.ts:15:3
+src/models/shapes.ts:15:3 name <- src/app/main.ts:58:37 src/models/shapes.ts:33:23
+src/models/shapes.ts:16:3 center -> src/models/shapes.ts:16:3
+src/models/shapes.ts:16:3 center <- src/app/main.ts:61:17
+src/models/shapes.ts:16:11 Point -> src/models/shapes.ts:12:13
+src/models/shapes.ts:16:21 x -> src/models/shapes.ts:16:21
+src/models/shapes.ts:16:21 x <- 
+src/models/shapes.ts:16:27 y -> src/models/shapes.ts:16:27
+src/models/shapes.ts:16:27 y <- 
+src/models/shapes.ts:18:3 constructor -> src/models/shapes.ts:18:3
+src/models/shapes.ts:18:3 constructor <- 
+src/models/shapes.ts:18:22 radius -> src/models/shapes.ts:18:22
+src/models/shapes.ts:18:22 radius <- src/app/advanced.ts:32:17 src/app/advanced.ts:32:32 src/app/advanced.ts:32:46 src/app/advanced.ts:32:61 src/app/main.ts:34:27 src/app/main.ts:51:14 src/app/main.ts:58:27 src/app/main.ts:60:21 src/app/main.ts:61:41 src/app/view.tsx:6:23 src/models/shapes.ts:21:24 src/models/shapes.ts:21:38 src/models/shapes.ts:25:28 src/models/shapes.ts:29:17
+src/models/shapes.ts:20:3 area -> src/models/shapes.ts:20:3
+src/models/shapes.ts:20:3 area <- src/app/main.ts:58:17 src/app/main.ts:61:57 src/app/main.ts:72:32 src/models/shapes.ts:47:18
+src/models/shapes.ts:21:24 radius -> src/models/shapes.ts:18:22
+src/models/shapes.ts:21:38 radius -> src/models/shapes.ts:18:22
+src/models/shapes.ts:24:3 grow -> src/models/shapes.ts:24:3
+src/models/shapes.ts:24:3 grow <- src/app/main.ts:59:19
+src/models/shapes.ts:24:8 by -> src/models/shapes.ts:24:8
+src/models/shapes.ts:24:8 by <- src/models/shapes.ts:25:37
+src/models/shapes.ts:24:21 Circle -> src/models/shapes.ts:14:14
+src/models/shapes.ts:25:16 Circle -> src/models/shapes.ts:14:14
+src/models/shapes.ts:25:28 radius -> src/models/shapes.ts:18:22
+src/models/shapes.ts:25:37 by -> src/models/shapes.ts:24:8
+src/models/shapes.ts:28:7 diameter -> src/models/shapes.ts:28:7
+src/models/shapes.ts:28:7 diameter <- src/app/main.ts:60:35
+src/models/shapes.ts:29:17 radius -> src/models/shapes.ts:18:22
+src/models/shapes.ts:32:3 describe -> src/models/shapes.ts:32:3
+src/models/shapes.ts:32:3 describe <- src/app/main.ts:68:21
+src/models/shapes.ts:33:12 shout -> src/util/strings.ts:1:17
+src/models/shapes.ts:33:23 name -> src/models/shapes.ts:15:3
+src/models/shapes.ts:36:10 unit -> src/models/shapes.ts:36:10
+src/models/shapes.ts:36:10 unit <- src/app/main.ts:61:34 src/app/view.tsx:12:32 src/models/shapes.ts:58:18
+src/models/shapes.ts:36:18 Circle -> src/models/shapes.ts:14:14
+src/models/shapes.ts:37:16 Circle -> src/models/shapes.ts:14:14
+src/models/shapes.ts:41:14 Ring -> src/models/shapes.ts:41:14
+src/models/shapes.ts:41:14 Ring <- 
+src/models/shapes.ts:41:27 Circle -> src/models/shapes.ts:14:14
+src/models/shapes.ts:42:3 constructor -> src/models/shapes.ts:42:3
+src/models/shapes.ts:42:3 constructor <- 
+src/models/shapes.ts:42:15 radius -> src/models/shapes.ts:42:15
+src/models/shapes.ts:42:15 radius <- src/models/shapes.ts:43:11
+src/models/shapes.ts:42:38 inner -> src/models/shapes.ts:42:38
+src/models/shapes.ts:42:38 inner <- src/models/shapes.ts:47:39 src/models/shapes.ts:47:52
+src/models/shapes.ts:43:11 radius -> src/models/shapes.ts:42:15
+src/models/shapes.ts:46:3 area -> src/models/shapes.ts:46:3
+src/models/shapes.ts:46:3 area <- src/app/main.ts:72:32
+src/models/shapes.ts:47:18 area -> src/models/shapes.ts:20:3
+src/models/shapes.ts:47:39 inner -> src/models/shapes.ts:42:38
+src/models/shapes.ts:47:52 inner -> src/models/shapes.ts:42:38
+src/models/shapes.ts:51:17 makeCircle -> src/models/shapes.ts:51:17
+src/models/shapes.ts:51:17 makeCircle <- src/app/advanced.ts:1:18 src/app/advanced.ts:18:24 src/app/advanced.ts:21:42 src/app/advanced.ts:23:39 src/app/main.ts:1:18 src/app/main.ts:57:13 src/models/shapes.ts:55:24
+src/models/shapes.ts:51:28 r -> src/models/shapes.ts:51:28
+src/models/shapes.ts:51:28 r <- src/models/shapes.ts:52:21
+src/models/shapes.ts:51:40 Circle -> src/models/shapes.ts:14:14
+src/models/shapes.ts:52:14 Circle -> src/models/shapes.ts:14:14
+src/models/shapes.ts:52:21 r -> src/models/shapes.ts:51:28
+src/models/shapes.ts:55:14 DEFAULT -> src/models/shapes.ts:55:14
+src/models/shapes.ts:55:14 DEFAULT <- src/app/main.ts:1:38 src/app/main.ts:61:49
+src/models/shapes.ts:55:24 makeCircle -> src/models/shapes.ts:51:17
+src/models/shapes.ts:57:23 loadCircles -> src/models/shapes.ts:57:23
+src/models/shapes.ts:57:23 loadCircles <- src/app/main.ts:1:56 src/app/main.ts:66:25
+src/models/shapes.ts:57:38 Promise -> 
+src/models/shapes.ts:57:46 Circle -> src/models/shapes.ts:14:14
+src/models/shapes.ts:58:11 Circle -> src/models/shapes.ts:14:14
+src/models/shapes.ts:58:18 unit -> src/models/shapes.ts:36:10
+src/other/shapes.ts:2:14 Circle -> src/other/shapes.ts:2:14
+src/other/shapes.ts:2:14 Circle <- src/app/main.ts:4:10
+src/other/shapes.ts:3:3 radius -> src/other/shapes.ts:3:3
+src/other/shapes.ts:3:3 radius <- 
+src/other/shapes.ts:5:3 area -> src/other/shapes.ts:5:3
+src/other/shapes.ts:5:3 area <- src/app/main.ts:71:27 src/app/main.ts:72:32
+src/util/strings.ts:1:17 shout -> src/util/strings.ts:1:17
+src/util/strings.ts:1:17 shout <- src/app/main.ts:70:58 src/legacy/old.js:2:9 src/legacy/old.js:18:29 src/models/shapes.ts:1:10 src/models/shapes.ts:33:12
+src/util/strings.ts:1:23 s -> src/util/strings.ts:1:23
+src/util/strings.ts:1:23 s <- src/util/strings.ts:2:10
+src/util/strings.ts:2:10 s -> src/util/strings.ts:1:23
+src/util/strings.ts:2:12 toUpperCase -> 
+src/util/strings.ts:5:17 countWords -> src/util/strings.ts:5:17
+src/util/strings.ts:5:17 countWords <- src/app/main.ts:3:19 src/legacy/old.js:18:18
+src/util/strings.ts:5:28 s -> src/util/strings.ts:5:28
+src/util/strings.ts:5:28 s <- src/util/strings.ts:6:10
+src/util/strings.ts:6:10 s -> src/util/strings.ts:5:28
+src/util/strings.ts:6:12 split -> 
+src/util/strings.ts:6:23 length -> 
+src/util/strings.ts:9:25 whisper -> src/util/strings.ts:9:25
+src/util/strings.ts:9:25 whisper <- src/app/main.ts:3:8 src/app/main.ts:70:85
+src/util/strings.ts:9:33 s -> src/util/strings.ts:9:33
+src/util/strings.ts:9:33 s <- src/util/strings.ts:10:10
+src/util/strings.ts:10:10 s -> src/util/strings.ts:9:33
+src/util/strings.ts:10:12 toLowerCase -> 

@@ -6,3 +6,4 @@ pub mod lang;
 pub mod python;
 pub mod snapshot;
 pub mod text;
+pub mod typescript;
