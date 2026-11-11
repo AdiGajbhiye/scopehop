@@ -470,6 +470,10 @@ impl Language for Java {
         &["java"]
     }
 
+    fn family(&self) -> &'static str {
+        "jvm"
+    }
+
     fn summarize(&self, root: Node, src: &str) -> Summary {
         summarize(root, src)
     }
@@ -541,7 +545,7 @@ impl Language for Java {
         decl_initializer(name)
     }
 
-    fn classify_expr<'t>(&self, expr: Node<'t>) -> Expr<'t> {
+    fn classify_expr<'t>(&self, expr: Node<'t>, _src: &str) -> Expr<'t> {
         if is_literal(expr.kind()) {
             return Expr::Literal;
         }
@@ -569,7 +573,7 @@ impl Language for Java {
         field(call, "name")
     }
 
-    fn params_of<'t>(&self, decl_name: Node<'t>) -> Vec<Node<'t>> {
+    fn params_of<'t>(&self, decl_name: Node<'t>, _src: &str) -> Vec<Node<'t>> {
         let Some(decl) = decl_name.parent() else { return Vec::new() };
         match decl.kind() {
             "method_declaration" | "record_declaration" => param_names(decl),

@@ -4,18 +4,20 @@
 //! hints live, and what shape an expression has.
 //!
 //! The shared data model ([`Summary`], [`Def`], [`Import`]) is a package plus
-//! imports model. It fits Kotlin, Java, Scala and Go. Languages that import
-//! modules by path (Python, JS) will need a visibility hook here as well.
+//! imports model. [`Visibility`] says how a language reads it: JVM packages
+//! (many files share one, members are visible bare) or one module per file
+//! (Python: only the file's own names and what it imports).
 
-use std::path::Path;
+use std::path::{Path, PathBuf};
 
 use tree_sitter::Node;
 
 use crate::java::Java;
 use crate::kotlin::Kotlin;
+use crate::python::Python;
 
 /// Every language scopehop understands, picked by file extension.
-pub static LANGUAGES: &[&dyn Language] = &[&Kotlin, &Java];
+pub static LANGUAGES: &[&dyn Language] = &[&Kotlin, &Java, &Python];
 
 pub fn for_path(path: &Path) -> Option<&'static dyn Language> {
     let ext = path.extension()?.to_str()?;
@@ -84,6 +86,20 @@ pub struct Import {
     pub alias: Option<String>,
 }
 
+/// How a file sees declarations in other files.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum Visibility {
+    /// Kotlin and Java: files in the same package see each other's top-level
+    /// declarations, inherited members are visible as bare names, and
+    /// top-level functions can be called as members (extension functions).
+    Packages,
+    /// Python: every file is a module named by [`Summary::package`]. A bare
+    /// name is the file's own or imported (`from m import x`, `import m`,
+    /// `from m import *`), and imports follow re-exports. A module can be a
+    /// receiver (`m.x`).
+    Modules,
+}
+
 #[derive(Clone, Debug, Default)]
 pub struct Summary {
     pub package: String,
@@ -130,11 +146,31 @@ pub trait Language: Sync {
     fn grammar(&self) -> tree_sitter::Language;
     /// File extensions without the dot.
     fn extensions(&self) -> &'static [&'static str];
+    /// Languages in the same family resolve each other's declarations (Kotlin
+    /// and Java are both "jvm"); other families are never candidates.
+    fn family(&self) -> &'static str;
+
+    fn visibility(&self) -> Visibility {
+        Visibility::Packages
+    }
 
     // --- Indexing ----------------------------------------------------------
 
     /// Package, imports and the declarations other files can see.
     fn summarize(&self, root: Node, src: &str) -> Summary;
+
+    /// Fills in what depends on where the file lives, after [`summarize`]:
+    /// Python's module name comes from its path, and relative imports become
+    /// absolute. `roots` are the workspace folders.
+    ///
+    /// [`summarize`]: Language::summarize
+    fn place(&self, _summary: &mut Summary, _path: &Path, _roots: &[PathBuf]) {}
+
+    /// An import path as written in `file` (whose summary is placed), made
+    /// absolute. Only Python has relative imports (`.models`).
+    fn absolute_import(&self, path: &str, _file: &Path, _summary: &Summary) -> String {
+        path.to_string()
+    }
 
     // --- Classifying the name under the cursor -----------------------------
 
@@ -187,13 +223,13 @@ pub trait Language: Sync {
     fn decl_initializer<'t>(&self, name: Node<'t>) -> Option<Node<'t>>;
 
     /// What kind of expression `expr` is, for type inference.
-    fn classify_expr<'t>(&self, expr: Node<'t>) -> Expr<'t>;
+    fn classify_expr<'t>(&self, expr: Node<'t>, src: &str) -> Expr<'t>;
 
     /// Name identifier of the callee in a call (`f` in `a.b.f(x)`).
     fn callee_name<'t>(&self, call: Node<'t>) -> Option<Node<'t>>;
 
     /// Parameter name nodes of the function or class whose name is given.
-    fn params_of<'t>(&self, decl_name: Node<'t>) -> Vec<Node<'t>>;
+    fn params_of<'t>(&self, decl_name: Node<'t>, src: &str) -> Vec<Node<'t>>;
 
     /// Nearest enclosing class-like declaration.
     fn enclosing_class<'t>(&self, n: Node<'t>) -> Option<Node<'t>>;

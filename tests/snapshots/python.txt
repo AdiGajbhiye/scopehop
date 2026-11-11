@@ -1,0 +1,471 @@
+app/main.py:1:8 models -> models/__init__.py:1:1
+app/main.py:1:15 shapes -> models/shapes.py:1:1
+app/main.py:1:25 ms -> models/shapes.py:1:1
+app/main.py:2:8 util -> util/__init__.py:1:1
+app/main.py:2:13 strings -> util/strings.py:1:1
+app/main.py:3:6 models -> models/__init__.py:1:1
+app/main.py:3:20 Circle -> models/shapes.py:20:7
+app/main.py:3:28 Point -> models/shapes.py:42:7
+app/main.py:3:35 RED -> models/color.py:9:1
+app/main.py:3:40 make_circle -> models/shapes.py:50:5
+app/main.py:4:6 models -> models/__init__.py:1:1
+app/main.py:4:13 color -> models/color.py:1:1
+app/main.py:4:26 Color -> models/color.py:4:7
+app/main.py:4:35 Colour -> models/color.py:4:7
+app/main.py:5:6 util -> util/__init__.py:1:1
+app/main.py:5:11 strings -> util/strings.py:1:1
+app/main.py:6:7 other -> app/other.py:1:1
+app/main.py:6:20 helper -> app/other.py:8:5
+app/main.py:6:28 Config -> app/other.py:4:7
+app/main.py:8:1 LIMIT -> app/main.py:8:1
+app/main.py:8:1 LIMIT <- app/main.py:18:25 app/main.py:68:15
+app/main.py:9:1 counter -> app/main.py:9:1
+app/main.py:9:1 counter <- app/main.py:13:12 app/main.py:14:5 app/main.py:15:12
+app/main.py:12:5 bump -> app/main.py:12:5
+app/main.py:12:5 bump <- 
+app/main.py:13:12 counter -> app/main.py:9:1
+app/main.py:14:5 counter -> app/main.py:9:1
+app/main.py:15:12 counter -> app/main.py:9:1
+app/main.py:18:5 scopes -> app/main.py:18:5
+app/main.py:18:5 scopes <- 
+app/main.py:18:12 items -> app/main.py:18:12
+app/main.py:18:12 items <- app/main.py:20:30 app/main.py:22:31 app/main.py:30:21
+app/main.py:18:19 limit -> app/main.py:18:19
+app/main.py:18:19 limit <- app/main.py:30:31 app/main.py:36:24
+app/main.py:18:25 LIMIT -> app/main.py:8:1
+app/main.py:19:5 total -> app/main.py:19:5
+app/main.py:19:5 total <- app/main.py:21:9 app/main.py:27:16 app/main.py:34:18 app/main.py:35:9 app/main.py:36:16 app/main.py:38:29
+app/main.py:20:9 i -> app/main.py:20:9
+app/main.py:20:9 i <- app/main.py:21:18
+app/main.py:20:12 item -> app/main.py:20:12
+app/main.py:20:12 item <- app/main.py:21:22
+app/main.py:20:20 enumerate -> 
+app/main.py:20:30 items -> app/main.py:18:12
+app/main.py:21:9 total -> app/main.py:19:5
+app/main.py:21:18 i -> app/main.py:20:9
+app/main.py:21:22 item -> app/main.py:20:12
+app/main.py:22:5 squares -> app/main.py:22:5
+app/main.py:22:5 squares <- app/main.py:38:42
+app/main.py:22:16 n -> app/main.py:22:26
+app/main.py:22:20 n -> app/main.py:22:26
+app/main.py:22:26 n -> app/main.py:22:26
+app/main.py:22:26 n <- app/main.py:22:16 app/main.py:22:20 app/main.py:22:40
+app/main.py:22:31 items -> app/main.py:18:12
+app/main.py:22:40 n -> app/main.py:22:26
+app/main.py:23:5 double -> app/main.py:23:5
+app/main.py:23:5 double <- app/main.py:27:9 app/main.py:38:22
+app/main.py:23:21 v -> app/main.py:23:21
+app/main.py:23:21 v <- app/main.py:23:24
+app/main.py:23:24 v -> app/main.py:23:21
+app/main.py:24:10 open -> 
+app/main.py:24:23 fh -> app/main.py:24:23
+app/main.py:24:23 fh <- app/main.py:25:9
+app/main.py:25:9 fh -> app/main.py:24:23
+app/main.py:25:12 read -> 
+app/main.py:27:9 double -> app/main.py:23:5
+app/main.py:27:16 total -> app/main.py:19:5
+app/main.py:28:12 ValueError -> 
+app/main.py:28:26 err -> app/main.py:28:26
+app/main.py:28:26 err <- app/main.py:29:15
+app/main.py:29:9 print -> 
+app/main.py:29:15 err -> app/main.py:28:26
+app/main.py:30:9 size -> app/main.py:30:9
+app/main.py:30:9 size <- app/main.py:31:16
+app/main.py:30:17 len -> 
+app/main.py:30:21 items -> app/main.py:18:12
+app/main.py:30:31 limit -> app/main.py:18:19
+app/main.py:31:16 size -> app/main.py:30:9
+app/main.py:33:9 inner -> app/main.py:33:9
+app/main.py:33:9 inner <- app/main.py:38:12
+app/main.py:34:18 total -> app/main.py:19:5
+app/main.py:35:9 total -> app/main.py:19:5
+app/main.py:36:16 total -> app/main.py:19:5
+app/main.py:36:24 limit -> app/main.py:18:19
+app/main.py:38:12 inner -> app/main.py:33:9
+app/main.py:38:22 double -> app/main.py:23:5
+app/main.py:38:29 total -> app/main.py:19:5
+app/main.py:38:38 len -> 
+app/main.py:38:42 squares -> app/main.py:22:5
+app/main.py:41:7 Main -> app/main.py:41:7
+app/main.py:41:7 Main <- app/main.py:79:13
+app/main.py:42:5 LIMIT -> app/main.py:42:5
+app/main.py:42:5 LIMIT <- app/main.py:43:13
+app/main.py:43:5 TWICE -> app/main.py:43:5
+app/main.py:43:5 TWICE <- 
+app/main.py:43:13 LIMIT -> app/main.py:42:5
+app/main.py:45:9 __init__ -> app/main.py:45:9
+app/main.py:45:9 __init__ <- 
+app/main.py:45:18 self -> app/main.py:45:18
+app/main.py:45:18 self <- app/main.py:46:9 app/main.py:47:9 app/main.py:48:9
+app/main.py:45:24 circle -> app/main.py:45:24
+app/main.py:45:24 circle <- app/main.py:46:23
+app/main.py:45:32 Circle -> models/shapes.py:20:7
+app/main.py:46:9 self -> app/main.py:45:18
+app/main.py:46:14 circle -> app/main.py:46:14
+app/main.py:46:14 circle <- app/main.py:51:18 app/main.py:53:14 app/main.py:82:21 app/main.py:85:24
+app/main.py:46:23 circle -> app/main.py:45:24
+app/main.py:47:9 self -> app/main.py:45:18
+app/main.py:47:14 points -> app/main.py:47:14
+app/main.py:47:14 points <- app/main.py:76:25
+app/main.py:48:9 self -> app/main.py:45:18
+app/main.py:48:14 best -> app/main.py:48:14
+app/main.py:48:14 best <- app/main.py:54:14
+app/main.py:48:20 Point -> models/shapes.py:42:7
+app/main.py:48:28 Point -> models/shapes.py:42:7
+app/main.py:50:9 run -> app/main.py:50:9
+app/main.py:50:9 run <- app/main.py:81:17
+app/main.py:50:13 self -> app/main.py:50:13
+app/main.py:50:13 self <- app/main.py:51:13 app/main.py:53:9 app/main.py:54:9 app/main.py:73:16
+app/main.py:51:9 c -> app/main.py:51:9
+app/main.py:51:9 c <- app/main.py:52:9 app/main.py:55:17
+app/main.py:51:13 self -> app/main.py:50:13
+app/main.py:51:18 circle -> app/main.py:46:14
+app/main.py:52:9 c -> app/main.py:51:9
+app/main.py:52:11 area -> models/shapes.py:26:9
+app/main.py:53:9 self -> app/main.py:50:13
+app/main.py:53:14 circle -> app/main.py:46:14
+app/main.py:53:21 radius -> models/shapes.py:23:14
+app/main.py:54:9 self -> app/main.py:50:13
+app/main.py:54:14 best -> app/main.py:48:14
+app/main.py:54:19 moved -> models/shapes.py:46:9
+app/main.py:54:30 x -> models/shapes.py:43:5
+app/main.py:55:9 grown -> app/main.py:55:9
+app/main.py:55:9 grown <- app/main.py:56:9
+app/main.py:55:17 c -> app/main.py:51:9
+app/main.py:55:19 grow -> models/shapes.py:29:9
+app/main.py:56:9 grown -> app/main.py:55:9
+app/main.py:56:15 radius -> models/shapes.py:23:14
+app/main.py:57:9 made -> app/main.py:57:9
+app/main.py:57:9 made <- app/main.py:58:9 app/main.py:59:9
+app/main.py:57:16 make_circle -> models/shapes.py:50:5
+app/main.py:58:9 made -> app/main.py:57:9
+app/main.py:58:14 area -> models/shapes.py:26:9
+app/main.py:59:9 made -> app/main.py:57:9
+app/main.py:59:14 center -> models/shapes.py:33:9
+app/main.py:59:21 y -> models/shapes.py:44:5
+app/main.py:60:9 Circle -> models/shapes.py:20:7
+app/main.py:60:16 unit -> models/shapes.py:37:9
+app/main.py:60:23 radius -> models/shapes.py:23:14
+app/main.py:61:9 ms -> models/shapes.py:1:1
+app/main.py:61:12 make_circle -> models/shapes.py:50:5
+app/main.py:61:27 radius -> models/shapes.py:23:14
+app/main.py:62:9 ms -> models/shapes.py:1:1
+app/main.py:62:12 DEFAULT -> models/shapes.py:54:1
+app/main.py:62:20 area -> models/shapes.py:26:9
+app/main.py:63:9 util -> util/__init__.py:1:1
+app/main.py:63:14 strings -> util/strings.py:1:1
+app/main.py:63:22 shout -> util/strings.py:4:5
+app/main.py:64:9 shout -> util/strings.py:4:5
+app/main.py:65:9 count_words -> util/strings.py:8:5
+app/main.py:66:9 Colour -> models/color.py:4:7
+app/main.py:66:24 name -> models/color.py:6:14
+app/main.py:67:9 RED -> models/color.py:9:1
+app/main.py:67:13 name -> models/color.py:6:14
+app/main.py:68:9 print -> 
+app/main.py:68:15 LIMIT -> app/main.py:8:1
+app/main.py:69:9 p -> app/main.py:69:9
+app/main.py:69:9 p <- app/main.py:70:9
+app/main.py:69:13 Point -> models/shapes.py:42:7
+app/main.py:69:19 x -> models/shapes.py:43:5
+app/main.py:69:26 y -> models/shapes.py:44:5
+app/main.py:70:9 p -> app/main.py:69:9
+app/main.py:70:11 moved -> models/shapes.py:46:9
+app/main.py:70:17 dx -> models/shapes.py:46:21
+app/main.py:71:9 Circle -> models/shapes.py:20:7
+app/main.py:71:16 radius -> models/shapes.py:21:24
+app/main.py:72:9 helper -> app/other.py:8:5
+app/main.py:72:16 Config -> app/other.py:4:7
+app/main.py:73:16 self -> app/main.py:50:13
+app/main.py:73:21 size -> app/main.py:75:9
+app/main.py:75:9 size -> app/main.py:75:9
+app/main.py:75:9 size <- app/main.py:73:21 app/main.py:85:44
+app/main.py:75:14 self -> app/main.py:75:14
+app/main.py:75:14 self <- app/main.py:76:20
+app/main.py:75:23 int -> 
+app/main.py:76:16 len -> 
+app/main.py:76:20 self -> app/main.py:75:14
+app/main.py:76:25 points -> app/main.py:47:14
+app/main.py:79:7 Named -> app/main.py:79:7
+app/main.py:79:7 Named <- 
+app/main.py:79:13 Main -> app/main.py:41:7
+app/main.py:80:9 run -> app/main.py:80:9
+app/main.py:80:9 run <- 
+app/main.py:80:13 self -> app/main.py:80:13
+app/main.py:80:13 self <- app/main.py:82:16
+app/main.py:81:9 super -> 
+app/main.py:81:17 run -> app/main.py:50:9
+app/main.py:82:16 self -> app/main.py:80:13
+app/main.py:82:21 circle -> app/main.py:46:14
+app/main.py:82:28 describe -> models/shapes.py:16:9
+app/main.py:84:9 label -> app/main.py:84:9
+app/main.py:84:9 label <- 
+app/main.py:84:15 self -> app/main.py:84:15
+app/main.py:84:15 self <- app/main.py:85:19 app/main.py:85:39
+app/main.py:85:19 self -> app/main.py:84:15
+app/main.py:85:24 circle -> app/main.py:46:14
+app/main.py:85:31 name -> models/shapes.py:11:14
+app/main.py:85:39 self -> app/main.py:84:15
+app/main.py:85:44 size -> app/main.py:75:9
+app/main.py:88:5 any_area -> app/main.py:88:5
+app/main.py:88:5 any_area <- 
+app/main.py:88:14 shape -> app/main.py:88:14
+app/main.py:88:14 shape <- app/main.py:89:12
+app/main.py:89:12 shape -> app/main.py:88:14
+app/main.py:89:18 area -> models/shapes.py:13:9 models/shapes.py:26:9 other/shapes.py:5:9
+app/main.py:92:5 classify -> app/main.py:92:5
+app/main.py:92:5 classify <- 
+app/main.py:92:14 shape -> app/main.py:92:14
+app/main.py:92:14 shape <- app/main.py:93:11
+app/main.py:93:11 shape -> app/main.py:92:14
+app/main.py:94:14 Circle -> models/shapes.py:20:7
+app/main.py:94:21 radius -> 
+app/main.py:94:28 r -> app/main.py:94:28
+app/main.py:94:28 r <- app/main.py:94:34 app/main.py:95:20
+app/main.py:94:34 r -> app/main.py:94:28
+app/main.py:95:20 r -> app/main.py:94:28
+app/main.py:96:14 Point -> models/shapes.py:42:7
+app/main.py:96:20 x -> 
+app/main.py:96:22 px -> app/main.py:96:22
+app/main.py:96:22 px <- app/main.py:97:20
+app/main.py:96:26 y -> 
+app/main.py:96:34 pt -> app/main.py:96:34
+app/main.py:96:34 pt <- app/main.py:97:25
+app/main.py:97:20 px -> app/main.py:96:22
+app/main.py:97:25 pt -> app/main.py:96:34
+app/main.py:97:28 y -> models/shapes.py:44:5
+app/main.py:98:15 first -> app/main.py:98:15
+app/main.py:98:15 first <- app/main.py:99:20
+app/main.py:98:23 rest -> app/main.py:98:23
+app/main.py:98:23 rest <- app/main.py:99:27
+app/main.py:99:20 first -> app/main.py:98:15
+app/main.py:99:27 rest -> app/main.py:98:23
+app/other.py:1:6 models -> models/__init__.py:1:1
+app/other.py:1:13 shapes -> models/shapes.py:1:1
+app/other.py:1:27 Circle -> models/shapes.py:20:7
+app/other.py:1:37 Round -> models/shapes.py:20:7
+app/other.py:4:7 Config -> app/other.py:4:7
+app/other.py:4:7 Config <- app/main.py:6:28 app/main.py:72:16 app/other.py:8:20
+app/other.py:5:5 debug -> app/other.py:5:5
+app/other.py:5:5 debug <- app/other.py:9:15
+app/other.py:8:5 helper -> app/other.py:8:5
+app/other.py:8:5 helper <- app/main.py:6:20 app/main.py:72:9
+app/other.py:8:12 config -> app/other.py:8:12
+app/other.py:8:12 config <- app/other.py:9:8
+app/other.py:8:20 Config -> app/other.py:4:7
+app/other.py:8:31 Round -> models/shapes.py:20:7
+app/other.py:9:8 config -> app/other.py:8:12
+app/other.py:9:15 debug -> app/other.py:5:5
+app/other.py:10:16 Round -> models/shapes.py:20:7
+app/other.py:11:12 Round -> models/shapes.py:20:7
+app/other.py:11:18 unit -> models/shapes.py:37:9
+jvm/Circle.java:1:9 jvm -> 
+jvm/Circle.java:4:14 Circle -> jvm/Circle.java:4:14
+jvm/Circle.java:4:14 Circle <- 
+jvm/Circle.java:5:12 radius -> jvm/Circle.java:5:12
+jvm/Circle.java:5:12 radius <- jvm/Circle.java:8:16
+jvm/Circle.java:7:12 area -> jvm/Circle.java:7:12
+jvm/Circle.java:7:12 area <- 
+jvm/Circle.java:8:16 radius -> jvm/Circle.java:5:12
+models/__init__.py:1:7 shapes -> models/shapes.py:1:1
+models/__init__.py:1:21 Circle -> models/shapes.py:20:7
+models/__init__.py:1:29 Point -> models/shapes.py:42:7
+models/__init__.py:1:36 Shape -> models/shapes.py:7:7
+models/__init__.py:1:43 make_circle -> models/shapes.py:50:5
+models/__init__.py:2:7 color -> models/color.py:1:1
+models/__init__.py:3:15 shapes -> models/shapes.py:1:1
+models/color.py:1:1 __all__ -> models/color.py:1:1
+models/color.py:1:1 __all__ <- 
+models/color.py:4:7 Color -> models/color.py:4:7
+models/color.py:4:7 Color <- app/main.py:4:26 models/color.py:9:7
+models/color.py:5:9 __init__ -> models/color.py:5:9
+models/color.py:5:9 __init__ <- 
+models/color.py:5:18 self -> models/color.py:5:18
+models/color.py:5:18 self <- models/color.py:6:9
+models/color.py:5:24 name -> models/color.py:5:24
+models/color.py:5:24 name <- models/color.py:6:21
+models/color.py:6:9 self -> models/color.py:5:18
+models/color.py:6:14 name -> models/color.py:6:14
+models/color.py:6:14 name <- app/main.py:66:24 app/main.py:67:13
+models/color.py:6:21 name -> models/color.py:5:24
+models/color.py:9:1 RED -> models/color.py:9:1
+models/color.py:9:1 RED <- app/main.py:3:35 app/main.py:67:9
+models/color.py:9:7 Color -> models/color.py:4:7
+models/shapes.py:1:6 dataclasses -> 
+models/shapes.py:1:25 dataclass -> 
+models/shapes.py:2:6 typing -> 
+models/shapes.py:2:20 Optional -> 
+models/shapes.py:4:6 util -> util/__init__.py:1:1
+models/shapes.py:4:11 strings -> util/strings.py:1:1
+models/shapes.py:4:26 shout -> util/strings.py:4:5
+models/shapes.py:7:7 Shape -> models/shapes.py:7:7
+models/shapes.py:7:7 Shape <- models/__init__.py:1:36 models/shapes.py:20:14
+models/shapes.py:8:5 sides -> models/shapes.py:8:5
+models/shapes.py:8:5 sides <- 
+models/shapes.py:10:9 __init__ -> models/shapes.py:10:9
+models/shapes.py:10:9 __init__ <- models/shapes.py:22:17
+models/shapes.py:10:18 self -> models/shapes.py:10:18
+models/shapes.py:10:18 self <- models/shapes.py:11:9
+models/shapes.py:10:24 name -> models/shapes.py:10:24
+models/shapes.py:10:24 name <- models/shapes.py:11:21
+models/shapes.py:10:30 str -> 
+models/shapes.py:11:9 self -> models/shapes.py:10:18
+models/shapes.py:11:14 name -> models/shapes.py:11:14
+models/shapes.py:11:14 name <- app/main.py:85:31 models/shapes.py:17:27
+models/shapes.py:11:21 name -> models/shapes.py:10:24
+models/shapes.py:13:9 area -> models/shapes.py:13:9
+models/shapes.py:13:9 area <- app/main.py:89:18
+models/shapes.py:13:14 self -> models/shapes.py:13:14
+models/shapes.py:13:14 self <- 
+models/shapes.py:13:23 float -> 
+models/shapes.py:16:9 describe -> models/shapes.py:16:9
+models/shapes.py:16:9 describe <- app/main.py:82:28
+models/shapes.py:16:18 self -> models/shapes.py:16:18
+models/shapes.py:16:18 self <- models/shapes.py:17:22
+models/shapes.py:16:27 str -> 
+models/shapes.py:17:16 shout -> util/strings.py:4:5
+models/shapes.py:17:22 self -> models/shapes.py:16:18
+models/shapes.py:17:27 name -> models/shapes.py:11:14
+models/shapes.py:20:7 Circle -> models/shapes.py:20:7
+models/shapes.py:20:7 Circle <- app/main.py:3:20 app/main.py:45:32 app/main.py:60:9 app/main.py:71:9 app/main.py:94:14 app/other.py:1:27 models/__init__.py:1:21 models/shapes.py:30:16 models/shapes.py:38:16 models/shapes.py:50:23 models/shapes.py:51:12 models/shapes.py:54:11 scripts/run.py:2:27 scripts/run.py:6:1
+models/shapes.py:20:14 Shape -> models/shapes.py:7:7
+models/shapes.py:21:9 __init__ -> models/shapes.py:21:9
+models/shapes.py:21:9 __init__ <- 
+models/shapes.py:21:18 self -> models/shapes.py:21:18
+models/shapes.py:21:18 self <- models/shapes.py:23:9 models/shapes.py:24:9
+models/shapes.py:21:24 radius -> models/shapes.py:21:24
+models/shapes.py:21:24 radius <- models/shapes.py:23:23
+models/shapes.py:21:32 float -> 
+models/shapes.py:21:39 origin -> models/shapes.py:21:39
+models/shapes.py:21:39 origin <- models/shapes.py:24:23
+models/shapes.py:22:9 super -> 
+models/shapes.py:22:17 __init__ -> models/shapes.py:10:9
+models/shapes.py:23:9 self -> models/shapes.py:21:18
+models/shapes.py:23:14 radius -> models/shapes.py:23:14
+models/shapes.py:23:14 radius <- app/main.py:53:21 app/main.py:56:15 app/main.py:60:23 app/main.py:61:27 models/shapes.py:27:28 models/shapes.py:27:42 models/shapes.py:30:28
+models/shapes.py:23:23 radius -> models/shapes.py:21:24
+models/shapes.py:24:9 self -> models/shapes.py:21:18
+models/shapes.py:24:14 origin -> models/shapes.py:24:14
+models/shapes.py:24:14 origin <- models/shapes.py:34:21
+models/shapes.py:24:23 origin -> models/shapes.py:21:39
+models/shapes.py:26:9 area -> models/shapes.py:26:9
+models/shapes.py:26:9 area <- app/main.py:52:11 app/main.py:58:14 app/main.py:62:20 app/main.py:89:18 scripts/run.py:6:13
+models/shapes.py:26:14 self -> models/shapes.py:26:14
+models/shapes.py:26:14 self <- models/shapes.py:27:23 models/shapes.py:27:37
+models/shapes.py:26:23 float -> 
+models/shapes.py:27:23 self -> models/shapes.py:26:14
+models/shapes.py:27:28 radius -> models/shapes.py:23:14
+models/shapes.py:27:37 self -> models/shapes.py:26:14
+models/shapes.py:27:42 radius -> models/shapes.py:23:14
+models/shapes.py:29:9 grow -> models/shapes.py:29:9
+models/shapes.py:29:9 grow <- app/main.py:55:19
+models/shapes.py:29:14 self -> models/shapes.py:29:14
+models/shapes.py:29:14 self <- models/shapes.py:30:23
+models/shapes.py:29:20 by -> models/shapes.py:29:20
+models/shapes.py:29:20 by <- models/shapes.py:30:37
+models/shapes.py:29:24 float -> 
+models/shapes.py:30:16 Circle -> models/shapes.py:20:7
+models/shapes.py:30:23 self -> models/shapes.py:29:14
+models/shapes.py:30:28 radius -> models/shapes.py:23:14
+models/shapes.py:30:37 by -> models/shapes.py:29:20
+models/shapes.py:32:6 property -> 
+models/shapes.py:33:9 center -> models/shapes.py:33:9
+models/shapes.py:33:9 center <- app/main.py:59:14
+models/shapes.py:33:16 self -> models/shapes.py:33:16
+models/shapes.py:33:16 self <- models/shapes.py:34:16
+models/shapes.py:33:25 Optional -> 
+models/shapes.py:34:16 self -> models/shapes.py:33:16
+models/shapes.py:34:21 origin -> models/shapes.py:24:14
+models/shapes.py:36:6 staticmethod -> 
+models/shapes.py:37:9 unit -> models/shapes.py:37:9
+models/shapes.py:37:9 unit <- app/main.py:60:16 app/other.py:11:18
+models/shapes.py:38:16 Circle -> models/shapes.py:20:7
+models/shapes.py:41:2 dataclass -> 
+models/shapes.py:42:7 Point -> models/shapes.py:42:7
+models/shapes.py:42:7 Point <- app/main.py:3:28 app/main.py:48:20 app/main.py:48:28 app/main.py:69:13 app/main.py:96:14 models/__init__.py:1:29 models/shapes.py:47:16
+models/shapes.py:43:5 x -> models/shapes.py:43:5
+models/shapes.py:43:5 x <- app/main.py:54:30 app/main.py:69:19 models/shapes.py:47:22 models/shapes.py:47:29
+models/shapes.py:43:8 float -> 
+models/shapes.py:44:5 y -> models/shapes.py:44:5
+models/shapes.py:44:5 y <- app/main.py:59:21 app/main.py:69:26 app/main.py:97:28 models/shapes.py:47:37 models/shapes.py:47:44
+models/shapes.py:44:8 float -> 
+models/shapes.py:46:9 moved -> models/shapes.py:46:9
+models/shapes.py:46:9 moved <- app/main.py:54:19 app/main.py:70:11
+models/shapes.py:46:15 self -> models/shapes.py:46:15
+models/shapes.py:46:15 self <- models/shapes.py:47:24 models/shapes.py:47:39
+models/shapes.py:46:21 dx -> models/shapes.py:46:21
+models/shapes.py:46:21 dx <- models/shapes.py:47:33
+models/shapes.py:46:25 float -> 
+models/shapes.py:47:16 Point -> models/shapes.py:42:7
+models/shapes.py:47:22 x -> models/shapes.py:43:5
+models/shapes.py:47:24 self -> models/shapes.py:46:15
+models/shapes.py:47:29 x -> models/shapes.py:43:5
+models/shapes.py:47:33 dx -> models/shapes.py:46:21
+models/shapes.py:47:37 y -> models/shapes.py:44:5
+models/shapes.py:47:39 self -> models/shapes.py:46:15
+models/shapes.py:47:44 y -> models/shapes.py:44:5
+models/shapes.py:50:5 make_circle -> models/shapes.py:50:5
+models/shapes.py:50:5 make_circle <- app/main.py:3:40 app/main.py:57:16 app/main.py:61:12 models/__init__.py:1:43
+models/shapes.py:50:17 r -> models/shapes.py:50:17
+models/shapes.py:50:17 r <- models/shapes.py:51:19
+models/shapes.py:50:23 Circle -> models/shapes.py:20:7
+models/shapes.py:51:12 Circle -> models/shapes.py:20:7
+models/shapes.py:51:19 r -> models/shapes.py:50:17
+models/shapes.py:54:1 DEFAULT -> models/shapes.py:54:1
+models/shapes.py:54:1 DEFAULT <- app/main.py:62:12
+models/shapes.py:54:11 Circle -> models/shapes.py:20:7
+other/shapes.py:1:7 Circle -> other/shapes.py:1:7
+other/shapes.py:1:7 Circle <- scripts/run.py:3:26
+other/shapes.py:2:9 __init__ -> other/shapes.py:2:9
+other/shapes.py:2:9 __init__ <- 
+other/shapes.py:2:18 self -> other/shapes.py:2:18
+other/shapes.py:2:18 self <- other/shapes.py:3:9
+other/shapes.py:3:9 self -> other/shapes.py:2:18
+other/shapes.py:3:14 radius -> other/shapes.py:3:14
+other/shapes.py:3:14 radius <- 
+other/shapes.py:5:9 area -> other/shapes.py:5:9
+other/shapes.py:5:9 area <- app/main.py:89:18 scripts/run.py:7:9
+other/shapes.py:5:14 self -> other/shapes.py:5:14
+other/shapes.py:5:14 self <- 
+scripts/run.py:1:8 util -> util/__init__.py:1:1
+scripts/run.py:1:13 strings -> util/strings.py:1:1
+scripts/run.py:1:24 s -> util/strings.py:1:1
+scripts/run.py:2:6 models -> models/__init__.py:1:1
+scripts/run.py:2:13 shapes -> models/shapes.py:1:1
+scripts/run.py:2:27 Circle -> models/shapes.py:20:7
+scripts/run.py:3:6 other -> other/__init__.py:1:1
+scripts/run.py:3:12 shapes -> other/shapes.py:1:1
+scripts/run.py:3:26 Circle -> other/shapes.py:1:7
+scripts/run.py:3:36 Decoy -> other/shapes.py:1:7
+scripts/run.py:5:1 print -> 
+scripts/run.py:5:7 s -> util/strings.py:1:1
+scripts/run.py:5:9 shout -> util/strings.py:4:5
+scripts/run.py:6:1 Circle -> models/shapes.py:20:7
+scripts/run.py:6:13 area -> models/shapes.py:26:9
+scripts/run.py:7:1 Decoy -> other/shapes.py:1:7
+scripts/run.py:7:9 area -> other/shapes.py:5:9
+util/strings.py:1:1 PREFIX -> util/strings.py:1:1
+util/strings.py:1:1 PREFIX <- util/strings.py:5:24
+util/strings.py:4:5 shout -> util/strings.py:4:5
+util/strings.py:4:5 shout <- app/main.py:63:22 app/main.py:64:9 models/shapes.py:4:26 models/shapes.py:17:16 scripts/run.py:5:9
+util/strings.py:4:11 s -> util/strings.py:4:11
+util/strings.py:4:11 s <- util/strings.py:5:12
+util/strings.py:4:14 str -> 
+util/strings.py:4:22 str -> 
+util/strings.py:5:12 s -> util/strings.py:4:11
+util/strings.py:5:14 upper -> 
+util/strings.py:5:24 PREFIX -> util/strings.py:1:1
+util/strings.py:8:5 count_words -> util/strings.py:8:5
+util/strings.py:8:5 count_words <- app/main.py:65:9
+util/strings.py:8:17 text -> util/strings.py:8:17
+util/strings.py:8:17 text <- util/strings.py:9:13
+util/strings.py:9:5 words -> util/strings.py:9:5
+util/strings.py:9:5 words <- util/strings.py:11:14
+util/strings.py:9:13 text -> util/strings.py:8:17
+util/strings.py:9:18 split -> 
+util/strings.py:10:5 total -> util/strings.py:10:5
+util/strings.py:10:5 total <- util/strings.py:12:9 util/strings.py:13:12
+util/strings.py:11:9 w -> util/strings.py:11:9
+util/strings.py:11:9 w <- 
+util/strings.py:11:14 words -> util/strings.py:9:5
+util/strings.py:12:9 total -> util/strings.py:10:5
+util/strings.py:13:12 total -> util/strings.py:10:5

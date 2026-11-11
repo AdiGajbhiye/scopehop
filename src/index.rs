@@ -3,9 +3,10 @@
 //! imports/package. References = whole-word hits that resolve to the same place.
 //!
 //! Nothing here looks at node kinds; syntax questions go to the file's
-//! [`Language`]. What is still language-shaped is the visibility model in
-//! `lookup_global` (package + imports) and treating top-level functions as
-//! possible members in `lookup_members` (extension functions).
+//! [`Language`]. How files see each other is the language's [`Visibility`]:
+//! JVM packages in `lookup_global`, or one module per file in
+//! `lookup_module_global` and `resolve_import`. Only languages of the same
+//! [`Language::family`] are candidates for each other.
 
 use std::collections::{HashMap, HashSet};
 use std::path::{Path, PathBuf};
@@ -13,7 +14,7 @@ use std::time::{Duration, Instant, SystemTime};
 
 use tree_sitter::{Node, Parser, Tree};
 
-use crate::lang::{self, Def, DefKind, Expr, Language, Scoped, Summary};
+use crate::lang::{self, Def, DefKind, Expr, Import, Language, Scoped, Summary, Visibility};
 use crate::text::{self, LineIndex};
 
 #[derive(Clone, Debug, PartialEq, Eq, Hash, PartialOrd, Ord)]
@@ -36,18 +37,17 @@ pub struct FileData {
 /// What we know about the type of an expression.
 #[derive(Clone, Debug, PartialEq, Eq)]
 enum Ty {
-    /// A class name (may or may not be declared in the project).
-    Class(String),
+    /// A class name (may or may not be declared in the project), and for
+    /// [`Visibility::Modules`] languages the file the name is written in, so
+    /// that `models.Circle` and `other.Circle` stay apart.
+    Class(String, Option<PathBuf>),
+    /// A project module, by name (`m` after `import a.b as m`).
+    Module(String),
     /// Comes from a library: no project member can match.
     External,
     Unknown,
 }
 
-impl Ty {
-    fn from(name: Option<String>) -> Self {
-        name.map_or(Ty::Unknown, Ty::Class)
-    }
-}
 
 /// A resolved declaration plus what we know about its type.
 #[derive(Clone, Debug)]
@@ -65,12 +65,14 @@ struct Target<'t> {
 }
 
 const RESCAN_EVERY: Duration = Duration::from_secs(3);
-const MAX_DEPTH: u32 = 6;
+const MAX_DEPTH: u32 = 16;
 
 pub struct Index {
     roots: Vec<PathBuf>,
     pub files: HashMap<PathBuf, FileData>,
     names: HashMap<String, Vec<(PathBuf, usize)>>,
+    /// Module name -> file, for [`Visibility::Modules`] languages.
+    modules: HashMap<String, PathBuf>,
     names_dirty: bool,
     parser: Parser,
     last_scan: Option<Instant>,
@@ -86,6 +88,7 @@ impl Index {
             roots,
             files: HashMap::new(),
             names: HashMap::new(),
+            modules: HashMap::new(),
             names_dirty: true,
             parser: Parser::new(),
             last_scan: None,
@@ -96,7 +99,8 @@ impl Index {
         let lang = lang::for_path(path)?;
         self.parser.set_language(&lang.grammar()).ok()?;
         let tree = self.parser.parse(&text, None)?;
-        let summary = lang.summarize(tree.root_node(), &text);
+        let mut summary = lang.summarize(tree.root_node(), &text);
+        lang.place(&mut summary, path, &self.roots);
         let lines = LineIndex::new(&text);
         Some(FileData { lang, text, tree, summary, lines, mtime, open })
     }
@@ -157,12 +161,17 @@ impl Index {
             return;
         }
         self.names.clear();
+        self.modules.clear();
         // Sorted so candidate lists, and every choice made from them (ranking
         // ties, `type_of` taking the first hit, supertype walk order), do not
         // depend on the map's random seed.
         let mut files: Vec<_> = self.files.iter().collect();
         files.sort_by(|a, b| a.0.cmp(b.0));
         for (path, fd) in files {
+            if fd.lang.visibility() == Visibility::Modules && !fd.summary.package.is_empty() {
+                // `pkg.py` and `pkg/__init__.py`: the first one (sorted) wins.
+                self.modules.entry(fd.summary.package.clone()).or_insert_with(|| path.clone());
+            }
             for (i, d) in fd.summary.defs.iter().enumerate() {
                 self.names
                     .entry(d.name.clone())
@@ -274,13 +283,8 @@ impl Index {
         }
         if lang.is_identifier(t.node) {
             if let Some(fq) = lang.qualified_path(t.node, src) {
-                let last = fq.rsplit('.').next().unwrap_or(&fq);
-                return self
-                    .defs_named(last)
-                    .into_iter()
-                    .filter(|(_, f, d)| fq_name(f, d) == fq)
-                    .map(|(p, _, d)| Self::resolved(p, d))
-                    .collect();
+                let fq = lang.absolute_import(&fq, path, &fd.summary);
+                return self.resolve_import(lang, &fq, 0);
             }
             if lang.is_declaration_name(t.node) {
                 let ty = self.local_type(path, fd, t.node, depth);
@@ -291,12 +295,12 @@ impl Index {
             }
             if let Some(recv) = lang.member_receiver(t.node) {
                 let ty = self.type_of(path, fd, recv, depth + 1);
-                return self.lookup_members(t.name, &ty, path);
+                return self.lookup_members(lang, t.name, &ty, path);
             }
             // Outer.Inner in a type: Inner is a member of Outer.
             if let Some(outer) = lang.type_qualifier(t.node) {
-                let outer = Ty::Class(lang::text(outer, src).to_string());
-                return self.lookup_members(t.name, &outer, path);
+                let outer = self.class_ty(Some(lang::text(outer, src).to_string()), path);
+                return self.lookup_members(lang, t.name, &outer, path);
             }
         }
         match lang.find_in_scopes(t.node, t.name, src) {
@@ -310,6 +314,9 @@ impl Index {
             }
             None => {}
         }
+        if lang.visibility() == Visibility::Modules {
+            return self.lookup_module_global(t.name, path, fd);
+        }
         let types_only = lang.in_type_position(t.node);
         // Inside `fun Foo.ext()`, bare names may be members of Foo. Types are
         // not: the receiver brings members into scope, not nested classes, and
@@ -317,7 +324,7 @@ impl Index {
         let mut allow_members = true;
         if let Some(recv) = lang.extension_receiver_type(t.node, src).filter(|_| !types_only) {
             let hits: Vec<_> = self
-                .lookup_members(t.name, &Ty::Class(recv), path)
+                .lookup_members(lang, t.name, &self.class_ty(Some(recv), path), path)
                 .into_iter()
                 .filter(|r| !self.is_top_level(&r.loc))
                 .collect();
@@ -341,13 +348,13 @@ impl Index {
     /// Type of a declared name: annotation, `= Foo()`, or the initializer's type.
     fn local_type(&self, path: &Path, fd: &FileData, name: Node, depth: u32) -> Ty {
         if let Some(t) = fd.lang.decl_type_name(name, &fd.text) {
-            return Ty::Class(t);
+            return self.class_ty(Some(t), path);
         }
         // A member found by the scope walk (a method called without a
         // receiver): the index knows its return type.
         let indexed = fd.summary.defs.iter().find(|d| d.start == name.start_byte());
         if let Some(t) = indexed.and_then(|d| d.type_name.clone()) {
-            return Ty::Class(t);
+            return self.class_ty(Some(t), path);
         }
         match fd.lang.decl_initializer(name) {
             Some(init) => self.type_of(path, fd, init, depth + 1),
@@ -363,11 +370,11 @@ impl Index {
         for r in self.resolve(path, fd, &t, depth + 1) {
             let Some(f) = self.files.get(&r.loc.path) else { continue };
             let Some(name) = f.tree.root_node().descendant_for_byte_range(r.loc.start, r.loc.end) else { continue };
-            for p in f.lang.params_of(name) {
+            for p in f.lang.params_of(name, &f.text) {
                 if lang::text(p, &f.text) == label {
                     out.push(Resolved {
                         loc: Loc { path: r.loc.path.clone(), start: p.start_byte(), end: p.end_byte() },
-                        ty: Ty::from(f.lang.decl_type_name(p, &f.text)),
+                        ty: self.class_ty(f.lang.decl_type_name(p, &f.text), &r.loc.path),
                     });
                 }
             }
@@ -391,15 +398,17 @@ impl Index {
         }
         let src = fd.text.as_str();
         let lang = fd.lang;
-        match lang.classify_expr(expr) {
+        match lang.classify_expr(expr, src) {
             Expr::Literal => Ty::External,
-            Expr::This => Ty::from(
+            Expr::This => self.class_ty(
                 lang.extension_receiver_type(expr, src)
                     .or_else(|| lang.enclosing_class(expr).and_then(|c| lang.class_name(c, src))),
+                path,
             ),
-            Expr::Super => Ty::from(
+            Expr::Super => self.class_ty(
                 lang.enclosing_class(expr)
                     .and_then(|c| lang.class_supertypes(c, src).into_iter().next()),
+                path,
             ),
             Expr::Name(n) => {
                 let t = self.target_for(fd, n);
@@ -409,7 +418,7 @@ impl Index {
                 }
                 // Not in the project: a library class (Modifier) or value.
                 if lang.looks_like_type_name(t.name) {
-                    Ty::Class(t.name.to_string())
+                    self.class_ty(Some(t.name.to_string()), path)
                 } else {
                     Ty::External
                 }
@@ -425,32 +434,155 @@ impl Index {
         }
     }
 
-    fn defs_named<'a>(&'a self, name: &str) -> Vec<(&'a PathBuf, &'a FileData, &'a Def)> {
+    /// Declarations named `name` in files of `lang`'s family.
+    fn defs_named<'a>(&'a self, lang: &dyn Language, name: &str) -> Vec<(&'a PathBuf, &'a FileData, &'a Def)> {
         let Some(list) = self.names.get(name) else { return Vec::new() };
+        let family = lang.family();
         list.iter()
             .filter_map(|(p, i)| {
                 let fd = self.files.get(p)?;
+                (fd.lang.family() == family).then_some(())?;
                 Some((p, fd, fd.summary.defs.get(*i)?))
             })
             .collect()
     }
 
-    fn resolved(path: &Path, d: &Def) -> Resolved {
+    /// A module, as a location (the start of its file).
+    fn module(&self, name: &str) -> Option<Resolved> {
+        let path = self.modules.get(name)?;
+        Some(Resolved {
+            loc: Loc { path: path.clone(), start: 0, end: 0 },
+            ty: Ty::Module(name.to_string()),
+        })
+    }
+
+    /// What an absolute import path names: a declaration with that fully
+    /// qualified name, a module, or (for modules) a name the module itself
+    /// imports, so `from pkg import Foo` reaches `Foo` when `pkg/__init__.py`
+    /// does `from .models import Foo`.
+    fn resolve_import(&self, lang: &dyn Language, fq: &str, depth: u32) -> Vec<Resolved> {
+        if depth > MAX_DEPTH {
+            return Vec::new();
+        }
+        let last = fq.rsplit('.').next().unwrap_or(fq);
+        let defs: Vec<Resolved> = self
+            .defs_named(lang, last)
+            .into_iter()
+            .filter(|(_, f, d)| fq_name(f, d) == fq)
+            .map(|(p, _, d)| self.resolved(p, d))
+            .collect();
+        if !defs.is_empty() {
+            return defs;
+        }
+        if let Some(m) = self.module(fq) {
+            return vec![m];
+        }
+        let Some((parent, last)) = fq.rsplit_once('.') else { return Vec::new() };
+        let Some(mfd) = self.modules.get(parent).and_then(|p| self.files.get(p)) else { return Vec::new() };
+        for imp in mfd.summary.imports.iter().filter(|i| !i.star && binding(i) == last) {
+            let hits = self.resolve_import(lang, &imp.path, depth + 1);
+            if !hits.is_empty() {
+                return hits;
+            }
+        }
+        for imp in mfd.summary.imports.iter().filter(|i| i.star) {
+            let hits = self.resolve_import(lang, &format!("{}.{last}", imp.path), depth + 1);
+            if !hits.is_empty() {
+                return hits;
+            }
+        }
+        Vec::new()
+    }
+
+    /// A bare name in a [`Visibility::Modules`] file that no enclosing scope
+    /// declares: the file's own top level, then its imports.
+    fn lookup_module_global(&self, name: &str, from: &Path, fd: &FileData) -> Vec<Resolved> {
+        let own: Vec<Resolved> = self
+            .defs_named(fd.lang, name)
+            .into_iter()
+            .filter(|(p, _, d)| p.as_path() == from && d.container.is_none())
+            .map(|(p, _, d)| self.resolved(p, d))
+            .collect();
+        if !own.is_empty() {
+            return own;
+        }
+        for imp in fd.summary.imports.iter().filter(|i| !i.star && binding(i) == name) {
+            let hits = self.resolve_import(fd.lang, &imp.path, 0);
+            if !hits.is_empty() {
+                return hits;
+            }
+        }
+        for imp in fd.summary.imports.iter().filter(|i| i.star) {
+            let hits = self.resolve_import(fd.lang, &format!("{}.{name}", imp.path), 0);
+            if !hits.is_empty() {
+                return hits;
+            }
+        }
+        Vec::new()
+    }
+
+    fn resolved(&self, path: &Path, d: &Def) -> Resolved {
         Resolved {
             loc: Loc { path: path.to_path_buf(), start: d.start, end: d.end },
-            ty: Ty::from(d.type_name.clone()),
+            ty: self.class_ty(d.type_name.clone(), path),
         }
     }
 
+    /// The type named `name` in `file`.
+    fn class_ty(&self, name: Option<String>, file: &Path) -> Ty {
+        let Some(name) = name else { return Ty::Unknown };
+        Ty::Class(name, self.type_context(file))
+    }
+
+    /// `file`, when its language tells same-named classes apart by where the
+    /// name is written.
+    fn type_context(&self, file: &Path) -> Option<PathBuf> {
+        let fd = self.files.get(file)?;
+        (fd.lang.visibility() == Visibility::Modules).then(|| file.to_path_buf())
+    }
+
+    /// The classes `name` refers to in `file` (imported, or declared there).
+    /// `None` when that is unknown, so every class with that name counts.
+    fn classes_seen_from(&self, name: &str, file: &Path) -> Option<Vec<(&PathBuf, &Def)>> {
+        let fd = self.files.get(file)?;
+        let all: Vec<(&PathBuf, &Def)> = self
+            .defs_named(fd.lang, name)
+            .into_iter()
+            .filter(|(_, _, d)| d.kind.is_class_like())
+            .map(|(p, _, d)| (p, d))
+            .collect();
+        let locs: Vec<Loc> = self.lookup_module_global(name, file, fd).into_iter().map(|r| r.loc).collect();
+        let seen: Vec<_> = all
+            .iter()
+            .copied()
+            .filter(|(p, d)| locs.iter().any(|l| &l.path == *p && l.start == d.start))
+            .collect();
+        if !seen.is_empty() {
+            return Some(seen);
+        }
+        // A nested class of this file.
+        let here: Vec<_> = all.into_iter().filter(|(p, _)| p.as_path() == file).collect();
+        (!here.is_empty()).then_some(here)
+    }
+
     /// `name` as a member of the receiver's class (walking supertypes), or
-    /// any member when the receiver's type is unknown.
-    fn lookup_members(&self, name: &str, recv: &Ty, from: &Path) -> Vec<Resolved> {
-        let defs = self.defs_named(name);
+    /// any member when the receiver's type is unknown. `lang` is the language
+    /// of the file asking.
+    fn lookup_members(&self, lang: &dyn Language, name: &str, recv: &Ty, from: &Path) -> Vec<Resolved> {
+        if let Ty::Module(m) = recv {
+            return self.resolve_import(lang, &format!("{m}.{name}"), 0);
+        }
+        // Only JVM-style languages call top-level functions as members.
+        let extensions = lang.visibility() == Visibility::Packages;
+        let defs = self.defs_named(lang, name);
         let rank = |mut v: Vec<(&PathBuf, &Def)>| {
             v.sort_by_key(|(p, _)| p.as_path() != from);
-            v.into_iter().map(|(p, d)| Self::resolved(p, d)).collect::<Vec<_>>()
+            v.into_iter().map(|(p, d)| self.resolved(p, d)).collect::<Vec<_>>()
         };
         let extensions_only = || {
+            if !extensions {
+                return Vec::new();
+            }
             rank(
                 defs.iter()
                     .filter(|(_, _, d)| d.container.is_none() && d.kind == DefKind::Function)
@@ -461,24 +593,32 @@ impl Index {
         if *recv == Ty::External {
             return extensions_only();
         }
-        if let Ty::Class(class) = recv {
-            let mut queue = vec![class.to_string()];
+        if let Ty::Class(class, ctx) = recv {
+            let mut queue = vec![(class.to_string(), ctx.clone())];
             let mut seen = HashSet::new();
-            while let Some(cls) = queue.pop() {
-                if !seen.insert(cls.clone()) || seen.len() > 32 {
+            while let Some((cls, ctx)) = queue.pop() {
+                if !seen.insert((cls.clone(), ctx.clone())) || seen.len() > 32 {
                     continue;
                 }
+                // Which declarations of `cls` this is, when the language can tell.
+                let classes = ctx.as_deref().and_then(|c| self.classes_seen_from(&cls, c));
+                let in_class = |p: &PathBuf| classes.as_ref().is_none_or(|cs| cs.iter().any(|(cp, _)| *cp == p));
                 let hits: Vec<_> = defs
                     .iter()
-                    .filter(|(_, _, d)| d.container.as_deref() == Some(cls.as_str()))
+                    .filter(|(p, _, d)| d.container.as_deref() == Some(cls.as_str()) && in_class(p))
                     .map(|(p, _, d)| (*p, *d))
                     .collect();
                 if !hits.is_empty() {
                     return rank(hits);
                 }
-                for (_, _, d) in self.defs_named(&cls) {
+                let decls: Vec<(&PathBuf, &Def)> = match &classes {
+                    Some(cs) => cs.clone(),
+                    None => self.defs_named(lang, &cls).into_iter().map(|(p, _, d)| (p, d)).collect(),
+                };
+                for (p, d) in decls {
                     if d.kind.is_class_like() {
-                        queue.extend(d.supertypes.iter().cloned());
+                        let ctx = self.type_context(p);
+                        queue.extend(d.supertypes.iter().map(|s| (s.clone(), ctx.clone())));
                     }
                 }
             }
@@ -488,7 +628,7 @@ impl Index {
         }
         rank(
             defs.iter()
-                .filter(|(_, _, d)| d.container.is_some() || d.kind == DefKind::Function)
+                .filter(|(_, _, d)| d.container.is_some() || (extensions && d.kind == DefKind::Function))
                 .map(|(p, _, d)| (*p, *d))
                 .collect(),
         )
@@ -504,11 +644,11 @@ impl Index {
         allow_members: bool,
         types_only: bool,
     ) -> Vec<Resolved> {
-        let mut defs = self.defs_named(name);
+        let mut defs = self.defs_named(fd.lang, name);
         // import a.b.Foo as Bar
         if let Some(imp) = fd.summary.imports.iter().find(|i| i.alias.as_deref() == Some(name)) {
             if let Some(last) = imp.path.rsplit('.').next() {
-                defs = self.defs_named(last);
+                defs = self.defs_named(fd.lang, last);
                 defs.retain(|(_, f, d)| fq_name(f, d) == imp.path);
             }
         }
@@ -555,7 +695,7 @@ impl Index {
         };
         defs.iter()
             .filter(|(p, f, d)| tier(p, f, d) == Some(best))
-            .map(|(p, _, d)| Self::resolved(p, d))
+            .map(|(p, _, d)| self.resolved(p, d))
             .collect()
     }
 
@@ -566,7 +706,7 @@ impl Index {
             if out.len() > 32 || !out.insert(c.clone()) {
                 continue;
             }
-            for (_, _, d) in self.defs_named(&c) {
+            for (_, _, d) in self.defs_named(fd.lang, &c) {
                 if d.kind.is_class_like() {
                     queue.extend(d.supertypes.iter().cloned());
                 }
@@ -574,6 +714,12 @@ impl Index {
         }
         out
     }
+}
+
+/// The name an import binds: `Bar` for `import a.Foo as Bar`, else the last
+/// part of the path.
+fn binding(i: &Import) -> &str {
+    i.alias.as_deref().unwrap_or_else(|| i.path.rsplit('.').next().unwrap_or(&i.path))
 }
 
 fn fq_name(f: &FileData, d: &Def) -> String {
