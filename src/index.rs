@@ -43,6 +43,10 @@ enum Ty {
     Class(String, Option<PathBuf>),
     /// A project module, by name (`m` after `import a.b as m`).
     Module(String),
+    /// Whatever the initializer of the declaration at this location is: an
+    /// untyped top-level `x = f()` in a [`Visibility::Modules`] language,
+    /// worked out only when `x` is used as a receiver.
+    Infer(Loc),
     /// Comes from a library: no project member can match.
     External,
     Unknown,
@@ -169,8 +173,15 @@ impl Index {
         files.sort_by(|a, b| a.0.cmp(b.0));
         for (path, fd) in files {
             if fd.lang.visibility() == Visibility::Modules && !fd.summary.package.is_empty() {
-                // `pkg.py` and `pkg/__init__.py`: the first one (sorted) wins.
-                self.modules.entry(fd.summary.package.clone()).or_insert_with(|| path.clone());
+                // `pkg.py` and `pkg/__init__.py`, or a Go package's files: the
+                // first one (sorted) wins, preferring files in the build.
+                let excluded = |p: &PathBuf| self.files.get(p).is_some_and(|f| f.summary.excluded);
+                match self.modules.get(&fd.summary.package) {
+                    Some(have) if !excluded(have) || fd.summary.excluded => {}
+                    _ => {
+                        self.modules.insert(fd.summary.package.clone(), path.clone());
+                    }
+                }
             }
             for (i, d) in fd.summary.defs.iter().enumerate() {
                 self.names
@@ -251,7 +262,8 @@ impl Index {
         let q = query.to_lowercase();
         let mut out = Vec::new();
         for (path, fd) in &self.files {
-            for d in &fd.summary.defs {
+            // Synthetic names (Go's anonymous structs) are not symbols.
+            for d in fd.summary.defs.iter().filter(|d| !d.name.contains('@')) {
                 if fuzzy_match(&d.name.to_lowercase(), &q) {
                     out.push((path.clone(), d.clone()));
                 }
@@ -274,18 +286,31 @@ impl Index {
             .is_some_and(|fd| fd.summary.defs.iter().any(|d| d.start == loc.start))
     }
 
+    /// [`Index::resolve_any`], preferring declarations from files that are
+    /// in the build when the asking file is, and the other way round, so a
+    /// name declared in both `binding.go` and its `//go:build nomsgpack`
+    /// twin has one answer.
     fn resolve(&self, path: &Path, fd: &FileData, t: &Target, depth: u32) -> Vec<Resolved> {
+        let all = self.resolve_any(path, fd, t, depth);
+        let excluded = |r: &Resolved| self.files.get(&r.loc.path).is_some_and(|f| f.summary.excluded);
+        let (same, other): (Vec<_>, Vec<_>) = all.into_iter().partition(|r| excluded(r) == fd.summary.excluded);
+        if same.is_empty() { other } else { same }
+    }
+
+    fn resolve_any(&self, path: &Path, fd: &FileData, t: &Target, depth: u32) -> Vec<Resolved> {
         let src = fd.text.as_str();
         let lang = fd.lang;
         let here = |s, e| Loc { path: path.to_path_buf(), start: s, end: e };
         if depth > MAX_DEPTH {
             return Vec::new();
         }
+        // Import paths can be strings (Go), so this comes before the
+        // identifier-only cases.
+        if let Some(fq) = lang.qualified_path(t.node, src) {
+            let fq = lang.absolute_import(&fq, path, &fd.summary);
+            return self.resolve_import(lang, &fq, 0);
+        }
         if lang.is_identifier(t.node) {
-            if let Some(fq) = lang.qualified_path(t.node, src) {
-                let fq = lang.absolute_import(&fq, path, &fd.summary);
-                return self.resolve_import(lang, &fq, 0);
-            }
             if lang.is_declaration_name(t.node) {
                 let ty = self.local_type(path, fd, t.node, depth);
                 return vec![Resolved { loc: here(t.start, t.end), ty }];
@@ -356,28 +381,65 @@ impl Index {
         if let Some(t) = indexed.and_then(|d| d.type_name.clone()) {
             return self.class_ty(Some(t), path);
         }
+        if let Some((over, first)) = fd.lang.range_element(name) {
+            let ty = self.type_of(path, fd, over, depth + 1);
+            return self.element_of(fd.lang, ty, first, depth);
+        }
         match fd.lang.decl_initializer(name) {
             Some(init) => self.type_of(path, fd, init, depth + 1),
             None => Ty::Unknown,
         }
     }
 
+    /// The element type of a container type (see [`Language::element_type`]),
+    /// following named types to what they are declared as (`type Routes
+    /// []Route`).
+    fn element_of(&self, lang: &dyn Language, ty: Ty, first: bool, depth: u32) -> Ty {
+        let ty = self.settle(ty, depth);
+        let Ty::Class(name, ctx) = ty else {
+            return if ty == Ty::External { Ty::External } else { Ty::Unknown };
+        };
+        let mut queue = vec![(name, ctx)];
+        let mut seen = HashSet::new();
+        while let Some((name, ctx)) = queue.pop() {
+            if !seen.insert((name.clone(), ctx.clone())) || seen.len() > 16 {
+                continue;
+            }
+            if let Some(e) = lang.element_type(&name, first) {
+                return Ty::Class(e, ctx);
+            }
+            let Some(classes) = ctx.as_deref().and_then(|c| self.classes_seen_from(&name, c)) else { continue };
+            for (p, d) in classes {
+                queue.extend(d.supertypes.iter().map(|s| (s.clone(), self.type_context(p))));
+            }
+        }
+        Ty::Unknown
+    }
+
     /// `label` in `callee(label = x)`: the callee's parameter.
     fn named_argument(&self, path: &Path, fd: &FileData, call: Node, label: &str, depth: u32) -> Vec<Resolved> {
         let Some(callee) = fd.lang.callee_name(call) else { return Vec::new() };
-        let t = self.target_for(fd, callee);
         let mut out = Vec::new();
-        for r in self.resolve(path, fd, &t, depth + 1) {
-            let Some(f) = self.files.get(&r.loc.path) else { continue };
-            let Some(name) = f.tree.root_node().descendant_for_byte_range(r.loc.start, r.loc.end) else { continue };
-            for p in f.lang.params_of(name, &f.text) {
+        let mut params = |f: &FileData, at: &Path, decl: Node| {
+            for p in f.lang.params_of(decl, &f.text) {
                 if lang::text(p, &f.text) == label {
                     out.push(Resolved {
-                        loc: Loc { path: r.loc.path.clone(), start: p.start_byte(), end: p.end_byte() },
-                        ty: self.class_ty(f.lang.decl_type_name(p, &f.text), &r.loc.path),
+                        loc: Loc { path: at.to_path_buf(), start: p.start_byte(), end: p.end_byte() },
+                        ty: self.class_ty(f.lang.decl_type_name(p, &f.text), at),
                     });
                 }
             }
+        };
+        // Not a name: the callee is its own declaration (Go's `struct{...}`).
+        if !fd.lang.is_identifier(callee) {
+            params(fd, path, callee);
+            return out;
+        }
+        let t = self.target_for(fd, callee);
+        for r in self.resolve(path, fd, &t, depth + 1) {
+            let Some(f) = self.files.get(&r.loc.path) else { continue };
+            let Some(name) = f.tree.root_node().descendant_for_byte_range(r.loc.start, r.loc.end) else { continue };
+            params(f, &r.loc.path, name);
         }
         out
     }
@@ -414,7 +476,7 @@ impl Index {
                 let t = self.target_for(fd, n);
                 let hits = self.resolve(path, fd, &t, depth + 1);
                 if let Some(ty) = likely_type(&hits, path) {
-                    return ty;
+                    return self.settle(ty, depth);
                 }
                 // Not in the project: a library class (Modifier) or value.
                 if lang.looks_like_type_name(t.name) {
@@ -427,10 +489,26 @@ impl Index {
             Expr::Call(callee) => self.type_of(path, fd, callee, depth + 1),
             Expr::Member(name) => {
                 let t = self.target_for(fd, name);
-                likely_type(&self.resolve(path, fd, &t, depth + 1), path).unwrap_or(Ty::External)
+                let ty = likely_type(&self.resolve(path, fd, &t, depth + 1), path).unwrap_or(Ty::External);
+                self.settle(ty, depth)
             }
             Expr::Wrapper(inner) => self.type_of(path, fd, inner, depth + 1),
+            Expr::Index(container) => {
+                let ty = self.type_of(path, fd, container, depth + 1);
+                self.element_of(lang, ty, false, depth)
+            }
             Expr::Unknown => Ty::Unknown,
+        }
+    }
+
+    /// Works out a [`Ty::Infer`].
+    fn settle(&self, ty: Ty, depth: u32) -> Ty {
+        let Ty::Infer(loc) = ty else { return ty };
+        let Some(fd) = self.files.get(&loc.path) else { return Ty::Unknown };
+        let name = fd.tree.root_node().descendant_for_byte_range(loc.start, loc.end);
+        match name.and_then(|n| fd.lang.decl_initializer(n)) {
+            Some(init) => self.type_of(&loc.path, fd, init, depth + 1),
+            None => Ty::Unknown,
         }
     }
 
@@ -495,22 +573,39 @@ impl Index {
     }
 
     /// A bare name in a [`Visibility::Modules`] file that no enclosing scope
-    /// declares: the file's own top level, then its imports.
+    /// declares: the file's own top level, the rest of its module's (a Go
+    /// package's other files), then its imports.
     fn lookup_module_global(&self, name: &str, from: &Path, fd: &FileData) -> Vec<Resolved> {
-        let own: Vec<Resolved> = self
+        let top: Vec<_> = self
             .defs_named(fd.lang, name)
             .into_iter()
-            .filter(|(p, _, d)| p.as_path() == from && d.container.is_none())
-            .map(|(p, _, d)| self.resolved(p, d))
+            .filter(|(_, _, d)| d.container.is_none())
             .collect();
+        let pick = |keep: &dyn Fn(&Path) -> bool| -> Vec<Resolved> {
+            top.iter()
+                .filter(|(p, _, _)| keep(p))
+                .map(|(p, _, d)| self.resolved(p, d))
+                .collect()
+        };
+        let own = pick(&|p| p == from);
         if !own.is_empty() {
             return own;
         }
-        for imp in fd.summary.imports.iter().filter(|i| !i.star && binding(i) == name) {
-            let hits = self.resolve_import(fd.lang, &imp.path, 0);
-            if !hits.is_empty() {
-                return hits;
-            }
+        // A name this file imports is that import, even from outside the
+        // project. Go forbids a package-level name that clashes with it, so
+        // a same-named one in another file of the module is from another
+        // build (`var json` in a `//go:build jsoniter` file).
+        let bound: Vec<_> = fd.summary.imports.iter().filter(|i| !i.star && binding(i) == name).collect();
+        if !bound.is_empty() {
+            return bound
+                .iter()
+                .map(|imp| self.resolve_import(fd.lang, &imp.path, 0))
+                .find(|hits| !hits.is_empty())
+                .unwrap_or_default();
+        }
+        let module = pick(&|p| self.same_module(p, from));
+        if !module.is_empty() {
+            return module;
         }
         for imp in fd.summary.imports.iter().filter(|i| i.star) {
             let hits = self.resolve_import(fd.lang, &format!("{}.{name}", imp.path), 0);
@@ -522,10 +617,24 @@ impl Index {
     }
 
     fn resolved(&self, path: &Path, d: &Def) -> Resolved {
-        Resolved {
-            loc: Loc { path: path.to_path_buf(), start: d.start, end: d.end },
-            ty: self.class_ty(d.type_name.clone(), path),
+        let loc = Loc { path: path.to_path_buf(), start: d.start, end: d.end };
+        let ty = match &d.type_name {
+            None if d.kind == DefKind::Property && self.type_context(path).is_some() => Ty::Infer(loc.clone()),
+            t => self.class_ty(t.clone(), path),
+        };
+        Resolved { loc, ty }
+    }
+
+    /// Two files of one [`Visibility::Modules`] module.
+    fn same_module(&self, a: &Path, b: &Path) -> bool {
+        if a == b {
+            return true;
         }
+        let (Some(fa), Some(fb)) = (self.files.get(a), self.files.get(b)) else { return false };
+        fa.lang.family() == fb.lang.family()
+            && fa.lang.visibility() == Visibility::Modules
+            && !fa.summary.package.is_empty()
+            && fa.summary.package == fb.summary.package
     }
 
     /// The type named `name` in `file`.
@@ -542,16 +651,29 @@ impl Index {
     }
 
     /// The classes `name` refers to in `file` (imported, or declared there).
-    /// `None` when that is unknown, so every class with that name counts.
+    /// `None` when that is unknown, so every class with that name counts. A
+    /// qualified name (`models.Circle`) is looked up in the module its
+    /// qualifier names; a qualifier from outside the project names no class.
     fn classes_seen_from(&self, name: &str, file: &Path) -> Option<Vec<(&PathBuf, &Def)>> {
         let fd = self.files.get(file)?;
+        let (base, found) = match name.rsplit_once('.') {
+            Some((qual, base)) => {
+                let module = self.lookup_module_global(qual, file, fd).into_iter().find_map(|r| match r.ty {
+                    Ty::Module(m) => Some(m),
+                    _ => None,
+                });
+                let Some(m) = module else { return Some(Vec::new()) };
+                (base, self.resolve_import(fd.lang, &format!("{m}.{base}"), 0))
+            }
+            None => (name, self.lookup_module_global(name, file, fd)),
+        };
         let all: Vec<(&PathBuf, &Def)> = self
-            .defs_named(fd.lang, name)
+            .defs_named(fd.lang, base)
             .into_iter()
             .filter(|(_, _, d)| d.kind.is_class_like())
             .map(|(p, _, d)| (p, d))
             .collect();
-        let locs: Vec<Loc> = self.lookup_module_global(name, file, fd).into_iter().map(|r| r.loc).collect();
+        let locs: Vec<Loc> = found.into_iter().map(|r| r.loc).collect();
         let seen: Vec<_> = all
             .iter()
             .copied()
@@ -600,12 +722,19 @@ impl Index {
                 if !seen.insert((cls.clone(), ctx.clone())) || seen.len() > 32 {
                     continue;
                 }
-                // Which declarations of `cls` this is, when the language can tell.
+                // Which declarations of `cls` this is, when the language can
+                // tell. Their members may be in other files of their module
+                // (Go methods).
                 let classes = ctx.as_deref().and_then(|c| self.classes_seen_from(&cls, c));
-                let in_class = |p: &PathBuf| classes.as_ref().is_none_or(|cs| cs.iter().any(|(cp, _)| *cp == p));
+                let base = match ctx {
+                    Some(_) => cls.rsplit('.').next().unwrap_or(&cls),
+                    None => cls.as_str(),
+                };
+                let in_class =
+                    |p: &PathBuf| classes.as_ref().is_none_or(|cs| cs.iter().any(|(cp, _)| self.same_module(cp, p)));
                 let hits: Vec<_> = defs
                     .iter()
-                    .filter(|(p, _, d)| d.container.as_deref() == Some(cls.as_str()) && in_class(p))
+                    .filter(|(p, _, d)| d.container.as_deref() == Some(base) && in_class(p))
                     .map(|(p, _, d)| (*p, *d))
                     .collect();
                 if !hits.is_empty() {
@@ -613,7 +742,7 @@ impl Index {
                 }
                 let decls: Vec<(&PathBuf, &Def)> = match &classes {
                     Some(cs) => cs.clone(),
-                    None => self.defs_named(lang, &cls).into_iter().map(|(p, _, d)| (p, d)).collect(),
+                    None => self.defs_named(lang, base).into_iter().map(|(p, _, d)| (p, d)).collect(),
                 };
                 for (p, d) in decls {
                     if d.kind.is_class_like() {

@@ -5,7 +5,7 @@ find-references using tree-sitter and the files in your workspace. No
 compiler, no build sync, no type checker. Starts in a fraction of a second.
 
 **Languages:** Kotlin and Java, including mixed projects where each calls the
-other, and Python. The goal is any language with a tree-sitter grammar; see
+other, Python, and Go. The goal is any language with a tree-sitter grammar; see
 [Roadmap](#roadmap).
 
 ## What it does (Kotlin)
@@ -75,6 +75,49 @@ for Java getters (`thing.name` for `getName()`) does not resolve yet.
 Python files never resolve to Kotlin or Java declarations, or the other way
 round.
 
+## What it does (Go)
+
+- Block scopes, with a local visible only after its declaration: `:=`, `var`,
+  `const`, local types, `if`/`switch`/`for` initializers, `range`
+  variables, `case v := <-ch`, type switch aliases (in their cases), closure
+  parameters, named results, labels, and type parameters (including the
+  ones a generic receiver declares, `func (b *Box[T])`). `a, err := f()`
+  reuses an `err` declared earlier in the same block, as Go does.
+- A package is a directory, named by its import path: the `module` line of
+  the nearest `go.mod` plus the directory under it (`vendor/` paths drop
+  the prefix). Its files see each other's top-level names. An external test
+  package (`package foo_test`) is separate from `foo`.
+- Imports bind a package name (the alias, or the last element of the path,
+  skipping `/v2` and `yaml.v3`-style version suffixes) used as a qualifier:
+  `models.NewCircle()`, `*models.Circle`. Dot imports put the package's
+  names in scope. Import paths, aliases and package clauses resolve to the
+  package (its first file).
+- Methods belong to their receiver's type wherever they are declared in the
+  package, alongside struct fields and interface methods. Embedded fields
+  and interfaces are supertypes, so promoted members resolve
+  (`c.Name()` through an embedded `Base`).
+- Types come from declarations, `T{...}`, `&T{...}`, `new(T)`, conversions,
+  type assertions, and function and method results (the first of several).
+  Slice, map and channel types keep their element types, so `range`,
+  `xs[i]`, `m[k]` and `<-ch` are typed whatever the container comes from
+  (a field, a call, a named type such as `type Routes []Route`). Untyped
+  package-level `var x = f()` is typed from its initializer when it is used
+  as a receiver. A `const` group's implicit repetitions keep the type
+  (`Green` after `Red Color = iota`).
+- Anonymous structs have members too, so table-driven tests work:
+  `tt.name` in `for _, tt := range tests`, where `tests := []struct{ name
+  string }{{name: "a"}}`, goes to the field, and so does the `name:` key.
+- Build constraints: files left out of a plain `go build` on this machine
+  (`//go:build nomsgpack`, `_windows.go`) are still indexed, but a name
+  declared in both such a file and its twin goes to the twin that is in
+  the build. The blank identifier `_` names nothing.
+- Same-named types in different packages stay apart: a type name keeps its
+  qualifier and is read in the file it was written in.
+- Keys of struct literals go to the field, including elided element
+  literals (`[]Point{{X: 1}}`). Map literal keys stay expressions.
+
+Go files only resolve to Go declarations.
+
 ## Limits
 
 When a type can't be inferred (e.g. untyped lambda params), member lookups fall
@@ -93,6 +136,16 @@ concurrent: 100 files, 68k identifiers), 81% resolve to exactly one
 declaration and 3% to several; most of the rest are builtins and modules
 outside the sample.
 
+Go: in `a, err := f()` only `a` gets a type (the index records a function's
+first result only), so `err.Error()` matches every project `Error` method.
+A type switch alias (`v` in `case *Circle:`) has no type. A package whose
+name differs from the last element of its import path is only found
+through an alias. Standard library and module cache packages are not
+indexed, so their names resolve to nothing. On gin (99 files, 50k
+identifiers) 63% resolve to exactly one declaration and 7 identifiers to
+several; on caddy (414 files, 207k identifiers) 69% and 0.1%. Nearly all of
+the rest are standard library and dependency names.
+
 ## Install
 
 ```sh
@@ -108,7 +161,8 @@ cargo install --path . --root ~/.local   # puts scopehop in ~/.local/bin
 "languages": {
   "Kotlin": { "language_servers": ["scopehop"] },
   "Java": { "language_servers": ["scopehop"] },
-  "Python": { "language_servers": ["scopehop"] }
+  "Python": { "language_servers": ["scopehop"] },
+  "Go": { "language_servers": ["scopehop", "..."] }
 }
 ```
 
@@ -131,24 +185,26 @@ Three parts of the trait decide how a language fits the shared index:
 - `family()`: languages in the same family see each other's declarations
   (Kotlin and Java are `"jvm"`). Others are never candidates.
 - `visibility()`: `Packages` (JVM: same package visible, inherited members
-  visible bare, top-level functions as extension members) or `Modules` (one
-  module per file, imports and re-exports, modules as receivers).
+  visible bare, top-level functions as extension members) or `Modules` (a
+  module is a file in Python or a directory in Go; imports and re-exports,
+  modules as receivers, type names read in the file that wrote them).
 - `place()` and `absolute_import()`: fill in what depends on the file's
-  location, such as a module name from the path and absolute paths for
-  relative imports.
+  location, such as a module name from the path (or `go.mod`) and absolute
+  paths for relative imports.
 
-TypeScript/JavaScript and Rust should fit `Modules` with their own `place()`;
-Go needs package-qualified access (`fmt.Println`) on top of `Packages`.
+TypeScript/JavaScript and Rust should fit `Modules` with their own
+`place()`.
 
 ## Layout
 
 - `src/lang.rs`: the `Language` trait, the shared declaration model and the
   language registry
-- `src/kotlin.rs`, `src/java.rs`, `src/python.rs`: the implementations
+- `src/kotlin.rs`, `src/java.rs`, `src/python.rs`, `src/go.rs`: the
+  implementations
   (declarations, scopes, type hints)
 - `src/index.rs`: workspace index and resolution, language-neutral
 - `src/snapshot.rs`: text dump of everything the index resolves, for tests
-- `tests/`: resolution tests over small Kotlin, Java, mixed and Python
+- `tests/`: resolution tests over small Kotlin, Java, mixed, Python and Go
   projects in `tests/fixtures/`, plus a snapshot of every lookup in each
 - `src/main.rs`: LSP over stdio (`lsp-server`)
 - `zed/`: Zed extension that launches the server
@@ -167,8 +223,8 @@ cargo run --release --example stats -- <root>
 cargo test
 ```
 
-`tests/kotlin.rs`, `tests/java.rs`, `tests/mixed.rs` and `tests/python.rs`
-each check specific lookups in their project under `tests/fixtures/` (scopes,
+`tests/kotlin.rs`, `tests/java.rs`, `tests/mixed.rs`, `tests/python.rs` and
+`tests/go.rs` each check specific lookups in their project under `tests/fixtures/` (scopes,
 members, imports, packages, references) and compare every lookup in it against
 `tests/snapshots/<name>.txt`. After an intended change, accept the new
 snapshots and review their diff:

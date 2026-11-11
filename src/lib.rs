@@ -1,3 +1,4 @@
+pub mod go;
 pub mod index;
 pub mod java;
 pub mod kotlin;

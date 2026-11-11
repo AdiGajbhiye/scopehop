@@ -5,19 +5,21 @@
 //!
 //! The shared data model ([`Summary`], [`Def`], [`Import`]) is a package plus
 //! imports model. [`Visibility`] says how a language reads it: JVM packages
-//! (many files share one, members are visible bare) or one module per file
-//! (Python: only the file's own names and what it imports).
+//! (many files share one, members are visible bare) or modules (Python's
+//! files, Go's package directories: only the module's own names and what the
+//! file imports).
 
 use std::path::{Path, PathBuf};
 
 use tree_sitter::Node;
 
+use crate::go::Go;
 use crate::java::Java;
 use crate::kotlin::Kotlin;
 use crate::python::Python;
 
 /// Every language scopehop understands, picked by file extension.
-pub static LANGUAGES: &[&dyn Language] = &[&Kotlin, &Java, &Python];
+pub static LANGUAGES: &[&dyn Language] = &[&Kotlin, &Java, &Python, &Go];
 
 pub fn for_path(path: &Path) -> Option<&'static dyn Language> {
     let ext = path.extension()?.to_str()?;
@@ -93,10 +95,13 @@ pub enum Visibility {
     /// declarations, inherited members are visible as bare names, and
     /// top-level functions can be called as members (extension functions).
     Packages,
-    /// Python: every file is a module named by [`Summary::package`]. A bare
-    /// name is the file's own or imported (`from m import x`, `import m`,
-    /// `from m import *`), and imports follow re-exports. A module can be a
-    /// receiver (`m.x`).
+    /// Python and Go: every file belongs to the module named by
+    /// [`Summary::package`] (one file in Python, a directory in Go). A bare
+    /// name is the file's own, its module's, or imported (`from m import x`,
+    /// `import m`, `from m import *`, Go's dot imports), and imports follow
+    /// re-exports. A module can be a receiver (`m.x`). Type names may be
+    /// qualified as written (`models.Circle`), read from the file that
+    /// wrote them.
     Modules,
 }
 
@@ -105,6 +110,11 @@ pub struct Summary {
     pub package: String,
     pub imports: Vec<Import>,
     pub defs: Vec<Def>,
+    /// Left out of a plain build (Go build constraints such as
+    /// `//go:build nomsgpack` or a `_windows.go` name). Such files are still
+    /// indexed, but lookups from other files prefer their twins that are in
+    /// the build.
+    pub excluded: bool,
 }
 
 /// What a scope walk found for a name.
@@ -132,6 +142,8 @@ pub enum Expr<'t> {
     Member(Node<'t>),
     /// A wrapper with the same type as its only child: `(x)`, `x!!`.
     Wrapper(Node<'t>),
+    /// An element of a container: `xs[i]`, Go's `<-ch`. Holds the container.
+    Index(Node<'t>),
     Unknown,
 }
 
@@ -221,6 +233,20 @@ pub trait Language: Sync {
 
     /// The initializer expression of a declared name (`foo` in `val x = foo`).
     fn decl_initializer<'t>(&self, name: Node<'t>) -> Option<Node<'t>>;
+
+    /// For a loop variable, the expression it ranges over, and whether it
+    /// is the first of the loop's variables (Go's `k` in `for k, v := range
+    /// xs`).
+    fn range_element<'t>(&self, _name: Node<'t>) -> Option<(Node<'t>, bool)> {
+        None
+    }
+
+    /// What ranging over or indexing a value of the type `container` (as
+    /// the language writes type names) gives: the key when `first` is set,
+    /// the value otherwise. `None` when it is not a container type.
+    fn element_type(&self, _container: &str, _first: bool) -> Option<String> {
+        None
+    }
 
     /// What kind of expression `expr` is, for type inference.
     fn classify_expr<'t>(&self, expr: Node<'t>, src: &str) -> Expr<'t>;
