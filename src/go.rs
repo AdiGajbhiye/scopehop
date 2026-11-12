@@ -1053,7 +1053,7 @@ impl Language for Go {
         decl_initializer(name)
     }
 
-    fn range_element<'t>(&self, name: Node<'t>) -> Option<(Node<'t>, bool)> {
+    fn range_element<'t>(&self, name: Node<'t>, _src: &str) -> Option<(Node<'t>, bool)> {
         let list = name.parent()?;
         let clause = list.parent()?;
         (clause.kind() == "range_clause" && is_field(clause, "left", list)).then_some(())?;

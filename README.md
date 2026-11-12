@@ -5,7 +5,7 @@ find-references using tree-sitter and the files in your workspace. No
 compiler, no build sync, no type checker. Starts in a fraction of a second.
 
 **Languages:** Kotlin and Java, including mixed projects where each calls the
-other, Python, Go, and TypeScript/JavaScript (including TSX and JSX). The goal is any language with a tree-sitter grammar; see
+other, Python, Go, TypeScript/JavaScript (including TSX and JSX), and C#. The goal is any language with a tree-sitter grammar; see
 [Roadmap](#roadmap).
 
 ## What it does (Kotlin)
@@ -44,6 +44,11 @@ The same requests, with the same rules where Java has them:
 Kotlin and Java files share one index, so `import com.example.JavaThing` in
 Kotlin and `new KotlinThing()` in Java both resolve. Kotlin's property syntax
 for Java getters (`thing.name` for `getName()`) does not resolve yet.
+
+In both, classes with the same name in different packages stay apart when
+a file sees only one of them (its own, its package's, or an imported one),
+an `import ... as` alias works as a type, and an inherited member declared
+lower in the hierarchy (an override) wins over the one it overrides.
 
 ## What it does (Python)
 
@@ -160,6 +165,53 @@ Go files only resolve to Go declarations.
 TypeScript and JavaScript files resolve to each other's declarations and to
 nothing else. `node_modules` is never indexed.
 
+## What it does (C#)
+
+- Scopes: locals declared earlier in the block, local functions (visible
+  in the whole block), lambda and method parameters, `for`/`foreach`,
+  `catch`, `using`, LINQ query variables (`from`, `let`, `join`, `into`),
+  type parameters, primary constructor parameters, and setters' `value`.
+  Pattern and `out` variables (`o is Circle c`, `case Point p`, `out var
+  n`) are visible where C# puts them: past an `if` or expression statement
+  into the rest of the block, along `&&`, into a switch arm.
+- Namespaces are packages. `using N;`, `using static N.C;`, `using A =
+  N.C;` (a namespace alias too: `A.Circle`), parent namespaces, file-scoped
+  and nested namespaces. A namespace's own types win over `using`
+  directives, as in C#. `global using` and the project file's `<Using
+  Include="..."/>` items apply to the files of their project (the nearest
+  `.csproj`) only. Fully qualified names in code (`Shop.Models.Circle`)
+  resolve.
+- Members of classes, structs, interfaces, records (positional parameters
+  are properties) and enums; partial classes (a bare name in one part finds
+  members of the others; go to definition picks the main part: the file
+  named after the class, or the part that names the supertypes). Extension
+  methods are found on their receiver (`"hi".Shout()`), and only when called.
+- Types come from declarations, `var x = new Foo()`, target-typed `new()`,
+  casts, `as`, `default(T)`, return types, properties, `where T : IShape`
+  constraints, and `Func<A, R>`/`Action<A>` for lambda parameters.
+  Generic arguments are kept, so `foreach`, `xs[i]` and `await` give
+  `List<T>`/`T[]`/`Dictionary<K, V>`/`Task<T>` element types. LINQ (and
+  Entity Framework) calls keep their element type: `xs.Where(x =>
+  ...).First()` is an element of `xs`, and so is `x`. A lambda passed to a
+  method on any type with one generic argument takes that argument
+  (`repo.Find(u => ...)` on `IRepository<User>`, `builder.Property(o =>
+  ...)` on `EntityTypeBuilder<Order>`), and so does one passed to a bare
+  call in a class whose base has one (FluentValidation's `RuleFor(x =>
+  ...)`). `Get<Foo>()` returns a `Foo` (a `Task<Foo>` when it is
+  `...Async`).
+- Overloads are told apart by argument count (including optional and
+  `params` parameters, and an extension method's receiver), and generic
+  types by their number of type arguments (`Box` and `Box<T>`). Named
+  arguments go to the parameter, including constructors' (`new
+  Circle(radius: 2)`), and object initializer keys (`new Circle { Radius =
+  1 }`, `with { X = 1 }`) to the member.
+- tree-sitter-c-sharp only parses preprocessor directives between whole
+  declarations and statements. A file that doesn't parse is parsed again
+  with only the first branch of each `#if` kept and every directive line
+  blanked (same length, same lines), and the better tree is kept.
+
+C# files only resolve to C# declarations.
+
 ## Limits
 
 When a type can't be inferred (e.g. untyped lambda params), member lookups fall
@@ -202,6 +254,20 @@ identifiers) 65% resolve to exactly one declaration and 2.2% to several;
 on taxonomy, a Next.js app (131 files), 49% and 1.2%. Nearly all of the
 rest are names from libraries, the DOM and test frameworks.
 
+C#: overloads with the same number of parameters (`WriteValue(int)` and
+`WriteValue(long)`) all match, as nothing is typed by its arguments. A
+lambda assigned to a project delegate type (`Measure m = s => ...`) has an
+untyped parameter, and so does one passed to a project method that takes a
+delegate. An untyped receiver's members match every project member with
+that name (in the class's own namespace when the type is known). Members of
+anonymous types and `dynamic` don't resolve, attribute names
+(`[Required]`) don't reach their `...Attribute` class, and assemblies
+(NuGet packages, the base class library) are not indexed. On eShop (547
+files, 40k identifiers) 55% resolve to exactly one declaration and 0.45%
+to several; on Newtonsoft.Json (951 files, 229k identifiers) 66% and
+2.2%, nearly all of those being overloads that differ only by parameter
+types. Nearly all of the rest are base class library and NuGet names.
+
 ## Install
 
 ```sh
@@ -221,7 +287,8 @@ cargo install --path . --root ~/.local   # puts scopehop in ~/.local/bin
   "Go": { "language_servers": ["scopehop", "..."] },
   "TypeScript": { "language_servers": ["scopehop", "..."] },
   "TSX": { "language_servers": ["scopehop", "..."] },
-  "JavaScript": { "language_servers": ["scopehop", "..."] }
+  "JavaScript": { "language_servers": ["scopehop", "..."] },
+  "CSharp": { "language_servers": ["scopehop", "..."] }
 }
 ```
 
@@ -243,14 +310,15 @@ Three parts of the trait decide how a language fits the shared index:
 
 - `family()`: languages in the same family see each other's declarations
   (Kotlin and Java are `"jvm"`). Others are never candidates.
-- `visibility()`: `Packages` (JVM: same package visible, inherited members
-  visible bare, top-level functions as extension members) or `Modules` (a
+- `visibility()`: `Packages` (JVM and C# namespaces: same package visible,
+  inherited members visible bare, top-level functions as extension members) or `Modules` (a
   module is a file in Python and TypeScript or a directory in Go; imports
   and re-exports, modules as receivers, type names read in the file that
   wrote them).
 - `place()` and `absolute_import()`: fill in what depends on the file's
   location, such as a module name from the path (or `go.mod`), absolute
-  paths for relative imports, and `tsconfig.json` path aliases.
+  paths for relative imports, `tsconfig.json` path aliases, and the C#
+  project a file belongs to.
 
 Rust should fit `Modules` with its own `place()`.
 
@@ -259,17 +327,18 @@ Rust should fit `Modules` with its own `place()`.
 - `src/lang.rs`: the `Language` trait, the shared declaration model and the
   language registry
 - `src/kotlin.rs`, `src/java.rs`, `src/python.rs`, `src/go.rs`,
-  `src/typescript.rs`: the implementations
+  `src/typescript.rs`, `src/csharp.rs`: the implementations
   (declarations, scopes, type hints)
 - `src/index.rs`: workspace index and resolution, language-neutral
 - `src/snapshot.rs`: text dump of everything the index resolves, for tests
-- `tests/`: resolution tests over small Kotlin, Java, mixed, Python, Go and
-  TypeScript projects in `tests/fixtures/`, plus a snapshot of every lookup in each
+- `tests/`: resolution tests over small Kotlin, Java, mixed, Python, Go,
+  TypeScript and C# projects in `tests/fixtures/`, plus a snapshot of every lookup in each
 - `src/main.rs`: LSP over stdio (`lsp-server`)
 - `zed/`: Zed extension that launches the server
 - `examples/`: `probe` (one lookup from the CLI), `stats` (resolve every
   identifier in a project), `snapshot` (dump every lookup in a project, to
-  diff two builds), `dump` (print a syntax tree)
+  diff two builds), `dump` (print a syntax tree), `errcount` (files that
+  don't parse, before and after `repair()`)
 
 ```sh
 cargo run --release --example probe -- <root> <file> <line> <col> [def|refs]
@@ -283,7 +352,7 @@ cargo test
 ```
 
 `tests/kotlin.rs`, `tests/java.rs`, `tests/mixed.rs`, `tests/python.rs`,
-`tests/go.rs` and `tests/typescript.rs` each check specific lookups in their project under `tests/fixtures/` (scopes,
+`tests/go.rs`, `tests/typescript.rs` and `tests/csharp.rs` each check specific lookups in their project under `tests/fixtures/` (scopes,
 members, imports, packages, references) and compare every lookup in it against
 `tests/snapshots/<name>.txt`. After an intended change, accept the new
 snapshots and review their diff:

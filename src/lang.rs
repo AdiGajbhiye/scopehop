@@ -13,6 +13,7 @@ use std::path::{Path, PathBuf};
 
 use tree_sitter::Node;
 
+use crate::csharp::CSharp;
 use crate::go::Go;
 use crate::java::Java;
 use crate::kotlin::Kotlin;
@@ -20,7 +21,7 @@ use crate::python::Python;
 use crate::typescript::{Tsx, TypeScript};
 
 /// Every language scopehop understands, picked by file extension.
-pub static LANGUAGES: &[&dyn Language] = &[&Kotlin, &Java, &Python, &Go, &TypeScript, &Tsx];
+pub static LANGUAGES: &[&dyn Language] = &[&Kotlin, &Java, &Python, &Go, &TypeScript, &Tsx, &CSharp];
 
 pub fn for_path(path: &Path) -> Option<&'static dyn Language> {
     let ext = path.extension()?.to_str()?;
@@ -117,6 +118,12 @@ pub struct Summary {
     /// indexed, but lookups from other files prefer their twins that are in
     /// the build.
     pub excluded: bool,
+    /// Imports that apply to every file of the same [`Summary::project`]
+    /// (C#'s `global using`).
+    pub global_imports: Vec<Import>,
+    /// The build project the file belongs to (C#: the directory of the
+    /// nearest `.csproj`), set by [`Language::place`].
+    pub project: Option<PathBuf>,
 }
 
 /// What a scope walk found for a name.
@@ -126,6 +133,18 @@ pub enum Scoped<'t> {
     /// A name declared without any identifier, e.g. Kotlin's implicit `it`.
     /// Holds the node that introduces it (the lambda).
     Implicit(Node<'t>),
+}
+
+/// How a name is used, for choosing between overloads.
+pub enum Usage {
+    Unknown,
+    /// Called with this many arguments.
+    Called(usize),
+    /// Not called (a value, or a method group).
+    NotCalled,
+    /// A type written with this many type arguments (`Foo<A, B>` is 2,
+    /// `Foo` is 0), where types of different arity are different types.
+    TypeArgs(usize),
 }
 
 /// The parts of an expression that type inference cares about.
@@ -169,6 +188,21 @@ pub trait Language: Sync {
 
     fn visibility(&self) -> Visibility {
         Visibility::Packages
+    }
+
+    /// For [`Visibility::Packages`]: the file's own package wins over its
+    /// imports when both declare a name (C#, where a namespace's types and
+    /// its parents' beat `using` directives). Kotlin and Java rank explicit
+    /// imports first.
+    fn package_before_imports(&self) -> bool {
+        false
+    }
+
+    /// A bare name may be a member of a receiver the scope walk cannot see
+    /// (Kotlin's `apply { ... }`), so any class's member is a last resort.
+    /// C# has no such receivers.
+    fn hidden_receivers(&self) -> bool {
+        true
     }
 
     // --- Indexing ----------------------------------------------------------
@@ -230,6 +264,15 @@ pub trait Language: Sync {
         None
     }
 
+    /// For the last name in a dotted chain of plain names (`C` in `A.B.C`,
+    /// as an expression or a type), the whole chain. When the usual lookup
+    /// through the receiver finds nothing, the chain may be a namespace path
+    /// (C#'s `Shop.Models.Circle`, or `Alias.Circle` with `using Alias =
+    /// Shop.Models;`).
+    fn dotted_path(&self, _ident: Node, _src: &str) -> Option<String> {
+        None
+    }
+
     // --- Scopes ------------------------------------------------------------
 
     /// Walks outwards from `from` to the local declaration of `name`. Stops
@@ -248,8 +291,9 @@ pub trait Language: Sync {
 
     /// For a loop variable, the expression it ranges over, and whether it
     /// is the first of the loop's variables (Go's `k` in `for k, v := range
-    /// xs`).
-    fn range_element<'t>(&self, _name: Node<'t>) -> Option<(Node<'t>, bool)> {
+    /// xs`). Also for a name that takes an element some other way (C#'s `x`
+    /// in `xs.Where(x => ...)`).
+    fn range_element<'t>(&self, _name: Node<'t>, _src: &str) -> Option<(Node<'t>, bool)> {
         None
     }
 
@@ -264,6 +308,20 @@ pub trait Language: Sync {
     /// the language writes type names) gives: the key when `first` is set,
     /// the value otherwise. `None` when it is not a container type.
     fn element_type(&self, _container: &str, _first: bool) -> Option<String> {
+        None
+    }
+
+    /// How the name `ident` is used: called (with how many arguments) or
+    /// not. Used to pick overloads by [`Language::arity`], and, where
+    /// extension functions must be called (C#), to rule them out.
+    fn usage(&self, _ident: Node) -> Usage {
+        Usage::Unknown
+    }
+
+    /// How many arguments the function whose name is given takes: required
+    /// and at most (`None` for a variable number). For a type that
+    /// [`Usage::TypeArgs`] can pick, its number of type parameters.
+    fn arity(&self, _decl_name: Node, _src: &str) -> Option<(usize, Option<usize>)> {
         None
     }
 

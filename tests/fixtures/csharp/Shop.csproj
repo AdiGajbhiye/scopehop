@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <Using Include="Shop.Util.Mathx" Static="true" />
+  </ItemGroup>
+</Project>

@@ -1583,7 +1583,7 @@ macro_rules! impl_language {
                 decl_initializer(name)
             }
 
-            fn range_element<'t>(&self, name: Node<'t>) -> Option<(Node<'t>, bool)> {
+            fn range_element<'t>(&self, name: Node<'t>, _src: &str) -> Option<(Node<'t>, bool)> {
                 range_element(name)
             }
 

@@ -1,0 +1,620 @@
+App/Canvas.cs:1:7 System -> 
+App/Canvas.cs:1:14 Collections -> 
+App/Canvas.cs:1:26 Generic -> 
+App/Canvas.cs:2:7 System -> 
+App/Canvas.cs:2:14 Linq -> 
+App/Canvas.cs:3:7 System -> 
+App/Canvas.cs:3:14 Threading -> 
+App/Canvas.cs:3:24 Tasks -> 
+App/Canvas.cs:5:11 Shop -> 
+App/Canvas.cs:5:16 App -> 
+App/Canvas.cs:7:14 Canvas -> App/Canvas.cs:7:14
+App/Canvas.cs:7:14 Canvas <- App/Canvas.cs:48:23 App/Canvas.cs:57:50
+App/Canvas.cs:9:22 List -> 
+App/Canvas.cs:9:27 IShape -> Models/Shapes.cs:5:22
+App/Canvas.cs:9:35 shapes -> App/Canvas.cs:9:35
+App/Canvas.cs:9:35 shapes <- App/Canvas.cs:17:9 App/Canvas.cs:24:27
+App/Canvas.cs:10:13 Circle -> Models/Shapes.cs:16:26
+App/Canvas.cs:10:22 circles -> App/Canvas.cs:10:22
+App/Canvas.cs:10:22 circles <- App/Canvas.cs:28:30 App/Canvas.cs:32:22
+App/Canvas.cs:10:36 Circle -> Models/Shapes.cs:16:26
+App/Canvas.cs:11:13 Dictionary -> 
+App/Canvas.cs:11:32 Circle -> Models/Shapes.cs:16:26
+App/Canvas.cs:11:40 byName -> App/Canvas.cs:11:40
+App/Canvas.cs:11:40 byName <- App/Canvas.cs:32:42
+App/Canvas.cs:13:16 Count -> App/Canvas.cs:13:16
+App/Canvas.cs:13:16 Count <- App/Canvas.cs:18:9 App/Canvas.cs:50:44
+App/Canvas.cs:15:17 Add -> App/Canvas.cs:15:17
+App/Canvas.cs:15:17 Add <- 
+App/Canvas.cs:15:21 IShape -> Models/Shapes.cs:5:22
+App/Canvas.cs:15:28 shape -> App/Canvas.cs:15:28
+App/Canvas.cs:15:28 shape <- App/Canvas.cs:17:20
+App/Canvas.cs:17:9 shapes -> App/Canvas.cs:9:35
+App/Canvas.cs:17:16 Add -> 
+App/Canvas.cs:17:20 shape -> App/Canvas.cs:15:28
+App/Canvas.cs:18:9 Count -> App/Canvas.cs:13:16
+App/Canvas.cs:21:19 Total -> App/Canvas.cs:21:19
+App/Canvas.cs:21:19 Total <- App/Canvas.cs:50:30 App/Canvas.cs:58:66
+App/Canvas.cs:23:16 sum -> App/Canvas.cs:23:16
+App/Canvas.cs:23:16 sum <- App/Canvas.cs:26:13 App/Canvas.cs:30:13 App/Canvas.cs:32:16
+App/Canvas.cs:24:22 s -> App/Canvas.cs:24:22
+App/Canvas.cs:24:22 s <- App/Canvas.cs:26:20
+App/Canvas.cs:24:27 shapes -> App/Canvas.cs:9:35
+App/Canvas.cs:26:13 sum -> App/Canvas.cs:23:16
+App/Canvas.cs:26:20 s -> App/Canvas.cs:24:22
+App/Canvas.cs:26:22 Area -> Models/Shapes.cs:7:16
+App/Canvas.cs:28:18 Circle -> Models/Shapes.cs:16:26
+App/Canvas.cs:28:25 c -> App/Canvas.cs:28:25
+App/Canvas.cs:28:25 c <- App/Canvas.cs:30:20
+App/Canvas.cs:28:30 circles -> App/Canvas.cs:10:22
+App/Canvas.cs:30:13 sum -> App/Canvas.cs:23:16
+App/Canvas.cs:30:20 c -> App/Canvas.cs:28:25
+App/Canvas.cs:30:22 Radius -> Models/Shapes.cs:28:23
+App/Canvas.cs:32:16 sum -> App/Canvas.cs:23:16
+App/Canvas.cs:32:22 circles -> App/Canvas.cs:10:22
+App/Canvas.cs:32:33 Radius -> Models/Shapes.cs:28:23
+App/Canvas.cs:32:42 byName -> App/Canvas.cs:11:40
+App/Canvas.cs:32:54 Radius -> Models/Shapes.cs:28:23
+App/Canvas.cs:35:18 Task -> 
+App/Canvas.cs:35:23 Circle -> Models/Shapes.cs:16:26
+App/Canvas.cs:35:31 LoadAsync -> App/Canvas.cs:35:31
+App/Canvas.cs:35:31 LoadAsync <- App/Canvas.cs:43:28 App/Canvas.cs:44:39
+App/Canvas.cs:37:15 Task -> 
+App/Canvas.cs:37:20 Delay -> 
+App/Canvas.cs:38:16 Circle -> Models/Shapes.cs:16:26
+App/Canvas.cs:38:23 Unit -> Models/Shapes.cs:19:39
+App/Canvas.cs:41:18 Task -> 
+App/Canvas.cs:41:31 UseAsync -> App/Canvas.cs:41:31
+App/Canvas.cs:41:31 UseAsync <- 
+App/Canvas.cs:43:13 loaded -> App/Canvas.cs:43:13
+App/Canvas.cs:43:13 loaded <- App/Canvas.cs:44:16
+App/Canvas.cs:43:28 LoadAsync -> App/Canvas.cs:35:31
+App/Canvas.cs:44:16 loaded -> App/Canvas.cs:43:13
+App/Canvas.cs:44:23 Radius -> Models/Shapes.cs:28:23
+App/Canvas.cs:44:39 LoadAsync -> App/Canvas.cs:35:31
+App/Canvas.cs:44:52 Area -> Models/Shapes.cs:36:23
+App/Canvas.cs:48:14 Shapes -> App/Canvas.cs:48:14
+App/Canvas.cs:48:14 Shapes <- 
+App/Canvas.cs:48:23 Canvas -> App/Canvas.cs:7:14
+App/Canvas.cs:50:19 Twice -> App/Canvas.cs:50:19
+App/Canvas.cs:50:19 Twice <- 
+App/Canvas.cs:50:30 Total -> App/Canvas.cs:21:19
+App/Canvas.cs:50:44 Count -> App/Canvas.cs:13:16
+App/Canvas.cs:52:19 Queries -> App/Canvas.cs:52:19
+App/Canvas.cs:52:19 Queries <- 
+App/Canvas.cs:52:27 IRepository -> Models/Shapes.cs:69:22
+App/Canvas.cs:52:39 Circle -> Models/Shapes.cs:16:26
+App/Canvas.cs:52:47 repo -> App/Canvas.cs:52:47
+App/Canvas.cs:52:47 repo <- App/Canvas.cs:55:21
+App/Canvas.cs:52:53 List -> 
+App/Canvas.cs:52:58 Circle -> Models/Shapes.cs:16:26
+App/Canvas.cs:52:66 list -> App/Canvas.cs:52:66
+App/Canvas.cs:52:66 list <- App/Canvas.cs:54:19 App/Canvas.cs:56:21
+App/Canvas.cs:52:72 IServiceProvider -> 
+App/Canvas.cs:52:89 services -> App/Canvas.cs:52:89
+App/Canvas.cs:52:89 services <- App/Canvas.cs:57:22
+App/Canvas.cs:54:13 big -> App/Canvas.cs:54:13
+App/Canvas.cs:54:13 big <- App/Canvas.cs:58:16
+App/Canvas.cs:54:19 list -> App/Canvas.cs:52:66
+App/Canvas.cs:54:24 Where -> 
+App/Canvas.cs:54:30 c -> App/Canvas.cs:54:30
+App/Canvas.cs:54:30 c <- App/Canvas.cs:54:35
+App/Canvas.cs:54:35 c -> App/Canvas.cs:54:30
+App/Canvas.cs:54:37 Radius -> Models/Shapes.cs:28:23
+App/Canvas.cs:54:49 First -> 
+App/Canvas.cs:55:13 found -> App/Canvas.cs:55:13
+App/Canvas.cs:55:13 found <- App/Canvas.cs:58:29
+App/Canvas.cs:55:21 repo -> App/Canvas.cs:52:47
+App/Canvas.cs:55:26 Find -> Models/Shapes.cs:71:11
+App/Canvas.cs:55:31 f -> App/Canvas.cs:55:31
+App/Canvas.cs:55:31 f <- App/Canvas.cs:55:36
+App/Canvas.cs:55:36 f -> App/Canvas.cs:55:31
+App/Canvas.cs:55:38 Radius -> Models/Shapes.cs:28:23
+App/Canvas.cs:56:13 maybe -> App/Canvas.cs:56:13
+App/Canvas.cs:56:13 maybe <- App/Canvas.cs:58:44
+App/Canvas.cs:56:21 list -> App/Canvas.cs:52:66
+App/Canvas.cs:56:26 FirstOrDefault -> 
+App/Canvas.cs:56:41 m -> App/Canvas.cs:56:41
+App/Canvas.cs:56:41 m <- App/Canvas.cs:56:46
+App/Canvas.cs:56:46 m -> App/Canvas.cs:56:41
+App/Canvas.cs:56:48 Radius -> Models/Shapes.cs:28:23
+App/Canvas.cs:56:61 Grow -> Models/Shapes.cs:38:23
+App/Canvas.cs:57:13 canvas -> App/Canvas.cs:57:13
+App/Canvas.cs:57:13 canvas <- App/Canvas.cs:58:59
+App/Canvas.cs:57:22 services -> App/Canvas.cs:52:89
+App/Canvas.cs:57:31 GetRequiredService -> 
+App/Canvas.cs:57:50 Canvas -> App/Canvas.cs:7:14
+App/Canvas.cs:58:16 big -> App/Canvas.cs:54:13
+App/Canvas.cs:58:20 Area -> Models/Shapes.cs:36:23
+App/Canvas.cs:58:29 found -> App/Canvas.cs:55:13
+App/Canvas.cs:58:35 Radius -> Models/Shapes.cs:28:23
+App/Canvas.cs:58:44 maybe -> App/Canvas.cs:56:13
+App/Canvas.cs:58:50 Radius -> Models/Shapes.cs:28:23
+App/Canvas.cs:58:59 canvas -> App/Canvas.cs:57:13
+App/Canvas.cs:58:66 Total -> App/Canvas.cs:21:19
+App/Canvas.cs:58:76 Square -> Util/Strings.cs:22:30
+App/Globals.cs:1:14 Shop -> 
+App/Globals.cs:1:19 Models -> 
+App/Program.cs:1:7 System -> 
+App/Program.cs:2:7 Shop -> 
+App/Program.cs:2:12 Models -> 
+App/Program.cs:3:7 Shop -> 
+App/Program.cs:3:12 Util -> 
+App/Program.cs:4:14 Shop -> 
+App/Program.cs:4:19 Util -> 
+App/Program.cs:4:24 Mathx -> Util/Strings.cs:20:25
+App/Program.cs:5:7 Other -> 
+App/Program.cs:5:15 Shop -> 
+App/Program.cs:5:20 Other -> 
+App/Program.cs:6:7 Disk -> Models/Shapes.cs:16:26
+App/Program.cs:6:14 Shop -> 
+App/Program.cs:6:19 Models -> 
+App/Program.cs:6:26 Circle -> Models/Shapes.cs:16:26
+App/Program.cs:8:11 Shop -> 
+App/Program.cs:8:16 App -> 
+App/Program.cs:10:18 Program -> App/Program.cs:10:18
+App/Program.cs:10:18 Program <- 
+App/Program.cs:12:21 count -> App/Program.cs:12:21
+App/Program.cs:12:21 count <- App/Program.cs:74:26
+App/Program.cs:14:28 Main -> App/Program.cs:14:28
+App/Program.cs:14:28 Main <- 
+App/Program.cs:14:42 args -> App/Program.cs:14:42
+App/Program.cs:14:42 args <- 
+App/Program.cs:16:17 c -> App/Program.cs:16:17
+App/Program.cs:16:17 c <- App/Program.cs:17:31 App/Program.cs:17:42 App/Program.cs:17:53 App/Program.cs:18:25 App/Program.cs:23:31 App/Program.cs:29:46 App/Program.cs:41:25 App/Program.cs:43:33
+App/Program.cs:16:25 Circle -> Models/Shapes.cs:16:26
+App/Program.cs:17:13 Console -> 
+App/Program.cs:17:21 WriteLine -> 
+App/Program.cs:17:31 c -> App/Program.cs:16:17
+App/Program.cs:17:33 Area -> Models/Shapes.cs:36:23
+App/Program.cs:17:42 c -> App/Program.cs:16:17
+App/Program.cs:17:44 Radius -> Models/Shapes.cs:28:23
+App/Program.cs:17:53 c -> App/Program.cs:16:17
+App/Program.cs:17:55 Describe -> Models/Circle.Describe.cs:5:19
+App/Program.cs:17:66 Length -> 
+App/Program.cs:18:17 grown -> App/Program.cs:18:17
+App/Program.cs:18:17 grown <- App/Program.cs:19:31
+App/Program.cs:18:25 c -> App/Program.cs:16:17
+App/Program.cs:18:27 Grow -> Models/Shapes.cs:38:23
+App/Program.cs:19:13 Console -> 
+App/Program.cs:19:21 WriteLine -> 
+App/Program.cs:19:31 grown -> App/Program.cs:18:17
+App/Program.cs:19:37 Radius -> Models/Shapes.cs:28:23
+App/Program.cs:20:17 p -> App/Program.cs:20:17
+App/Program.cs:20:17 p <- App/Program.cs:21:31 App/Program.cs:26:55
+App/Program.cs:20:25 Point -> Models/Shapes.cs:11:19
+App/Program.cs:21:13 Console -> 
+App/Program.cs:21:21 WriteLine -> 
+App/Program.cs:21:31 p -> App/Program.cs:20:17
+App/Program.cs:21:33 Moved -> Models/Shapes.cs:13:22
+App/Program.cs:21:44 X -> Models/Shapes.cs:11:32
+App/Program.cs:22:13 Console -> 
+App/Program.cs:22:21 WriteLine -> 
+App/Program.cs:22:31 Circle -> Models/Shapes.cs:16:26
+App/Program.cs:22:38 Unit -> Models/Shapes.cs:19:39
+App/Program.cs:22:43 Area -> Models/Shapes.cs:36:23
+App/Program.cs:22:52 Circle -> Models/Shapes.cs:16:26
+App/Program.cs:22:59 Pi -> Models/Shapes.cs:18:29
+App/Program.cs:23:13 Console -> 
+App/Program.cs:23:21 WriteLine -> 
+App/Program.cs:23:31 c -> App/Program.cs:16:17
+App/Program.cs:23:33 Center -> Models/Shapes.cs:34:22
+App/Program.cs:23:40 Moved -> Models/Shapes.cs:13:22
+App/Program.cs:23:49 Y -> Models/Shapes.cs:11:42
+App/Program.cs:24:13 Circle -> Models/Shapes.cs:16:26
+App/Program.cs:24:20 made -> App/Program.cs:24:20
+App/Program.cs:24:20 made <- App/Program.cs:25:31
+App/Program.cs:24:27 Circle -> Models/Shapes.cs:16:26
+App/Program.cs:24:34 Of -> Models/Shapes.cs:43:30
+App/Program.cs:25:13 Console -> 
+App/Program.cs:25:21 WriteLine -> 
+App/Program.cs:25:31 made -> App/Program.cs:24:20
+App/Program.cs:25:36 Grow -> Models/Shapes.cs:38:23
+App/Program.cs:25:41 by -> Models/Shapes.cs:38:35
+App/Program.cs:26:17 named -> App/Program.cs:26:17
+App/Program.cs:26:17 named <- App/Program.cs:28:46
+App/Program.cs:26:29 Circle -> Models/Shapes.cs:16:26
+App/Program.cs:26:36 radius -> Models/Shapes.cs:22:30
+App/Program.cs:26:47 center -> Models/Shapes.cs:22:45
+App/Program.cs:26:55 p -> App/Program.cs:20:17
+App/Program.cs:27:17 built -> App/Program.cs:27:17
+App/Program.cs:27:17 built <- App/Program.cs:28:31
+App/Program.cs:27:29 Circle -> Models/Shapes.cs:16:26
+App/Program.cs:27:36 Builder -> Models/Circle.Describe.cs:7:18
+App/Program.cs:27:46 Size -> Models/Circle.Describe.cs:9:23
+App/Program.cs:27:57 Build -> Models/Circle.Describe.cs:11:23
+App/Program.cs:28:13 Console -> 
+App/Program.cs:28:21 WriteLine -> 
+App/Program.cs:28:31 built -> App/Program.cs:27:17
+App/Program.cs:28:37 Radius -> Models/Shapes.cs:28:23
+App/Program.cs:28:46 named -> App/Program.cs:26:17
+App/Program.cs:28:52 Radius -> Models/Shapes.cs:28:23
+App/Program.cs:29:13 Console -> 
+App/Program.cs:29:21 WriteLine -> 
+App/Program.cs:29:36 Shout -> Util/Strings.cs:7:30
+App/Program.cs:29:46 c -> App/Program.cs:16:17
+App/Program.cs:29:48 Doubled -> Util/Strings.cs:9:30
+App/Program.cs:29:60 StringExt -> Util/Strings.cs:5:25
+App/Program.cs:29:70 CountWords -> Util/Strings.cs:11:27
+App/Program.cs:30:13 Console -> 
+App/Program.cs:30:21 WriteLine -> 
+App/Program.cs:30:31 Square -> Util/Strings.cs:22:30
+App/Program.cs:31:17 d -> App/Program.cs:31:17
+App/Program.cs:31:17 d <- App/Program.cs:32:31
+App/Program.cs:31:25 Other -> 
+App/Program.cs:31:31 Circle -> Other/Shapes.cs:3:18
+App/Program.cs:31:40 Radius -> Other/Shapes.cs:8:23
+App/Program.cs:32:13 Console -> 
+App/Program.cs:32:21 WriteLine -> 
+App/Program.cs:32:31 d -> App/Program.cs:31:17
+App/Program.cs:32:33 Area -> Other/Shapes.cs:10:23
+App/Program.cs:33:13 Disk -> Models/Shapes.cs:16:26
+App/Program.cs:33:18 disk -> App/Program.cs:33:18
+App/Program.cs:33:18 disk <- App/Program.cs:34:31
+App/Program.cs:34:13 Console -> 
+App/Program.cs:34:21 WriteLine -> 
+App/Program.cs:34:31 disk -> App/Program.cs:33:18
+App/Program.cs:34:36 Radius -> Models/Shapes.cs:28:23
+App/Program.cs:35:13 Console -> 
+App/Program.cs:35:21 WriteLine -> 
+App/Program.cs:35:31 Color -> Models/Shapes.cs:48:17
+App/Program.cs:35:37 Red -> Models/Shapes.cs:50:9
+App/Program.cs:35:41 ToString -> 
+App/Program.cs:36:17 box -> App/Program.cs:36:17
+App/Program.cs:36:17 box <- App/Program.cs:37:13
+App/Program.cs:36:27 Box -> Models/Shapes.cs:54:19
+App/Program.cs:37:13 box -> App/Program.cs:36:17
+App/Program.cs:37:17 Put -> Models/Shapes.cs:58:21
+App/Program.cs:38:13 Box -> Models/Shapes.cs:64:18
+App/Program.cs:38:17 plain -> App/Program.cs:38:17
+App/Program.cs:38:17 plain <- App/Program.cs:39:31
+App/Program.cs:38:29 Box -> Models/Shapes.cs:64:18
+App/Program.cs:39:13 Console -> 
+App/Program.cs:39:21 WriteLine -> 
+App/Program.cs:39:31 plain -> App/Program.cs:38:17
+App/Program.cs:39:37 Size -> Models/Shapes.cs:66:20
+App/Program.cs:39:44 StringExt -> Util/Strings.cs:5:25
+App/Program.cs:39:54 Pad -> Util/Strings.cs:13:30
+App/Program.cs:39:63 Length -> 
+App/Program.cs:39:72 StringExt -> Util/Strings.cs:5:25
+App/Program.cs:39:82 Pad -> Util/Strings.cs:15:30
+App/Program.cs:39:94 Length -> 
+App/Program.cs:40:13 Console -> 
+App/Program.cs:40:21 WriteLine -> 
+App/Program.cs:40:31 StringExt -> Util/Strings.cs:5:25
+App/Program.cs:40:41 Pad -> Util/Strings.cs:17:30
+App/Program.cs:41:17 group -> App/Program.cs:41:17
+App/Program.cs:41:17 group <- 
+App/Program.cs:41:25 c -> App/Program.cs:16:17
+App/Program.cs:41:27 Doubled -> 
+App/Program.cs:42:13 Measure -> Models/Shapes.cs:74:28
+App/Program.cs:42:21 m -> App/Program.cs:42:21
+App/Program.cs:42:21 m <- App/Program.cs:43:31
+App/Program.cs:42:25 shape -> App/Program.cs:42:25
+App/Program.cs:42:25 shape <- App/Program.cs:42:34
+App/Program.cs:42:34 shape -> App/Program.cs:42:25
+App/Program.cs:42:40 Area -> Models/Shapes.cs:7:16 Models/Shapes.cs:36:23 Other/Shapes.cs:10:23
+App/Program.cs:43:13 Console -> 
+App/Program.cs:43:21 WriteLine -> 
+App/Program.cs:43:31 m -> App/Program.cs:42:21
+App/Program.cs:43:33 c -> App/Program.cs:16:17
+App/Program.cs:46:20 Scopes -> App/Program.cs:46:20
+App/Program.cs:46:20 Scopes <- 
+App/Program.cs:46:34 o -> App/Program.cs:46:34
+App/Program.cs:46:34 o <- App/Program.cs:53:17 App/Program.cs:61:21 App/Program.cs:67:24
+App/Program.cs:46:37 IShape -> Models/Shapes.cs:5:22
+App/Program.cs:46:46 items -> App/Program.cs:46:46
+App/Program.cs:46:46 items <- App/Program.cs:49:33 App/Program.cs:51:35
+App/Program.cs:48:17 total -> App/Program.cs:48:17
+App/Program.cs:48:17 total <- App/Program.cs:51:17 App/Program.cs:55:17 App/Program.cs:64:21 App/Program.cs:74:17 App/Program.cs:85:37 App/Program.cs:86:13 App/Program.cs:86:33 App/Program.cs:89:17 App/Program.cs:91:20
+App/Program.cs:49:22 i -> App/Program.cs:49:22
+App/Program.cs:49:22 i <- App/Program.cs:49:29 App/Program.cs:49:47 App/Program.cs:51:26 App/Program.cs:51:41
+App/Program.cs:49:29 i -> App/Program.cs:49:22
+App/Program.cs:49:33 items -> App/Program.cs:46:46
+App/Program.cs:49:39 Length -> 
+App/Program.cs:49:47 i -> App/Program.cs:49:22
+App/Program.cs:51:17 total -> App/Program.cs:48:17
+App/Program.cs:51:26 i -> App/Program.cs:49:22
+App/Program.cs:51:35 items -> App/Program.cs:46:46
+App/Program.cs:51:41 i -> App/Program.cs:49:22
+App/Program.cs:51:44 Area -> Models/Shapes.cs:7:16
+App/Program.cs:53:17 o -> App/Program.cs:46:34
+App/Program.cs:53:22 Circle -> Models/Shapes.cs:16:26
+App/Program.cs:53:29 circle -> App/Program.cs:53:29
+App/Program.cs:53:29 circle <- App/Program.cs:53:39 App/Program.cs:55:31
+App/Program.cs:53:39 circle -> App/Program.cs:53:29
+App/Program.cs:53:46 Radius -> Models/Shapes.cs:28:23
+App/Program.cs:55:17 total -> App/Program.cs:48:17
+App/Program.cs:55:31 circle -> App/Program.cs:53:29
+App/Program.cs:55:38 Area -> Models/Shapes.cs:36:23
+App/Program.cs:57:22 TryParse -> 
+App/Program.cs:57:44 parsed -> App/Program.cs:57:44
+App/Program.cs:57:44 parsed <- App/Program.cs:59:24
+App/Program.cs:59:24 parsed -> App/Program.cs:57:44
+App/Program.cs:61:21 o -> App/Program.cs:46:34
+App/Program.cs:63:22 Point -> Models/Shapes.cs:11:19
+App/Program.cs:63:28 pt -> App/Program.cs:63:28
+App/Program.cs:63:28 pt <- App/Program.cs:64:35
+App/Program.cs:64:21 total -> App/Program.cs:48:17
+App/Program.cs:64:35 pt -> App/Program.cs:63:28
+App/Program.cs:64:38 X -> Models/Shapes.cs:11:32
+App/Program.cs:67:17 kind -> App/Program.cs:67:17
+App/Program.cs:67:17 kind <- 
+App/Program.cs:67:24 o -> App/Program.cs:46:34
+App/Program.cs:69:17 Circle -> Models/Shapes.cs:16:26
+App/Program.cs:69:24 k -> App/Program.cs:69:24
+App/Program.cs:69:24 k <- App/Program.cs:69:29
+App/Program.cs:69:29 k -> App/Program.cs:69:24
+App/Program.cs:69:31 Radius -> Models/Shapes.cs:28:23
+App/Program.cs:74:17 total -> App/Program.cs:48:17
+App/Program.cs:74:26 count -> App/Program.cs:12:21
+App/Program.cs:76:20 InvalidOperationException -> 
+App/Program.cs:76:46 e -> App/Program.cs:76:46
+App/Program.cs:76:46 e <- App/Program.cs:78:35
+App/Program.cs:78:17 Console -> 
+App/Program.cs:78:25 WriteLine -> 
+App/Program.cs:78:35 e -> App/Program.cs:76:46
+App/Program.cs:78:37 Message -> 
+App/Program.cs:80:24 reader -> App/Program.cs:80:24
+App/Program.cs:80:24 reader <- App/Program.cs:82:17
+App/Program.cs:80:37 System -> 
+App/Program.cs:80:44 IO -> 
+App/Program.cs:80:47 StringReader -> 
+App/Program.cs:82:17 reader -> App/Program.cs:80:24
+App/Program.cs:82:24 Read -> 
+App/Program.cs:84:13 Func -> 
+App/Program.cs:84:28 twice -> App/Program.cs:84:28
+App/Program.cs:84:28 twice <- App/Program.cs:86:21
+App/Program.cs:84:36 x -> App/Program.cs:84:36
+App/Program.cs:84:36 x <- App/Program.cs:84:41
+App/Program.cs:84:41 x -> App/Program.cs:84:36
+App/Program.cs:85:17 Local -> App/Program.cs:85:17
+App/Program.cs:85:17 Local <- App/Program.cs:86:27
+App/Program.cs:85:27 v -> App/Program.cs:85:27
+App/Program.cs:85:27 v <- App/Program.cs:85:33
+App/Program.cs:85:33 v -> App/Program.cs:85:27
+App/Program.cs:85:37 total -> App/Program.cs:48:17
+App/Program.cs:86:13 total -> App/Program.cs:48:17
+App/Program.cs:86:21 twice -> App/Program.cs:84:28
+App/Program.cs:86:27 Local -> App/Program.cs:85:17
+App/Program.cs:86:33 total -> App/Program.cs:48:17
+App/Program.cs:88:21 count -> App/Program.cs:88:21
+App/Program.cs:88:21 count <- App/Program.cs:89:26
+App/Program.cs:89:17 total -> App/Program.cs:48:17
+App/Program.cs:89:26 count -> App/Program.cs:88:21
+App/Program.cs:91:20 total -> App/Program.cs:48:17
+App/Program.cs:94:16 T -> App/Program.cs:94:24
+App/Program.cs:94:18 First -> App/Program.cs:94:18
+App/Program.cs:94:18 First <- 
+App/Program.cs:94:24 T -> App/Program.cs:94:24
+App/Program.cs:94:24 T <- App/Program.cs:94:16 App/Program.cs:94:27 App/Program.cs:94:43 App/Program.cs:96:13
+App/Program.cs:94:27 T -> App/Program.cs:94:24
+App/Program.cs:94:31 list -> App/Program.cs:94:31
+App/Program.cs:94:31 list <- App/Program.cs:96:22
+App/Program.cs:94:43 T -> App/Program.cs:94:24
+App/Program.cs:94:47 IShape -> Models/Shapes.cs:5:22
+App/Program.cs:96:13 T -> App/Program.cs:94:24
+App/Program.cs:96:15 item -> App/Program.cs:96:15
+App/Program.cs:96:15 item <- App/Program.cs:97:20
+App/Program.cs:96:22 list -> App/Program.cs:94:31
+App/Program.cs:97:20 item -> App/Program.cs:96:15
+Models/Circle.Describe.cs:1:11 Shop -> 
+Models/Circle.Describe.cs:1:16 Models -> 
+Models/Circle.Describe.cs:3:22 Circle -> Models/Circle.Describe.cs:3:22
+Models/Circle.Describe.cs:3:22 Circle <- App/Canvas.cs:10:13 App/Canvas.cs:10:36 App/Canvas.cs:11:32 App/Canvas.cs:28:18 App/Canvas.cs:35:23 App/Canvas.cs:38:16 App/Canvas.cs:52:39 App/Canvas.cs:52:58 App/Program.cs:6:26 App/Program.cs:16:25 App/Program.cs:22:31 App/Program.cs:22:52 App/Program.cs:24:13 App/Program.cs:24:27 App/Program.cs:26:29 App/Program.cs:27:29 App/Program.cs:53:22 App/Program.cs:69:17 Models/Circle.Describe.cs:11:16 Models/Circle.Describe.cs:11:38 Util/Strings.cs:9:43
+Models/Circle.Describe.cs:5:19 Describe -> Models/Circle.Describe.cs:5:19
+Models/Circle.Describe.cs:5:19 Describe <- App/Program.cs:17:55
+Models/Circle.Describe.cs:5:36 Name -> Models/Shapes.cs:45:23
+Models/Circle.Describe.cs:5:43 Radius -> Models/Shapes.cs:28:23
+Models/Circle.Describe.cs:5:55 Center -> Models/Shapes.cs:34:22
+Models/Circle.Describe.cs:5:62 X -> Models/Shapes.cs:11:32
+Models/Circle.Describe.cs:7:18 Builder -> Models/Circle.Describe.cs:7:18
+Models/Circle.Describe.cs:7:18 Builder <- App/Program.cs:27:36
+Models/Circle.Describe.cs:9:23 Size -> Models/Circle.Describe.cs:9:23
+Models/Circle.Describe.cs:9:23 Size <- App/Program.cs:27:46 Models/Circle.Describe.cs:11:45
+Models/Circle.Describe.cs:11:16 Circle -> Models/Circle.Describe.cs:3:22
+Models/Circle.Describe.cs:11:23 Build -> Models/Circle.Describe.cs:11:23
+Models/Circle.Describe.cs:11:23 Build <- App/Program.cs:27:57
+Models/Circle.Describe.cs:11:38 Circle -> Models/Circle.Describe.cs:3:22
+Models/Circle.Describe.cs:11:45 Size -> Models/Circle.Describe.cs:9:23
+Models/Shapes.cs:1:7 System -> 
+Models/Shapes.cs:3:11 Shop -> 
+Models/Shapes.cs:3:16 Models -> 
+Models/Shapes.cs:5:22 IShape -> Models/Shapes.cs:5:22
+Models/Shapes.cs:5:22 IShape <- App/Canvas.cs:9:27 App/Canvas.cs:15:21 App/Program.cs:46:37 App/Program.cs:94:47 Models/Shapes.cs:16:35 Models/Shapes.cs:74:36
+Models/Shapes.cs:7:16 Area -> Models/Shapes.cs:7:16
+Models/Shapes.cs:7:16 Area <- App/Canvas.cs:26:22 App/Program.cs:42:40 App/Program.cs:51:44
+Models/Shapes.cs:8:16 Name -> Models/Shapes.cs:8:16
+Models/Shapes.cs:8:16 Name <- 
+Models/Shapes.cs:11:19 Point -> Models/Shapes.cs:11:19
+Models/Shapes.cs:11:19 Point <- App/Program.cs:20:25 App/Program.cs:63:22 Models/Shapes.cs:13:16 Models/Shapes.cs:13:46 Models/Shapes.cs:22:38 Models/Shapes.cs:25:36 Models/Shapes.cs:34:16
+Models/Shapes.cs:11:32 X -> Models/Shapes.cs:11:32
+Models/Shapes.cs:11:32 X <- App/Program.cs:21:44 App/Program.cs:64:38 Models/Circle.Describe.cs:5:62 Models/Shapes.cs:13:52
+Models/Shapes.cs:11:42 Y -> Models/Shapes.cs:11:42
+Models/Shapes.cs:11:42 Y <- App/Program.cs:23:49 Models/Shapes.cs:13:60
+Models/Shapes.cs:13:16 Point -> Models/Shapes.cs:11:19
+Models/Shapes.cs:13:22 Moved -> Models/Shapes.cs:13:22
+Models/Shapes.cs:13:22 Moved <- App/Program.cs:21:33 App/Program.cs:23:40
+Models/Shapes.cs:13:35 by -> Models/Shapes.cs:13:35
+Models/Shapes.cs:13:35 by <- Models/Shapes.cs:13:56 Models/Shapes.cs:13:64
+Models/Shapes.cs:13:46 Point -> Models/Shapes.cs:11:19
+Models/Shapes.cs:13:52 X -> Models/Shapes.cs:11:32
+Models/Shapes.cs:13:56 by -> Models/Shapes.cs:13:35
+Models/Shapes.cs:13:60 Y -> Models/Shapes.cs:11:42
+Models/Shapes.cs:13:64 by -> Models/Shapes.cs:13:35
+Models/Shapes.cs:16:26 Circle -> Models/Shapes.cs:16:26
+Models/Shapes.cs:16:26 Circle <- App/Canvas.cs:10:13 App/Canvas.cs:10:36 App/Canvas.cs:11:32 App/Canvas.cs:28:18 App/Canvas.cs:35:23 App/Canvas.cs:38:16 App/Canvas.cs:52:39 App/Canvas.cs:52:58 App/Program.cs:6:26 App/Program.cs:16:25 App/Program.cs:22:31 App/Program.cs:22:52 App/Program.cs:24:13 App/Program.cs:24:27 App/Program.cs:26:29 App/Program.cs:27:29 App/Program.cs:53:22 App/Program.cs:69:17 Models/Shapes.cs:19:32 Models/Shapes.cs:19:50 Models/Shapes.cs:22:16 Models/Shapes.cs:38:16 Models/Shapes.cs:40:24 Models/Shapes.cs:43:23 Util/Strings.cs:9:43
+Models/Shapes.cs:16:35 IShape -> Models/Shapes.cs:5:22
+Models/Shapes.cs:18:29 Pi -> Models/Shapes.cs:18:29
+Models/Shapes.cs:18:29 Pi <- App/Program.cs:22:59 Models/Shapes.cs:36:33
+Models/Shapes.cs:19:32 Circle -> Models/Shapes.cs:16:26
+Models/Shapes.cs:19:39 Unit -> Models/Shapes.cs:19:39
+Models/Shapes.cs:19:39 Unit <- App/Canvas.cs:38:23 App/Program.cs:22:38
+Models/Shapes.cs:19:50 Circle -> Models/Shapes.cs:16:26
+Models/Shapes.cs:20:24 radius -> Models/Shapes.cs:20:24
+Models/Shapes.cs:20:24 radius <- Models/Shapes.cs:24:18 Models/Shapes.cs:30:20 Models/Shapes.cs:31:20 Models/Shapes.cs:36:38 Models/Shapes.cs:36:47
+Models/Shapes.cs:22:16 Circle -> Models/Shapes.cs:16:26
+Models/Shapes.cs:22:30 radius -> Models/Shapes.cs:22:30
+Models/Shapes.cs:22:30 radius <- Models/Shapes.cs:24:27
+Models/Shapes.cs:22:38 Point -> Models/Shapes.cs:11:19
+Models/Shapes.cs:22:45 center -> Models/Shapes.cs:22:45
+Models/Shapes.cs:22:45 center <- Models/Shapes.cs:25:22
+Models/Shapes.cs:24:18 radius -> Models/Shapes.cs:20:24
+Models/Shapes.cs:24:27 radius -> Models/Shapes.cs:22:30
+Models/Shapes.cs:25:13 Center -> Models/Shapes.cs:34:22
+Models/Shapes.cs:25:22 center -> Models/Shapes.cs:22:45
+Models/Shapes.cs:25:36 Point -> Models/Shapes.cs:11:19
+Models/Shapes.cs:28:23 Radius -> Models/Shapes.cs:28:23
+Models/Shapes.cs:28:23 Radius <- App/Canvas.cs:30:22 App/Canvas.cs:32:33 App/Canvas.cs:32:54 App/Canvas.cs:44:23 App/Canvas.cs:54:37 App/Canvas.cs:55:38 App/Canvas.cs:56:48 App/Canvas.cs:58:35 App/Canvas.cs:58:50 App/Program.cs:17:44 App/Program.cs:19:37 App/Program.cs:28:37 App/Program.cs:28:52 App/Program.cs:34:36 App/Program.cs:53:46 App/Program.cs:69:31 Models/Circle.Describe.cs:5:43 Models/Shapes.cs:40:31
+Models/Shapes.cs:30:20 radius -> Models/Shapes.cs:20:24
+Models/Shapes.cs:31:20 radius -> Models/Shapes.cs:20:24
+Models/Shapes.cs:31:29 value -> Models/Shapes.cs:31:13
+Models/Shapes.cs:34:16 Point -> Models/Shapes.cs:11:19
+Models/Shapes.cs:34:22 Center -> Models/Shapes.cs:34:22
+Models/Shapes.cs:34:22 Center <- App/Program.cs:23:33 Models/Circle.Describe.cs:5:55 Models/Shapes.cs:25:13
+Models/Shapes.cs:36:23 Area -> Models/Shapes.cs:36:23
+Models/Shapes.cs:36:23 Area <- App/Canvas.cs:44:52 App/Canvas.cs:58:20 App/Program.cs:17:33 App/Program.cs:22:43 App/Program.cs:42:40 App/Program.cs:55:38 Util/Strings.cs:9:58
+Models/Shapes.cs:36:33 Pi -> Models/Shapes.cs:18:29
+Models/Shapes.cs:36:38 radius -> Models/Shapes.cs:20:24
+Models/Shapes.cs:36:47 radius -> Models/Shapes.cs:20:24
+Models/Shapes.cs:38:16 Circle -> Models/Shapes.cs:16:26
+Models/Shapes.cs:38:23 Grow -> Models/Shapes.cs:38:23
+Models/Shapes.cs:38:23 Grow <- App/Canvas.cs:56:61 App/Program.cs:18:27 App/Program.cs:25:36
+Models/Shapes.cs:38:35 by -> Models/Shapes.cs:38:35
+Models/Shapes.cs:38:35 by <- Models/Shapes.cs:40:40
+Models/Shapes.cs:40:24 Circle -> Models/Shapes.cs:16:26
+Models/Shapes.cs:40:31 Radius -> Models/Shapes.cs:28:23
+Models/Shapes.cs:40:40 by -> Models/Shapes.cs:38:35
+Models/Shapes.cs:43:23 Circle -> Models/Shapes.cs:16:26
+Models/Shapes.cs:43:30 Of -> Models/Shapes.cs:43:30
+Models/Shapes.cs:43:30 Of <- App/Program.cs:24:34
+Models/Shapes.cs:43:40 r -> Models/Shapes.cs:43:40
+Models/Shapes.cs:43:40 r <- Models/Shapes.cs:43:50
+Models/Shapes.cs:43:50 r -> Models/Shapes.cs:43:40
+Models/Shapes.cs:45:23 Name -> Models/Shapes.cs:45:23
+Models/Shapes.cs:45:23 Name <- Models/Circle.Describe.cs:5:36
+Models/Shapes.cs:48:17 Color -> Models/Shapes.cs:48:17
+Models/Shapes.cs:48:17 Color <- App/Program.cs:35:31
+Models/Shapes.cs:50:9 Red -> Models/Shapes.cs:50:9
+Models/Shapes.cs:50:9 Red <- App/Program.cs:35:37
+Models/Shapes.cs:51:9 Green -> Models/Shapes.cs:51:9
+Models/Shapes.cs:51:9 Green <- 
+Models/Shapes.cs:54:19 Box -> Models/Shapes.cs:54:19
+Models/Shapes.cs:54:19 Box <- App/Program.cs:36:27
+Models/Shapes.cs:54:23 T -> Models/Shapes.cs:54:23
+Models/Shapes.cs:54:23 T <- Models/Shapes.cs:56:16 Models/Shapes.cs:58:25
+Models/Shapes.cs:56:16 T -> Models/Shapes.cs:54:23
+Models/Shapes.cs:56:18 Value -> Models/Shapes.cs:56:18
+Models/Shapes.cs:56:18 Value <- Models/Shapes.cs:60:13
+Models/Shapes.cs:58:21 Put -> Models/Shapes.cs:58:21
+Models/Shapes.cs:58:21 Put <- App/Program.cs:37:17
+Models/Shapes.cs:58:25 T -> Models/Shapes.cs:54:23
+Models/Shapes.cs:58:27 item -> Models/Shapes.cs:58:27
+Models/Shapes.cs:58:27 item <- Models/Shapes.cs:60:21
+Models/Shapes.cs:60:13 Value -> Models/Shapes.cs:56:18
+Models/Shapes.cs:60:21 item -> Models/Shapes.cs:58:27
+Models/Shapes.cs:64:18 Box -> Models/Shapes.cs:64:18
+Models/Shapes.cs:64:18 Box <- App/Program.cs:38:13 App/Program.cs:38:29
+Models/Shapes.cs:66:20 Size -> Models/Shapes.cs:66:20
+Models/Shapes.cs:66:20 Size <- App/Program.cs:39:37
+Models/Shapes.cs:69:22 IRepository -> Models/Shapes.cs:69:22
+Models/Shapes.cs:69:22 IRepository <- App/Canvas.cs:52:27
+Models/Shapes.cs:69:34 T -> Models/Shapes.cs:69:34
+Models/Shapes.cs:69:34 T <- Models/Shapes.cs:71:9 Models/Shapes.cs:71:28
+Models/Shapes.cs:71:9 T -> Models/Shapes.cs:69:34
+Models/Shapes.cs:71:11 Find -> Models/Shapes.cs:71:11
+Models/Shapes.cs:71:11 Find <- App/Canvas.cs:55:26
+Models/Shapes.cs:71:16 System -> 
+Models/Shapes.cs:71:23 Func -> 
+Models/Shapes.cs:71:28 T -> Models/Shapes.cs:69:34
+Models/Shapes.cs:71:37 match -> Models/Shapes.cs:71:37
+Models/Shapes.cs:71:37 match <- 
+Models/Shapes.cs:74:28 Measure -> Models/Shapes.cs:74:28
+Models/Shapes.cs:74:28 Measure <- App/Program.cs:42:13
+Models/Shapes.cs:74:36 IShape -> Models/Shapes.cs:5:22
+Models/Shapes.cs:74:43 shape -> Models/Shapes.cs:74:43
+Models/Shapes.cs:74:43 shape <- 
+Other/Shapes.cs:1:11 Shop -> 
+Other/Shapes.cs:1:16 Other -> 
+Other/Shapes.cs:3:18 Circle -> Other/Shapes.cs:3:18
+Other/Shapes.cs:3:18 Circle <- App/Program.cs:31:31 Other/Tools.cs:7:26
+Other/Shapes.cs:5:11 System -> 
+Other/Shapes.cs:5:18 IComparable -> 
+Other/Shapes.cs:8:23 Radius -> Other/Shapes.cs:8:23
+Other/Shapes.cs:8:23 Radius <- App/Program.cs:31:40 Other/Shapes.cs:10:33
+Other/Shapes.cs:10:23 Area -> Other/Shapes.cs:10:23
+Other/Shapes.cs:10:23 Area <- App/Program.cs:32:33 App/Program.cs:42:40 Other/Tools.cs:7:41
+Other/Shapes.cs:10:33 Radius -> Other/Shapes.cs:8:23
+Other/Tools.cs:1:11 Shop -> 
+Other/Tools.cs:1:16 Other -> 
+Other/Tools.cs:1:22 Tools -> 
+Other/Tools.cs:3:18 Measurer -> Other/Tools.cs:3:18
+Other/Tools.cs:3:18 Measurer <- 
+Other/Tools.cs:7:23 Of -> Other/Tools.cs:7:23
+Other/Tools.cs:7:23 Of <- 
+Other/Tools.cs:7:26 Circle -> Other/Shapes.cs:3:18
+Other/Tools.cs:7:33 c -> Other/Tools.cs:7:33
+Other/Tools.cs:7:33 c <- Other/Tools.cs:7:39
+Other/Tools.cs:7:39 c -> Other/Tools.cs:7:33
+Other/Tools.cs:7:41 Area -> Other/Shapes.cs:10:23
+Other/Tools.cs:9:23 Unknown -> Other/Tools.cs:9:23
+Other/Tools.cs:9:23 Unknown <- 
+Other/Tools.cs:9:31 Point -> 
+Other/Tools.cs:9:37 p -> Other/Tools.cs:9:37
+Other/Tools.cs:9:37 p <- Other/Tools.cs:9:43
+Other/Tools.cs:9:43 p -> Other/Tools.cs:9:37
+Util/Strings.cs:1:7 Shop -> 
+Util/Strings.cs:1:12 Models -> 
+Util/Strings.cs:3:11 Shop -> 
+Util/Strings.cs:3:16 Util -> 
+Util/Strings.cs:5:25 StringExt -> Util/Strings.cs:5:25
+Util/Strings.cs:5:25 StringExt <- App/Program.cs:29:60 App/Program.cs:39:44 App/Program.cs:39:72 App/Program.cs:40:31
+Util/Strings.cs:7:30 Shout -> Util/Strings.cs:7:30
+Util/Strings.cs:7:30 Shout <- App/Program.cs:29:36
+Util/Strings.cs:7:48 s -> Util/Strings.cs:7:48
+Util/Strings.cs:7:48 s <- Util/Strings.cs:7:54
+Util/Strings.cs:7:54 s -> Util/Strings.cs:7:48
+Util/Strings.cs:7:56 ToUpper -> 
+Util/Strings.cs:9:30 Doubled -> Util/Strings.cs:9:30
+Util/Strings.cs:9:30 Doubled <- App/Program.cs:29:48
+Util/Strings.cs:9:43 Circle -> Models/Shapes.cs:16:26
+Util/Strings.cs:9:50 c -> Util/Strings.cs:9:50
+Util/Strings.cs:9:50 c <- Util/Strings.cs:9:56
+Util/Strings.cs:9:56 c -> Util/Strings.cs:9:50
+Util/Strings.cs:9:58 Area -> Models/Shapes.cs:36:23
+Util/Strings.cs:11:27 CountWords -> Util/Strings.cs:11:27
+Util/Strings.cs:11:27 CountWords <- App/Program.cs:29:70
+Util/Strings.cs:11:45 s -> Util/Strings.cs:11:45
+Util/Strings.cs:11:45 s <- Util/Strings.cs:11:51
+Util/Strings.cs:11:51 s -> Util/Strings.cs:11:45
+Util/Strings.cs:11:53 Split -> 
+Util/Strings.cs:11:64 Length -> 
+Util/Strings.cs:13:30 Pad -> Util/Strings.cs:13:30
+Util/Strings.cs:13:30 Pad <- App/Program.cs:39:54
+Util/Strings.cs:13:41 s -> Util/Strings.cs:13:41
+Util/Strings.cs:13:41 s <- Util/Strings.cs:13:47
+Util/Strings.cs:13:47 s -> Util/Strings.cs:13:41
+Util/Strings.cs:15:30 Pad -> Util/Strings.cs:15:30
+Util/Strings.cs:15:30 Pad <- App/Program.cs:39:82
+Util/Strings.cs:15:41 s -> Util/Strings.cs:15:41
+Util/Strings.cs:15:41 s <- Util/Strings.cs:15:54
+Util/Strings.cs:15:48 n -> Util/Strings.cs:15:48
+Util/Strings.cs:15:48 n <- Util/Strings.cs:15:65
+Util/Strings.cs:15:54 s -> Util/Strings.cs:15:41
+Util/Strings.cs:15:56 PadRight -> 
+Util/Strings.cs:15:65 n -> Util/Strings.cs:15:48
+Util/Strings.cs:17:30 Pad -> Util/Strings.cs:17:30
+Util/Strings.cs:17:30 Pad <- App/Program.cs:40:41
+Util/Strings.cs:17:41 s -> Util/Strings.cs:17:41
+Util/Strings.cs:17:41 s <- Util/Strings.cs:17:69
+Util/Strings.cs:17:60 rest -> Util/Strings.cs:17:60
+Util/Strings.cs:17:60 rest <- 
+Util/Strings.cs:17:69 s -> Util/Strings.cs:17:41
+Util/Strings.cs:20:25 Mathx -> Util/Strings.cs:20:25
+Util/Strings.cs:20:25 Mathx <- App/Program.cs:4:24
+Util/Strings.cs:22:30 Square -> Util/Strings.cs:22:30
+Util/Strings.cs:22:30 Square <- App/Canvas.cs:58:76 App/Program.cs:30:31
+Util/Strings.cs:22:44 x -> Util/Strings.cs:22:44
+Util/Strings.cs:22:44 x <- Util/Strings.cs:22:50 Util/Strings.cs:22:54
+Util/Strings.cs:22:50 x -> Util/Strings.cs:22:44
+Util/Strings.cs:22:54 x -> Util/Strings.cs:22:44

@@ -1,14 +1,24 @@
 fn main() {
     let mut p = tree_sitter::Parser::new();
-    let (mut files, mut bad) = (0, 0);
+    let (mut files, mut bad, mut raw_bad) = (0, 0, 0);
     for path in std::env::args().skip(1) {
         let Some(lang) = scopehop::lang::for_path(path.as_ref()) else { continue };
         let Ok(src) = std::fs::read_to_string(&path) else { continue };
         p.set_language(&lang.grammar()).unwrap();
         files += 1;
-        let tree = p.parse(&src, None).unwrap();
+        let mut tree = p.parse(&src, None).unwrap();
+        if tree.root_node().has_error() {
+            raw_bad += 1;
+            if let Some(fixed) = lang.repair(&src) {
+                let better = p.parse(&fixed, None).unwrap();
+                if !better.root_node().has_error() {
+                    tree = better;
+                }
+            }
+        }
         if tree.root_node().has_error() {
             bad += 1;
+            println!("{path}: has errors");
             // find first error
             let mut c = tree.walk();
             'o: loop {
@@ -19,5 +29,5 @@ fn main() {
             }
         }
     }
-    println!("files {files}, with errors {bad}");
+    println!("files {files}, with errors {raw_bad}, after repair {bad}");
 }

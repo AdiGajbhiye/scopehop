@@ -33,7 +33,7 @@ fn main() {
             // skip package/import paths
             let line_start = text[..off].rfind('\n').map(|i| i + 1).unwrap_or(0);
             let line = &text[line_start..text[off..].find('\n').map(|i| off + i).unwrap_or(text.len())];
-            if line.starts_with("import ") || line.starts_with("package ") { continue; }
+            if ["import ", "package ", "using ", "namespace ", "global using "].iter().any(|p| line.trim_start().starts_with(p)) { continue; }
             total += 1;
             let locs = ix.definition_at(p, off);
             let name: String = text[off..].chars().take_while(|c| c.is_alphanumeric() || *c == '_').collect();
