@@ -14,6 +14,7 @@ use std::time::{Duration, Instant, SystemTime};
 
 use tree_sitter::{Node, Parser, Tree};
 
+use crate::files::{Disk, Files};
 use crate::lang::{self, Def, DefKind, Expr, Import, Language, Scoped, Summary, Usage, Visibility};
 use crate::text::{self, LineIndex};
 
@@ -73,6 +74,8 @@ const MAX_DEPTH: u32 = 16;
 
 pub struct Index {
     roots: Vec<PathBuf>,
+    /// Where files are read from: the working tree, or a git revision.
+    source: Box<dyn Files>,
     pub files: HashMap<PathBuf, FileData>,
     names: HashMap<String, Vec<(PathBuf, usize)>>,
     /// Module name -> file, for [`Visibility::Modules`] languages.
@@ -90,9 +93,16 @@ pub fn is_source(path: &Path) -> bool {
 }
 
 impl Index {
+    /// An index of the working tree.
     pub fn new(roots: Vec<PathBuf>) -> Self {
+        Self::with_files(roots, Box::new(Disk))
+    }
+
+    /// An index of the files `source` gives (e.g. a [`crate::files::Revision`]).
+    pub fn with_files(roots: Vec<PathBuf>, source: Box<dyn Files>) -> Self {
         Self {
             roots,
+            source,
             files: HashMap::new(),
             names: HashMap::new(),
             modules: HashMap::new(),
@@ -117,7 +127,7 @@ impl Index {
             tree = better;
         }
         let mut summary = lang.summarize(tree.root_node(), &text);
-        lang.place(&mut summary, path, &self.roots);
+        lang.place(&mut summary, path, &self.roots, self.source.as_ref());
         let lines = LineIndex::new(&text);
         Some(FileData { lang, text, tree, summary, lines, mtime, open })
     }
@@ -146,26 +156,16 @@ impl Index {
         }
         self.last_scan = Some(Instant::now());
         let mut seen = HashSet::new();
-        for root in self.roots.clone() {
-            // Installed packages are libraries, even when not gitignored.
-            let walk = ignore::WalkBuilder::new(&root).filter_entry(|e| e.file_name() != "node_modules").build();
-            for entry in walk.flatten() {
-                let path = entry.path();
-                if !entry.file_type().is_some_and(|t| t.is_file()) || !is_source(path) {
-                    continue;
-                }
-                let path = path.to_path_buf();
-                seen.insert(path.clone());
-                let mtime = entry.metadata().ok().and_then(|m| m.modified().ok());
-                match self.files.get(&path) {
-                    Some(fd) if fd.open || (fd.mtime.is_some() && fd.mtime == mtime) => continue,
-                    _ => {}
-                }
-                let Ok(text) = std::fs::read_to_string(&path) else { continue };
-                if let Some(fd) = self.build(&path, text, mtime, false) {
-                    self.files.insert(path, fd);
-                    self.names_dirty = true;
-                }
+        for (path, mtime) in self.source.sources(&self.roots) {
+            seen.insert(path.clone());
+            match self.files.get(&path) {
+                Some(fd) if fd.open || (fd.mtime.is_some() && fd.mtime == mtime) => continue,
+                _ => {}
+            }
+            let Some(text) = self.source.read(&path) else { continue };
+            if let Some(fd) = self.build(&path, text, mtime, false) {
+                self.files.insert(path, fd);
+                self.names_dirty = true;
             }
         }
         let before = self.files.len();
@@ -403,7 +403,7 @@ impl Index {
         // Import paths can be strings (Go), so this comes before the
         // identifier-only cases.
         if let Some(fq) = lang.qualified_path(t.node, src) {
-            let fq = lang.absolute_import(&fq, path, &fd.summary);
+            let fq = lang.absolute_import(&fq, path, &fd.summary, self.source.as_ref());
             return self.resolve_import(lang, &fq, 0);
         }
         if lang.is_identifier(t.node) {

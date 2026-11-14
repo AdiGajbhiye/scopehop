@@ -28,6 +28,7 @@ use std::path::{Path, PathBuf};
 
 use tree_sitter::Node;
 
+use crate::files::Files;
 use crate::lang::{named_children, text, Def, DefKind, Expr, Import, Language, Scoped, Summary, Visibility};
 
 pub struct Go;
@@ -881,7 +882,7 @@ pub fn package_name(path: &str) -> String {
 /// nearest `go.mod` plus the file's directory under it (`vendor/x/y` is
 /// `x/y`). Without a `go.mod`, the directory under the workspace root, or
 /// the root's own name for files directly in it.
-pub fn import_path(file: &Path, roots: &[PathBuf]) -> String {
+pub fn import_path(file: &Path, roots: &[PathBuf], files: &dyn Files) -> String {
     let Some(dir) = file.parent() else { return String::new() };
     let parts = |base: &Path| -> Vec<String> {
         dir.strip_prefix(base)
@@ -890,7 +891,7 @@ pub fn import_path(file: &Path, roots: &[PathBuf]) -> String {
     };
     let mut cur = Some(dir);
     while let Some(d) = cur {
-        if let Some(module) = std::fs::read_to_string(d.join("go.mod")).ok().as_deref().and_then(module_line) {
+        if let Some(module) = files.read(&d.join("go.mod")).as_deref().and_then(module_line) {
             let rel = parts(d);
             if rel.first().is_some_and(|f| f == "vendor") {
                 return rel[1..].join("/");
@@ -966,16 +967,16 @@ impl Language for Go {
 
     /// The package becomes its import path. An external test package
     /// (`package models_test`) is a module of its own next to `models`.
-    fn place(&self, summary: &mut Summary, path: &Path, roots: &[PathBuf]) {
+    fn place(&self, summary: &mut Summary, path: &Path, roots: &[PathBuf], files: &dyn Files) {
         let test = summary.package.ends_with("_test");
         summary.excluded |= !file_name_ok(path);
-        summary.package = import_path(path, roots);
+        summary.package = import_path(path, roots, files);
         if test {
             summary.package.push_str("_test");
         }
     }
 
-    fn absolute_import(&self, path: &str, _file: &Path, summary: &Summary) -> String {
+    fn absolute_import(&self, path: &str, _file: &Path, summary: &Summary, _files: &dyn Files) -> String {
         if path.is_empty() { summary.package.clone() } else { path.to_string() }
     }
 

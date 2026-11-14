@@ -14,6 +14,7 @@ use std::path::{Path, PathBuf};
 use tree_sitter::Node;
 
 use crate::csharp::CSharp;
+use crate::files::Files;
 use crate::go::Go;
 use crate::java::Java;
 use crate::kotlin::Kotlin;
@@ -219,14 +220,15 @@ pub trait Language: Sync {
 
     /// Fills in what depends on where the file lives, after [`summarize`]:
     /// Python's module name comes from its path, and relative imports become
-    /// absolute. `roots` are the workspace folders.
+    /// absolute. `roots` are the workspace folders, and `files` where any
+    /// other file (`go.mod`, `tsconfig.json`) is read from.
     ///
     /// [`summarize`]: Language::summarize
-    fn place(&self, _summary: &mut Summary, _path: &Path, _roots: &[PathBuf]) {}
+    fn place(&self, _summary: &mut Summary, _path: &Path, _roots: &[PathBuf], _files: &dyn Files) {}
 
     /// An import path as written in `file` (whose summary is placed), made
     /// absolute. Only Python has relative imports (`.models`).
-    fn absolute_import(&self, path: &str, _file: &Path, _summary: &Summary) -> String {
+    fn absolute_import(&self, path: &str, _file: &Path, _summary: &Summary, _files: &dyn Files) -> String {
         path.to_string()
     }
 

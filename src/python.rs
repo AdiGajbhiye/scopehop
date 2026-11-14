@@ -18,6 +18,7 @@ use std::path::{Path, PathBuf};
 
 use tree_sitter::Node;
 
+use crate::files::Files;
 use crate::lang::{child_of_kind, named_children, text, Def, DefKind, Expr, Import, Language, Scoped, Summary, Visibility};
 
 pub struct Python;
@@ -614,10 +615,10 @@ fn collect_members(class: Node, cname: &str, src: &str, out: &mut Vec<Def>) {
 /// `__init__.py`) it is the package chain (`src/pkg/sub/mod.py` ->
 /// `pkg.sub.mod`). Otherwise it is the path under the workspace root, minus
 /// a leading `src` (namespace packages, scripts).
-pub fn module_name(path: &Path, roots: &[PathBuf]) -> String {
+pub fn module_name(path: &Path, roots: &[PathBuf], files: &dyn Files) -> String {
     let Some(stem) = path.file_stem().and_then(|s| s.to_str()) else { return String::new() };
     let mut dirs: Vec<String> = Vec::new();
-    let in_package = |d: &Path| d.join("__init__.py").is_file();
+    let in_package = |d: &Path| files.is_file(&d.join("__init__.py"));
     let parent = path.parent();
     if parent.is_some_and(in_package) {
         let mut dir = parent;
@@ -727,14 +728,14 @@ impl Language for Python {
         summarize(root, src)
     }
 
-    fn place(&self, summary: &mut Summary, path: &Path, roots: &[PathBuf]) {
-        summary.package = module_name(path, roots);
+    fn place(&self, summary: &mut Summary, path: &Path, roots: &[PathBuf], files: &dyn Files) {
+        summary.package = module_name(path, roots, files);
         for imp in &mut summary.imports {
             imp.path = absolute(&imp.path, path, &summary.package);
         }
     }
 
-    fn absolute_import(&self, path: &str, file: &Path, summary: &Summary) -> String {
+    fn absolute_import(&self, path: &str, file: &Path, summary: &Summary, _files: &dyn Files) -> String {
         absolute(path, file, &summary.package)
     }
 

@@ -21,6 +21,7 @@ use std::path::{Path, PathBuf};
 
 use tree_sitter::Node;
 
+use crate::files::Files;
 use crate::lang::{child_of_kind, named_children, text, Def, DefKind, Expr, Import, Language, Scoped, Summary, Usage};
 
 pub struct CSharp;
@@ -1007,13 +1008,9 @@ fn keep_first_branches(src: &str) -> Option<String> {
 // ---------------------------------------------------------------------------
 
 /// The nearest directory above `file` with a `.csproj`, and that file.
-fn find_project(file: &Path) -> Option<(PathBuf, PathBuf)> {
+fn find_project(file: &Path, files: &dyn Files) -> Option<(PathBuf, PathBuf)> {
     file.ancestors().skip(1).find_map(|dir| {
-        let csproj = std::fs::read_dir(dir)
-            .ok()?
-            .flatten()
-            .map(|e| e.path())
-            .find(|p| p.extension().is_some_and(|e| e == "csproj"))?;
+        let csproj = files.files_in(dir).into_iter().find(|p| p.extension().is_some_and(|e| e == "csproj"))?;
         Some((dir.to_path_buf(), csproj))
     })
 }
@@ -1074,10 +1071,10 @@ impl Language for CSharp {
         keep_first_branches(src)
     }
 
-    fn place(&self, summary: &mut Summary, path: &Path, _roots: &[PathBuf]) {
-        if let Some((dir, csproj)) = find_project(path) {
+    fn place(&self, summary: &mut Summary, path: &Path, _roots: &[PathBuf], files: &dyn Files) {
+        if let Some((dir, csproj)) = find_project(path, files) {
             summary.project = Some(dir);
-            summary.imports.extend(std::fs::read_to_string(csproj).map(|t| project_usings(&t)).unwrap_or_default());
+            summary.imports.extend(files.read(&csproj).map(|t| project_usings(&t)).unwrap_or_default());
         }
     }
 

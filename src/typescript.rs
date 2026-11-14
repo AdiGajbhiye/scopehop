@@ -31,6 +31,7 @@ use std::path::{Component, Path, PathBuf};
 
 use tree_sitter::Node;
 
+use crate::files::Files;
 use crate::lang::{named_children, text, Def, DefKind, Expr, Import, Language, Scoped, Summary, Visibility};
 
 /// `.ts`, `.mts`, `.cts`.
@@ -1056,21 +1057,21 @@ pub struct Config {
 
 /// The config that applies to `file`, from the nearest directory above it
 /// that has one.
-pub fn find_config(file: &Path) -> Option<Config> {
+pub fn find_config(file: &Path, files: &dyn Files) -> Option<Config> {
     for dir in file.ancestors().skip(1) {
         for name in ["tsconfig.json", "jsconfig.json"] {
             let p = dir.join(name);
-            if p.is_file() {
-                return Some(read_config(&p, 0));
+            if files.is_file(&p) {
+                return Some(read_config(&p, 0, files));
             }
         }
     }
     None
 }
 
-fn read_config(path: &Path, depth: u32) -> Config {
+fn read_config(path: &Path, depth: u32, files: &dyn Files) -> Config {
     let dir = path.parent().map(Path::to_path_buf).unwrap_or_default();
-    let value = std::fs::read_to_string(path).ok().and_then(|t| serde_json::from_str(&strip_jsonc(&t)).ok());
+    let value = files.read(path).and_then(|t| serde_json::from_str(&strip_jsonc(&t)).ok());
     let Some(value) = value else { return Config { paths_base: dir, ..Default::default() } };
     let value: serde_json::Value = value;
     let opts = value.get("compilerOptions");
@@ -1091,7 +1092,7 @@ fn read_config(path: &Path, depth: u32) -> Config {
         .filter(|e| e.starts_with('.') && depth < 4 && (base_url.is_none() || paths.is_empty()))
         .map(|e| {
             let p = dir.join(e);
-            read_config(&if p.extension().is_some() { p } else { p.with_extension("json") }, depth + 1)
+            read_config(&if p.extension().is_some() { p } else { p.with_extension("json") }, depth + 1, files)
         });
     let paths_base = base_url.clone().unwrap_or_else(|| dir.clone());
     match parent {
@@ -1176,23 +1177,23 @@ fn strip_jsonc(s: &str) -> String {
 
 /// A path as an import target: a file with any source extension, or a
 /// directory with an `index` file.
-fn exists_as_module(p: &Path) -> bool {
+fn exists_as_module(p: &Path, files: &dyn Files) -> bool {
     let with_ext = |base: &Path| {
         EXTENSIONS.iter().any(|e| {
             let mut s = base.as_os_str().to_owned();
             s.push(".");
             s.push(e);
-            Path::new(&s).is_file()
+            files.is_file(Path::new(&s))
         })
     };
-    p.is_file() || with_ext(p) || with_ext(&p.join("index"))
+    files.is_file(p) || with_ext(p) || with_ext(&p.join("index"))
 }
 
 /// The module an import specifier names, seen from `file` (whose module is
 /// `own`): a relative path, a `paths` pattern, a path under `baseUrl`, or
 /// else the specifier itself (a package, which is not indexed). The empty
 /// specifier is the file's own module.
-pub fn resolve_spec(spec: &str, file: &Path, own: &str, cfg: Option<&Config>) -> String {
+pub fn resolve_spec(spec: &str, file: &Path, own: &str, cfg: Option<&Config>, files: &dyn Files) -> String {
     if spec.is_empty() {
         return own.to_string();
     }
@@ -1216,7 +1217,7 @@ pub fn resolve_spec(spec: &str, file: &Path, own: &str, cfg: Option<&Config>) ->
     }
     if let Some(base) = &cfg.base_url {
         let p = normalize(&base.join(spec));
-        if exists_as_module(&p) {
+        if exists_as_module(&p, files) {
             return module_name(&p);
         }
     }
@@ -1225,9 +1226,9 @@ pub fn resolve_spec(spec: &str, file: &Path, own: &str, cfg: Option<&Config>) ->
 
 /// An import path from [`encode`] made absolute: `<module>.<member>`, or
 /// the module alone.
-fn absolute(path: &str, file: &Path, own: &str, cfg: Option<&Config>) -> String {
+fn absolute(path: &str, file: &Path, own: &str, cfg: Option<&Config>, files: &dyn Files) -> String {
     let (spec, member) = path.split_once(SEP).unwrap_or((path, ""));
-    let module = resolve_spec(spec, file, own, cfg);
+    let module = resolve_spec(spec, file, own, cfg, files);
     if member.is_empty() { module } else { format!("{module}.{member}") }
 }
 
@@ -1527,16 +1528,16 @@ macro_rules! impl_language {
                 repair(src)
             }
 
-            fn place(&self, summary: &mut Summary, path: &Path, _roots: &[PathBuf]) {
+            fn place(&self, summary: &mut Summary, path: &Path, _roots: &[PathBuf], files: &dyn Files) {
                 summary.package = module_name(path);
-                let cfg = find_config(path);
+                let cfg = find_config(path, files);
                 for imp in &mut summary.imports {
-                    imp.path = absolute(&imp.path, path, &summary.package, cfg.as_ref());
+                    imp.path = absolute(&imp.path, path, &summary.package, cfg.as_ref(), files);
                 }
             }
 
-            fn absolute_import(&self, path: &str, file: &Path, summary: &Summary) -> String {
-                absolute(path, file, &summary.package, find_config(file).as_ref())
+            fn absolute_import(&self, path: &str, file: &Path, summary: &Summary, files: &dyn Files) -> String {
+                absolute(path, file, &summary.package, find_config(file, files).as_ref(), files)
             }
 
             fn name_node<'t>(&self, root: Node<'t>, src: &str, start: usize, end: usize) -> Option<Node<'t>> {
@@ -1646,11 +1647,11 @@ mod tests {
     fn relative_specifiers() {
         let f = Path::new("/p/src/app/main.ts");
         let own = module_name(f);
-        assert_eq!(resolve_spec("../models", f, &own, None), "/p/src/models");
-        assert_eq!(resolve_spec("./util.js", f, &own, None), "/p/src/app/util");
-        assert_eq!(resolve_spec("../models/index", f, &own, None), "/p/src/models");
-        assert_eq!(resolve_spec("react", f, &own, None), "react");
-        assert_eq!(resolve_spec("", f, &own, None), "/p/src/app/main");
+        assert_eq!(resolve_spec("../models", f, &own, None, &crate::files::Disk), "/p/src/models");
+        assert_eq!(resolve_spec("./util.js", f, &own, None, &crate::files::Disk), "/p/src/app/util");
+        assert_eq!(resolve_spec("../models/index", f, &own, None, &crate::files::Disk), "/p/src/models");
+        assert_eq!(resolve_spec("react", f, &own, None, &crate::files::Disk), "react");
+        assert_eq!(resolve_spec("", f, &own, None, &crate::files::Disk), "/p/src/app/main");
     }
 
     #[test]
@@ -1661,9 +1662,9 @@ mod tests {
             paths: vec![("@/*".into(), "./src/*".into()), ("#config".into(), "./config/main".into())],
         };
         let f = Path::new("/p/src/app/main.ts");
-        assert_eq!(resolve_spec("@/models/shapes", f, "", Some(&cfg)), "/p/src/models/shapes");
-        assert_eq!(resolve_spec("#config", f, "", Some(&cfg)), "/p/config/main");
-        assert_eq!(resolve_spec("lodash", f, "", Some(&cfg)), "lodash");
+        assert_eq!(resolve_spec("@/models/shapes", f, "", Some(&cfg), &crate::files::Disk), "/p/src/models/shapes");
+        assert_eq!(resolve_spec("#config", f, "", Some(&cfg), &crate::files::Disk), "/p/config/main");
+        assert_eq!(resolve_spec("lodash", f, "", Some(&cfg), &crate::files::Disk), "lodash");
     }
 
     #[test]

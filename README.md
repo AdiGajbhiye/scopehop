@@ -212,6 +212,42 @@ nothing else. `node_modules` is never indexed.
 
 C# files only resolve to C# declarations.
 
+## Older revisions
+
+Code can be resolved as it was in any git commit, such as the removed side
+of a diff. That includes files deleted since then, with the commit's own
+`go.mod`, `tsconfig.json`, `.csproj` and `__init__.py` files (not the
+working tree's), and without uncommitted changes.
+
+From the command line (LINE and COL are 1-based, COL in bytes):
+
+```sh
+scopehop def --rev HEAD~1 recovery.go 140 48
+# recovery.go:146:6: func source(lines [][]byte, n int) []byte {
+scopehop refs --rev main --json src/app.ts 12 9
+```
+
+FILE is the path the file had in that revision. Without `--rev`, `def` and
+`refs` read the working tree. `--root DIR` picks the project (by default
+the git repository), and `--no-decl` leaves the declaration out of `refs`.
+
+The language server takes the same questions as two requests, with
+`textDocument/definition`'s and `textDocument/references`' parameters plus
+a `revision`. The answer's locations are file URIs, meaning those files as
+they are in that revision:
+
+```json
+{ "method": "scopehop/definition",
+  "params": { "revision": "HEAD~1",
+              "textDocument": { "uri": "file:///repo/recovery.go" },
+              "position": { "line": 139, "character": 47 } } }
+```
+
+`scopehop/references` also takes `context.includeDeclaration`. Without a
+`revision`, both use the workspace as the editor has it. The server keeps
+the indexes of the last four commits asked about. Loading one takes about as
+long as indexing the working tree (0.7 s for Newtonsoft.Json's 951 files).
+
 ## Limits
 
 When a type can't be inferred (e.g. untyped lambda params), member lookups fall
@@ -330,10 +366,13 @@ Rust should fit `Modules` with its own `place()`.
   `src/typescript.rs`, `src/csharp.rs`: the implementations
   (declarations, scopes, type hints)
 - `src/index.rs`: workspace index and resolution, language-neutral
+- `src/files.rs`: where files come from: the working tree, or a git
+  revision (`git ls-tree` and `git cat-file --batch`)
 - `src/snapshot.rs`: text dump of everything the index resolves, for tests
 - `tests/`: resolution tests over small Kotlin, Java, mixed, Python, Go,
   TypeScript and C# projects in `tests/fixtures/`, plus a snapshot of every lookup in each
-- `src/main.rs`: LSP over stdio (`lsp-server`)
+- `src/main.rs`: LSP over stdio (`lsp-server`), and the `def`/`refs`
+  command line
 - `zed/`: Zed extension that launches the server
 - `examples/`: `probe` (one lookup from the CLI), `stats` (resolve every
   identifier in a project), `snapshot` (dump every lookup in a project, to
@@ -361,6 +400,10 @@ snapshots and review their diff:
 UPDATE_SNAPSHOTS=1 cargo test
 git diff tests/snapshots
 ```
+
+`tests/revisions.rs` builds a git repository with two commits and checks
+lookups in the older one, through the library, the command line and the
+language server.
 
 To see how a change affects a real project, dump it before and after:
 
