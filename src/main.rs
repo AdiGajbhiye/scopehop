@@ -11,8 +11,9 @@ use lsp_types::{
     TextDocumentSyncCapability, TextDocumentSyncKind, Uri, WorkspaceSymbolParams,
 };
 use scopehop::files::{self, Revision};
-use scopehop::index::{self, Index, Loc};
+use scopehop::index::{self, FileData, Index, Loc};
 use scopehop::lang::DefKind;
+use scopehop::outline::{self, Block, Region};
 use scopehop::text::{self, Encoding};
 
 const USAGE: &str = "\
@@ -20,6 +21,8 @@ usage:
   scopehop                      language server over stdio
   scopehop def  [options] FILE LINE COL
   scopehop refs [options] FILE LINE COL
+  scopehop outline [options] FILE
+  scopehop context [options] FILE#BLOCK | FILE:LINE[-LINE] | FILE
 
 LINE and COL are 1-based; COL counts bytes. Options:
   --rev REV    resolve in a git revision (branch, tag, HEAD~1, hash): FILE
@@ -28,7 +31,13 @@ LINE and COL are 1-based; COL counts bytes. Options:
                directory)
   --json       print a JSON array of {path, line, column, endLine,
                endColumn} instead of path:line:col lines
-  --no-decl    refs: leave out the declaration itself";
+  --no-decl    refs: leave out the declaration itself
+  --no-callers context: leave out what uses the region's declarations
+
+outline lists the file's blocks (classes, functions, methods, properties)
+with their lines, named by nesting (Circle.area). context lists what a
+block or range of lines uses that is declared outside it, with the block
+each declaration is in, and the blocks elsewhere that use it.";
 
 fn main() -> Result<()> {
     let args: Vec<String> = std::env::args().skip(1).collect();
@@ -41,7 +50,7 @@ fn main() -> Result<()> {
             println!("{USAGE}");
             return Ok(());
         }
-        Some(cmd @ ("def" | "refs")) => return cli(cmd, &args[1..]),
+        Some(cmd @ ("def" | "refs" | "outline" | "context")) => return cli(cmd, &args[1..]),
         Some(other) => anyhow::bail!("unknown command {other:?}\n{USAGE}"),
         None => {}
     }
@@ -98,7 +107,9 @@ fn main() -> Result<()> {
                     break;
                 }
                 let resp = match req.method.as_str() {
-                    "scopehop/definition" | "scopehop/references" => revisions.handle(&mut index, enc, req),
+                    "scopehop/definition" | "scopehop/references" | "scopehop/outline" | "scopehop/context" => {
+                        revisions.handle(&mut index, enc, req)
+                    }
                     _ => handle_request(&mut index, enc, req),
                 };
                 conn.sender.send(Message::Response(resp))?;
@@ -221,9 +232,17 @@ fn to_locations(index: &Index, enc: Encoding, locs: &[Loc]) -> Vec<Location> {
 struct RevisionParams {
     revision: Option<String>,
     text_document: lsp_types::TextDocumentIdentifier,
-    position: lsp_types::Position,
+    /// definition, references
+    position: Option<lsp_types::Position>,
+    /// references
     #[serde(default)]
     context: Option<lsp_types::ReferenceContext>,
+    /// context: the region is this block (`Circle.area`), else `range`,
+    /// else the whole file.
+    block: Option<String>,
+    range: Option<Range>,
+    /// context: also list what uses the region's declarations (default true).
+    callers: Option<bool>,
 }
 
 /// Indexes of the last few revisions asked about, newest last.
@@ -268,27 +287,112 @@ impl Revisions {
         let Some(path) = text::uri_to_path(p.text_document.uri.as_str()) else {
             return Response::new_err(id, ErrorCode::InvalidParams as i32, "not a file URI".into());
         };
-        let refs = req.method == "scopehop/references";
-        let include = p.context.is_none_or(|c| c.include_declaration);
-        let run = |ix: &mut Index| -> Vec<Location> {
+        let method = req.method.as_str();
+        let run = |ix: &mut Index| -> Result<serde_json::Value, String> {
             ix.refresh();
-            let Some(fd) = ix.files.get(&path) else { return Vec::new() };
-            let off = fd.lines.offset(&fd.text, p.position, enc);
-            let locs = if refs { ix.references_at(&path, off, include, false) } else { ix.definition_at(&path, off) };
-            to_locations(ix, enc, &locs)
+            let Some(fd) = ix.files.get(&path) else { return Ok(serde_json::Value::Null) };
+            let json = |v: serde_json::Result<serde_json::Value>| v.map_err(|e| e.to_string());
+            match method {
+                "scopehop/outline" => {
+                    let blocks: Vec<serde_json::Value> =
+                        outline::outline(fd).iter().map(|b| lsp_block(fd, enc, b)).collect();
+                    Ok(serde_json::Value::Array(blocks))
+                }
+                "scopehop/context" => {
+                    let region = match (&p.block, &p.range) {
+                        (Some(b), _) => Region::Block(b.clone()),
+                        (None, Some(r)) => {
+                            let (s, e) = (fd.lines.offset(&fd.text, r.start, enc), fd.lines.offset(&fd.text, r.end, enc));
+                            return Ok(lsp_context(ix, enc, &path, s, e.max(s), None, p.callers.unwrap_or(true)));
+                        }
+                        (None, None) => Region::Whole,
+                    };
+                    let (s, e, block) = region.range(fd)?;
+                    Ok(lsp_context(ix, enc, &path, s, e, block, p.callers.unwrap_or(true)))
+                }
+                _ => {
+                    let pos = p.position.ok_or("missing position")?;
+                    let off = fd.lines.offset(&fd.text, pos, enc);
+                    let locs = if method == "scopehop/references" {
+                        ix.references_at(&path, off, p.context.is_none_or(|c| c.include_declaration), false)
+                    } else {
+                        ix.definition_at(&path, off)
+                    };
+                    json(serde_json::to_value(to_locations(ix, enc, &locs)))
+                }
+            }
         };
         let result = match &p.revision {
-            None => Ok(run(workspace)),
+            None => run(workspace),
             Some(rev) => {
                 let dir = path.parent().map(existing_ancestor).unwrap_or_default();
-                self.index(&dir, rev).map(run)
+                self.index(&dir, rev).map_err(|e| e.to_string()).and_then(run)
             }
         };
         match result {
-            Ok(locs) => Response::new_ok(id, locs),
-            Err(e) => Response::new_err(id, ErrorCode::RequestFailed as i32, e.to_string()),
+            Ok(v) => Response::new_ok(id, v),
+            Err(e) => Response::new_err(id, ErrorCode::RequestFailed as i32, e),
         }
     }
+}
+
+fn lsp_range(fd: &FileData, enc: Encoding, start: usize, end: usize) -> Range {
+    Range::new(fd.lines.position(&fd.text, start, enc), fd.lines.position(&fd.text, end, enc))
+}
+
+fn lsp_block(fd: &FileData, enc: Encoding, b: &Block) -> serde_json::Value {
+    serde_json::json!({
+        "name": b.name, "kind": b.kind.as_str(),
+        "range": lsp_range(fd, enc, b.start, b.end),
+        "selectionRange": lsp_range(fd, enc, b.name_start, b.name_end),
+    })
+}
+
+/// The answer to `scopehop/context`, with LSP ranges and file URIs.
+fn lsp_context(
+    ix: &mut Index,
+    enc: Encoding,
+    path: &Path,
+    start: usize,
+    end: usize,
+    block: Option<Block>,
+    callers: bool,
+) -> serde_json::Value {
+    let ctx = outline::context(ix, path, start, end, callers);
+    let uri = |p: &Path| text::path_to_uri(p);
+    let sites = |locs: &[Loc]| -> Vec<Range> {
+        locs.iter().map(|l| lsp_range(&ix.files[&l.path], enc, l.start, l.end)).collect()
+    };
+    let fd = &ix.files[path];
+    let uses: Vec<serde_json::Value> = ctx
+        .uses
+        .iter()
+        .map(|u| {
+            let f = &ix.files[&u.target.path];
+            serde_json::json!({
+                "name": u.name,
+                "location": { "uri": uri(&u.target.path), "range": lsp_range(f, enc, u.target.start, u.target.end) },
+                "block": u.block.as_ref().map(|b| lsp_block(f, enc, b)),
+                "ambiguous": u.ambiguous,
+                "sites": sites(&u.sites),
+            })
+        })
+        .collect();
+    let used_by: Vec<serde_json::Value> = ctx
+        .used_by
+        .iter()
+        .map(|c| {
+            let f = &ix.files[&c.path];
+            serde_json::json!({
+                "uri": uri(&c.path), "block": c.block.as_ref().map(|b| lsp_block(f, enc, b)),
+                "names": c.names, "sites": sites(&c.sites),
+            })
+        })
+        .collect();
+    serde_json::json!({
+        "region": { "range": lsp_range(fd, enc, start, end), "block": block.as_ref().map(|b| lsp_block(fd, enc, b)) },
+        "uses": uses, "usedBy": used_by, "unresolved": ctx.unresolved,
+    })
 }
 
 /// The nearest directory at or above `dir` that exists (a file deleted
@@ -301,50 +405,76 @@ fn existing_ancestor(dir: &Path) -> PathBuf {
 // Command line
 // ---------------------------------------------------------------------------
 
-fn cli(cmd: &str, args: &[String]) -> Result<()> {
-    let (mut rev, mut root, mut json, mut decl) = (None, None, false, true);
-    let mut pos = Vec::new();
+struct Opts {
+    rev: Option<String>,
+    root: Option<PathBuf>,
+    json: bool,
+    decl: bool,
+    callers: bool,
+    pos: Vec<String>,
+}
+
+fn options(args: &[String]) -> Result<Opts> {
+    let mut o = Opts { rev: None, root: None, json: false, decl: true, callers: true, pos: Vec::new() };
     let mut it = args.iter();
     while let Some(a) = it.next() {
         match a.as_str() {
-            "--rev" => rev = Some(it.next().context("--rev needs a revision")?.clone()),
-            "--root" => root = Some(absolute(Path::new(it.next().context("--root needs a directory")?))),
-            "--json" => json = true,
-            "--no-decl" => decl = false,
+            "--rev" => o.rev = Some(it.next().context("--rev needs a revision")?.clone()),
+            "--root" => o.root = Some(absolute(Path::new(it.next().context("--root needs a directory")?))),
+            "--json" => o.json = true,
+            "--no-decl" => o.decl = false,
+            "--no-callers" => o.callers = false,
             _ if a.starts_with("--") => anyhow::bail!("unknown option {a}\n{USAGE}"),
-            _ => pos.push(a.clone()),
+            _ => o.pos.push(a.clone()),
         }
     }
-    let [file, line, col] = pos.as_slice() else { anyhow::bail!("expected FILE LINE COL\n{USAGE}") };
-    let file = absolute(Path::new(file));
-    let (line, col): (u32, u32) = (line.parse().context("LINE")?, col.parse().context("COL")?);
-    anyhow::ensure!(line > 0 && col > 0, "LINE and COL are 1-based");
-    let dir = existing_ancestor(file.parent().unwrap_or(Path::new(".")));
+    Ok(o)
+}
 
-    let mut ix = match &rev {
+/// The index that `file` (absolute) is in: the working tree, or `--rev`.
+fn open_index(o: &Opts, file: &Path) -> Result<Index> {
+    let dir = existing_ancestor(file.parent().unwrap_or(Path::new(".")));
+    let mut ix = match &o.rev {
         Some(rev) => {
             let (top, commit) = files::resolve_commit(&dir, rev)?;
-            let roots = vec![root.clone().unwrap_or_else(|| top.clone())];
+            let roots = vec![o.root.clone().unwrap_or_else(|| top.clone())];
             Index::with_files(roots, Box::new(Revision::load(top, commit)?))
         }
         None => {
-            let root = root.clone().or_else(|| files::resolve_commit(&dir, "HEAD").ok().map(|(top, _)| top));
+            let root = o.root.clone().or_else(|| files::resolve_commit(&dir, "HEAD").ok().map(|(top, _)| top));
             Index::new(vec![root.unwrap_or_else(|| absolute(Path::new(".")))])
         }
     };
     ix.refresh();
-    let Some(fd) = ix.files.get(&file) else {
-        anyhow::bail!("{} is not a source file{}", file.display(), rev.map(|r| format!(" in {r}")).unwrap_or_default());
-    };
+    if !ix.files.contains_key(file) {
+        let at = o.rev.as_ref().map(|r| format!(" in {r}")).unwrap_or_default();
+        anyhow::bail!("{} is not a source file{at}", file.display());
+    }
+    Ok(ix)
+}
+
+fn cli(cmd: &str, args: &[String]) -> Result<()> {
+    let o = options(args)?;
+    match cmd {
+        "outline" => return cli_outline(&o),
+        "context" => return cli_context(&o),
+        _ => {}
+    }
+    let [file, line, col] = o.pos.as_slice() else { anyhow::bail!("expected FILE LINE COL\n{USAGE}") };
+    let file = absolute(Path::new(file));
+    let (line, col): (u32, u32) = (line.parse().context("LINE")?, col.parse().context("COL")?);
+    anyhow::ensure!(line > 0 && col > 0, "LINE and COL are 1-based");
+    let mut ix = open_index(&o, &file)?;
+    let fd = &ix.files[&file];
     let off = fd.lines.offset(&fd.text, lsp_types::Position::new(line - 1, col - 1), Encoding::Utf8);
-    let locs = if cmd == "def" { ix.definition_at(&file, off) } else { ix.references_at(&file, off, decl, false) };
+    let locs = if cmd == "def" { ix.definition_at(&file, off) } else { ix.references_at(&file, off, o.decl, false) };
 
     let cwd = std::env::current_dir().unwrap_or_default();
     let mut out = Vec::new();
     for l in &locs {
         let fd = &ix.files[&l.path];
         let (s, e) = (fd.lines.position(&fd.text, l.start, Encoding::Utf8), fd.lines.position(&fd.text, l.end, Encoding::Utf8));
-        if json {
+        if o.json {
             out.push(serde_json::json!({
                 "path": l.path, "line": s.line + 1, "column": s.character + 1,
                 "endLine": e.line + 1, "endColumn": e.character + 1,
@@ -355,8 +485,121 @@ fn cli(cmd: &str, args: &[String]) -> Result<()> {
             println!("{}:{}:{}: {text}", shown.display(), s.line + 1, s.character + 1);
         }
     }
-    if json {
+    if o.json {
         println!("{}", serde_json::Value::Array(out));
+    }
+    Ok(())
+}
+
+/// 1-based line and byte column of `off` in `fd`.
+fn line_col(fd: &FileData, off: usize) -> (u32, u32) {
+    let p = fd.lines.position(&fd.text, off, Encoding::Utf8);
+    (p.line + 1, p.character + 1)
+}
+
+/// The last line of `start..end` (an end at the start of a line belongs to
+/// the line before).
+fn end_line(fd: &FileData, start: usize, end: usize) -> u32 {
+    line_col(fd, end.saturating_sub(1).max(start)).0
+}
+
+fn block_json(fd: &FileData, b: &Block) -> serde_json::Value {
+    let (nl, nc) = line_col(fd, b.name_start);
+    serde_json::json!({
+        "name": b.name, "kind": b.kind.as_str(),
+        "line": line_col(fd, b.start).0, "endLine": end_line(fd, b.start, b.end),
+        "nameLine": nl, "nameColumn": nc,
+    })
+}
+
+fn cli_outline(o: &Opts) -> Result<()> {
+    let [file] = o.pos.as_slice() else { anyhow::bail!("expected FILE\n{USAGE}") };
+    let file = absolute(Path::new(file));
+    let ix = open_index(o, &file)?;
+    let fd = &ix.files[&file];
+    let blocks = outline::outline(fd);
+    if o.json {
+        println!("{}", serde_json::Value::Array(blocks.iter().map(|b| block_json(fd, b)).collect()));
+        return Ok(());
+    }
+    for b in &blocks {
+        println!("{:>5}-{:<5} {:<9} {}", line_col(fd, b.start).0, end_line(fd, b.start, b.end), b.kind.as_str(), b.name);
+    }
+    Ok(())
+}
+
+fn cli_context(o: &Opts) -> Result<()> {
+    let [spec] = o.pos.as_slice() else { anyhow::bail!("expected FILE#BLOCK, FILE:LINE[-LINE] or FILE\n{USAGE}") };
+    let (file, region) = Region::parse(spec);
+    let file = absolute(Path::new(file));
+    let mut ix = open_index(o, &file)?;
+    let (start, end, block) = region.range(&ix.files[&file]).map_err(anyhow::Error::msg)?;
+    let ctx = outline::context(&mut ix, &file, start, end, o.callers);
+
+    let cwd = std::env::current_dir().unwrap_or_default();
+    let shown = |p: &Path| p.strip_prefix(&cwd).unwrap_or(p).display().to_string();
+    let site = |l: &Loc| {
+        let (line, column) = line_col(&ix.files[&l.path], l.start);
+        serde_json::json!({ "line": line, "column": column })
+    };
+    let fd = &ix.files[&file];
+    if o.json {
+        let uses: Vec<serde_json::Value> = ctx
+            .uses
+            .iter()
+            .map(|u| {
+                let f = &ix.files[&u.target.path];
+                let (line, column) = line_col(f, u.target.start);
+                serde_json::json!({
+                    "name": u.name, "path": u.target.path, "line": line, "column": column,
+                    "block": u.block.as_ref().map(|b| block_json(f, b)),
+                    "ambiguous": u.ambiguous,
+                    "sites": u.sites.iter().map(site).collect::<Vec<_>>(),
+                })
+            })
+            .collect();
+        let used_by: Vec<serde_json::Value> = ctx
+            .used_by
+            .iter()
+            .map(|c| {
+                let f = &ix.files[&c.path];
+                serde_json::json!({
+                    "path": c.path, "block": c.block.as_ref().map(|b| block_json(f, b)),
+                    "names": c.names, "sites": c.sites.iter().map(site).collect::<Vec<_>>(),
+                })
+            })
+            .collect();
+        let out = serde_json::json!({
+            "region": {
+                "path": file, "block": block.as_ref().map(|b| block_json(fd, b)),
+                "line": line_col(fd, start).0, "endLine": end_line(fd, start, end),
+            },
+            "uses": uses, "usedBy": used_by, "unresolved": ctx.unresolved,
+        });
+        println!("{out}");
+        return Ok(());
+    }
+    let place = |p: &Path, b: &Option<Block>, off: usize| {
+        let f = &ix.files[p];
+        match b {
+            Some(b) => format!("{}#{} ({}-{})", shown(p), b.name, line_col(f, b.start).0, end_line(f, b.start, b.end)),
+            None => format!("{}:{}", shown(p), line_col(f, off).0),
+        }
+    };
+    println!("uses:");
+    for u in &ctx.uses {
+        let more = if u.ambiguous { "  (one of several)" } else { "" };
+        println!("  {:<48} {} x{}{more}", place(&u.target.path, &u.block, u.target.start), u.name, u.sites.len());
+    }
+    if o.callers {
+        println!("used by:");
+        for c in &ctx.used_by {
+            let first = c.sites.first().map_or(0, |s| s.start);
+            println!("  {:<48} {} x{}", place(&c.path, &c.block, first), c.names.join(", "), c.sites.len());
+        }
+    }
+    if !ctx.unresolved.is_empty() {
+        println!("unresolved: {}", ctx.unresolved.join(", "));
     }
     Ok(())
 }

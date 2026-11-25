@@ -32,7 +32,9 @@ use std::path::{Component, Path, PathBuf};
 use tree_sitter::Node;
 
 use crate::files::Files;
-use crate::lang::{named_children, text, Def, DefKind, Expr, Import, Language, Scoped, Summary, Visibility};
+use crate::lang::{
+    named_children, text, Def, DefKind, Expr, ExtraBlock, ExtraKind, Import, Language, Scoped, Summary, Visibility,
+};
 
 /// `.ts`, `.mts`, `.cts`.
 pub struct TypeScript;
@@ -1496,6 +1498,144 @@ fn range_element(name: Node) -> Option<(Node, bool)> {
     Some((field(p, "right")?, false))
 }
 
+// ---------------------------------------------------------------------------
+// Outline
+// ---------------------------------------------------------------------------
+
+/// Constructors (not declarations in the index, since `new Foo()` goes to
+/// the class), and test cases: `test("name", ...)`, `it(...)`, also as
+/// `it.only(...)`, at the top level or in the callback of a `describe`,
+/// `suite` or `context` group, named `group > name`.
+fn extra_blocks(root: Node, src: &str) -> Vec<ExtraBlock> {
+    let mut out = Vec::new();
+    let mut c = root.walk();
+    'walk: loop {
+        let n = c.node();
+        if n.kind() == "method_definition"
+            && let Some(name) = n.child_by_field_name("name")
+            && text(name, src) == "constructor"
+        {
+            out.push(ExtraBlock {
+                name: "constructor".into(),
+                kind: ExtraKind::Function,
+                start: n.start_byte(),
+                end: n.end_byte(),
+                name_start: name.start_byte(),
+                name_end: name.end_byte(),
+            });
+        }
+        if c.goto_first_child() {
+            continue;
+        }
+        while !c.goto_next_sibling() {
+            if !c.goto_parent() {
+                break 'walk;
+            }
+        }
+    }
+    tests(root, src, &mut Vec::new(), &mut out);
+    out
+}
+
+/// Test cases among the statements of `body`, inside the groups `groups`.
+fn tests(body: Node, src: &str, groups: &mut Vec<String>, out: &mut Vec<ExtraBlock>) {
+    for st in named_children(body) {
+        let Some(call) = st.named_child(0).filter(|c| st.kind() == "expression_statement" && c.kind() == "call_expression")
+        else {
+            continue;
+        };
+        let callee = call.child_by_field_name("function");
+        let base = match callee {
+            Some(f) if f.kind() == "identifier" => text(f, src),
+            Some(f) if f.kind() == "member_expression" => {
+                f.child_by_field_name("object").filter(|o| o.kind() == "identifier").map_or("", |o| text(o, src))
+            }
+            _ => continue,
+        };
+        let group = matches!(base, "describe" | "suite" | "context");
+        if !group && !matches!(base, "test" | "it") {
+            continue;
+        }
+        let args = call.child_by_field_name("arguments").map(named_children).unwrap_or_default();
+        let Some((name, inner)) = args.first().and_then(|a| test_name(*a, src)) else { continue };
+        if group {
+            let body = args
+                .iter()
+                .find(|a| matches!(a.kind(), "arrow_function" | "function_expression" | "function"))
+                .and_then(|f| f.child_by_field_name("body"))
+                .filter(|b| b.kind() == "statement_block");
+            if let Some(body) = body {
+                groups.push(name);
+                tests(body, src, groups, out);
+                groups.pop();
+            }
+            continue;
+        }
+        let full = groups.iter().cloned().chain([name]).collect::<Vec<_>>().join(" > ");
+        out.push(ExtraBlock {
+            name: full,
+            kind: ExtraKind::Test,
+            start: st.start_byte(),
+            end: st.end_byte(),
+            name_start: inner.start_byte(),
+            name_end: inner.end_byte(),
+        });
+    }
+}
+
+/// The text of a string or substitution-free template literal, and the
+/// node to point at for it.
+fn test_name<'t>(arg: Node<'t>, src: &str) -> Option<(String, Node<'t>)> {
+    if !matches!(arg.kind(), "string" | "template_string")
+        || named_children(arg).iter().any(|c| c.kind() == "template_substitution")
+    {
+        return None;
+    }
+    let raw = text(arg, src);
+    let inner = raw.get(1..raw.len().saturating_sub(1))?;
+    Some((unescape(inner), arg))
+}
+
+/// The value of a string literal's body: `\"` is `"`, `\n` a line break,
+/// `\u{1F600}` and `\x41` their characters, and a backslash before a line
+/// break continues the line.
+fn unescape(s: &str) -> String {
+    let mut out = String::with_capacity(s.len());
+    let mut it = s.chars().peekable();
+    while let Some(c) = it.next() {
+        if c != '\\' {
+            out.push(c);
+            continue;
+        }
+        let Some(e) = it.next() else { break };
+        let hex = |it: &mut std::iter::Peekable<std::str::Chars>, n: usize| -> Option<char> {
+            let digits: String = (0..n).map_while(|_| it.next_if(|c| c.is_ascii_hexdigit())).collect();
+            u32::from_str_radix(&digits, 16).ok().and_then(char::from_u32)
+        };
+        match e {
+            'n' => out.push('\n'),
+            't' => out.push('\t'),
+            'r' => out.push('\r'),
+            'b' => out.push('\u{8}'),
+            'f' => out.push('\u{c}'),
+            'v' => out.push('\u{b}'),
+            '0' => out.push('\0'),
+            '\n' => {}
+            '\r' => {
+                it.next_if_eq(&'\n');
+            }
+            'x' => out.extend(hex(&mut it, 2)),
+            'u' if it.next_if_eq(&'{').is_some() => {
+                out.extend(hex(&mut it, 6));
+                it.next_if_eq(&'}');
+            }
+            'u' => out.extend(hex(&mut it, 4)),
+            other => out.push(other),
+        }
+    }
+    out
+}
+
 /// Both grammars share everything but the grammar itself.
 macro_rules! impl_language {
     ($ty:ty, $name:literal, $grammar:expr, $exts:expr) => {
@@ -1526,6 +1666,10 @@ macro_rules! impl_language {
 
             fn repair(&self, src: &str) -> Option<String> {
                 repair(src)
+            }
+
+            fn extra_blocks(&self, root: Node, src: &str) -> Vec<ExtraBlock> {
+                extra_blocks(root, src)
             }
 
             fn place(&self, summary: &mut Summary, path: &Path, _roots: &[PathBuf], files: &dyn Files) {
@@ -1634,6 +1778,14 @@ impl_language!(Tsx, "tsx", tree_sitter_typescript::LANGUAGE_TSX, &["tsx", "js", 
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn string_values() {
+        assert_eq!(unescape(r#"\"all\" isn\'t"#), r#""all" isn't"#);
+        assert_eq!(unescape(r"a\\b \x41\u0042\u{1F600} \n"), "a\\b AB\u{1F600} \n");
+        assert_eq!(unescape("one \\\ntwo"), "one two");
+        assert_eq!(unescape(r"\`tick\` \$x"), "`tick` $x");
+    }
 
     #[test]
     fn module_names() {

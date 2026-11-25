@@ -248,6 +248,76 @@ they are in that revision:
 the indexes of the last four commits asked about. Loading one takes about as
 long as indexing the working tree (0.7 s for Newtonsoft.Json's 951 files).
 
+## Blocks and context
+
+For tools that read code a block at a time (a coding agent that reads
+`path#symbol`, or a review UI that shows a definition in place), scopehop
+lists a file's blocks and what a block depends on.
+
+A file's **outline** is its classes, objects, functions, methods,
+properties, enum entries and type aliases, each with the lines of its whole
+declaration (with annotations, decorators, modifiers and `export`), named by
+nesting: `Circle`, `Circle.area`, `Outer.Inner.ping`. Go methods are named
+by their receiver (`Circle.Area`), and C# extension methods by their class.
+TypeScript and JavaScript constructors are blocks (`Circle.constructor`), and
+so are test cases written as calls: `test("name", ...)` or `it(...)` (also
+`it.only(...)`) at the top level or in a `describe`, `suite` or `context`
+callback, named with their groups: `Circle > grow > doubles the radius`.
+Declarations inside a function body (Python's `self.x = ...`, JavaScript's
+`this.count = 0` and `constructor(public x)`, locals) are not blocks.
+
+```sh
+scopehop outline model/Shapes.kt
+#   12-18    class     Circle
+#   12-12    property  Circle.radius
+#   13-13    method    Circle.area
+```
+
+The **context** of a region is every declaration outside it that it uses,
+with the block each one is in, and the blocks elsewhere that use the
+region's own declarations. A region is `FILE#BLOCK` (a qualified name, or a
+last part that only one block has: `ping` for `Outer.Inner.ping`; everything
+after the first `#` is the name, so test names may hold one),
+`FILE:LINE[-LINE]`, or a whole file. A local declared before a range of
+lines is listed in the function around it. Names that resolve to nothing in
+the project (libraries, builtins) are listed apart as `unresolved`, and a
+name with several candidates (an untyped receiver) is marked as one of
+several.
+
+```sh
+scopehop context model/Extensions.kt#diameter
+# uses:
+#   model/Shapes.kt#Circle (12-18)                   Circle x1
+#   model/Shapes.kt#Circle.radius (12-12)            radius x1
+# used by:
+#   app/Main.kt#App.run (12-40)                      diameter x1
+# unresolved: Double
+```
+
+Both take `--rev`, `--root` and `--json` like `def` (`context` also takes
+`--no-callers`). With `--json`, lines are 1-based and inclusive, and columns
+1-based bytes. The language server answers the same questions:
+
+```json
+{ "method": "scopehop/outline",
+  "params": { "textDocument": { "uri": "file:///repo/model/Shapes.kt" } } }
+{ "method": "scopehop/context",
+  "params": { "textDocument": { "uri": "file:///repo/model/Extensions.kt" },
+              "block": "diameter", "callers": true } }
+```
+
+`scopehop/outline` returns `{ name, kind, range, selectionRange }` per block.
+`scopehop/context` takes `block`, or `range`, or neither for the whole file,
+and returns `region`, `uses` (`name`, `location`, `block`, `sites`,
+`ambiguous`), `usedBy` (`uri`, `block`, `names`, `sites`) and `unresolved`.
+Both also take a `revision`.
+
+Not blocks: local functions and classes, test cases in languages that
+write them as declarations anyway (a JUnit `@Test` method, Go's `func
+TestX`, a `def test_x`, which are functions or methods), test names built at
+run time, and Markdown sections (Markdown files are not indexed). Interface
+method signatures are blocks.
+
 ## Limits
 
 When a type can't be inferred (e.g. untyped lambda params), member lookups fall
@@ -368,13 +438,17 @@ Rust should fit `Modules` with its own `place()`.
 - `src/index.rs`: workspace index and resolution, language-neutral
 - `src/files.rs`: where files come from: the working tree, or a git
   revision (`git ls-tree` and `git cat-file --batch`)
+- `src/outline.rs`: blocks of a file and the context of a region
 - `src/snapshot.rs`: text dump of everything the index resolves, for tests
 - `tests/`: resolution tests over small Kotlin, Java, mixed, Python, Go,
-  TypeScript and C# projects in `tests/fixtures/`, plus a snapshot of every lookup in each
-- `src/main.rs`: LSP over stdio (`lsp-server`), and the `def`/`refs`
+  TypeScript and C# projects in `tests/fixtures/`, plus a snapshot of every lookup in each,
+  and `tests/outline.rs` (blocks and context, with every fixture's outline in
+  `tests/snapshots/outline.txt`)
+- `src/main.rs`: LSP over stdio (`lsp-server`), and the `def`/`refs`/`outline`/`context`
   command line
 - `zed/`: Zed extension that launches the server
-- `examples/`: `probe` (one lookup from the CLI), `stats` (resolve every
+- `examples/`: `probe` (one lookup from the CLI), `outline` (every
+  file's blocks), `stats` (resolve every
   identifier in a project), `snapshot` (dump every lookup in a project, to
   diff two builds), `dump` (print a syntax tree), `errcount` (files that
   don't parse, before and after `repair()`)

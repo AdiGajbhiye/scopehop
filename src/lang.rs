@@ -83,6 +83,28 @@ pub struct Def {
     pub supertypes: Vec<String>,
 }
 
+/// A block of a file's outline that is not one of its [`Def`]s: a
+/// TypeScript constructor, or a test case written as a call
+/// (`test("name", ...)`).
+#[derive(Clone, Debug)]
+pub struct ExtraBlock {
+    /// For a test, the whole name (`group > case`); otherwise the name
+    /// that the blocks around it qualify (`constructor`).
+    pub name: String,
+    pub kind: ExtraKind,
+    pub start: usize,
+    pub end: usize,
+    pub name_start: usize,
+    pub name_end: usize,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum ExtraKind {
+    /// A function (a method when it is in a class).
+    Function,
+    Test,
+}
+
 #[derive(Clone, Debug, Default)]
 pub struct Import {
     /// Full path without the trailing wildcard, e.g. `com.example.Foo`.
@@ -216,6 +238,14 @@ pub trait Language: Sync {
     /// it parses with fewer errors.
     fn repair(&self, _src: &str) -> Option<String> {
         None
+    }
+
+    /// Blocks for [`crate::outline::outline`] besides the declarations
+    /// [`summarize`] finds.
+    ///
+    /// [`summarize`]: Language::summarize
+    fn extra_blocks(&self, _root: Node, _src: &str) -> Vec<ExtraBlock> {
+        Vec::new()
     }
 
     /// Fills in what depends on where the file lives, after [`summarize`]:

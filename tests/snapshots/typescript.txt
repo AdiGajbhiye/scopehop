@@ -446,7 +446,7 @@ src/models/shapes.ts:12:23 x <- src/app/main.ts:61:24 src/app/main.ts:62:22 src/
 src/models/shapes.ts:12:34 y -> src/models/shapes.ts:12:34
 src/models/shapes.ts:12:34 y <- src/app/main.ts:62:28 src/app/main.ts:63:33 src/app/main.ts:65:27
 src/models/shapes.ts:14:14 Circle -> src/models/shapes.ts:14:14
-src/models/shapes.ts:14:14 Circle <- src/app/advanced.ts:1:10 src/app/advanced.ts:6:14 src/app/advanced.ts:7:21 src/app/advanced.ts:15:23 src/app/advanced.ts:16:32 src/app/advanced.ts:16:41 src/app/advanced.ts:17:33 src/app/advanced.ts:17:42 src/app/advanced.ts:21:14 src/app/advanced.ts:21:31 src/app/advanced.ts:23:30 src/app/advanced.ts:26:51 src/app/main.ts:1:10 src/app/main.ts:11:20 src/app/main.ts:26:12 src/app/main.ts:31:24 src/app/main.ts:61:27 src/app/view.tsx:1:10 src/app/view.tsx:3:24 src/app/view.tsx:12:25 src/models/shapes.ts:24:21 src/models/shapes.ts:25:16 src/models/shapes.ts:36:18 src/models/shapes.ts:37:16 src/models/shapes.ts:41:27 src/models/shapes.ts:51:40 src/models/shapes.ts:52:14 src/models/shapes.ts:57:46 src/models/shapes.ts:58:11
+src/models/shapes.ts:14:14 Circle <- src/app/advanced.ts:1:10 src/app/advanced.ts:6:14 src/app/advanced.ts:7:21 src/app/advanced.ts:15:23 src/app/advanced.ts:16:32 src/app/advanced.ts:16:41 src/app/advanced.ts:17:33 src/app/advanced.ts:17:42 src/app/advanced.ts:21:14 src/app/advanced.ts:21:31 src/app/advanced.ts:23:30 src/app/advanced.ts:26:51 src/app/main.ts:1:10 src/app/main.ts:11:20 src/app/main.ts:26:12 src/app/main.ts:31:24 src/app/main.ts:61:27 src/app/view.tsx:1:10 src/app/view.tsx:3:24 src/app/view.tsx:12:25 src/models/shapes.ts:24:21 src/models/shapes.ts:25:16 src/models/shapes.ts:36:18 src/models/shapes.ts:37:16 src/models/shapes.ts:41:27 src/models/shapes.ts:51:40 src/models/shapes.ts:52:14 src/models/shapes.ts:57:46 src/models/shapes.ts:58:11 test/shapes.test.ts:1:10 test/shapes.test.ts:5:16 test/shapes.test.ts:10:18 test/shapes.test.ts:16:17
 src/models/shapes.ts:14:32 Shape -> src/models/shapes.ts:4:18
 src/models/shapes.ts:15:3 name -> src/models/shapes.ts:15:3
 src/models/shapes.ts:15:3 name <- src/app/main.ts:58:37 src/models/shapes.ts:33:23
@@ -460,13 +460,13 @@ src/models/shapes.ts:16:27 y <-
 src/models/shapes.ts:18:3 constructor -> src/models/shapes.ts:18:3
 src/models/shapes.ts:18:3 constructor <- 
 src/models/shapes.ts:18:22 radius -> src/models/shapes.ts:18:22
-src/models/shapes.ts:18:22 radius <- src/app/advanced.ts:32:17 src/app/advanced.ts:32:32 src/app/advanced.ts:32:46 src/app/advanced.ts:32:61 src/app/main.ts:34:27 src/app/main.ts:51:14 src/app/main.ts:58:27 src/app/main.ts:60:21 src/app/main.ts:61:41 src/app/view.tsx:6:23 src/models/shapes.ts:21:24 src/models/shapes.ts:21:38 src/models/shapes.ts:25:28 src/models/shapes.ts:29:17
+src/models/shapes.ts:18:22 radius <- src/app/advanced.ts:32:17 src/app/advanced.ts:32:32 src/app/advanced.ts:32:46 src/app/advanced.ts:32:61 src/app/main.ts:34:27 src/app/main.ts:51:14 src/app/main.ts:58:27 src/app/main.ts:60:21 src/app/main.ts:61:41 src/app/view.tsx:6:23 src/models/shapes.ts:21:24 src/models/shapes.ts:21:38 src/models/shapes.ts:25:28 src/models/shapes.ts:29:17 test/shapes.test.ts:10:36 test/shapes.test.ts:17:12
 src/models/shapes.ts:20:3 area -> src/models/shapes.ts:20:3
-src/models/shapes.ts:20:3 area <- src/app/main.ts:58:17 src/app/main.ts:61:57 src/app/main.ts:72:32 src/models/shapes.ts:47:18
+src/models/shapes.ts:20:3 area <- src/app/main.ts:58:17 src/app/main.ts:61:57 src/app/main.ts:72:32 src/models/shapes.ts:47:18 test/shapes.test.ts:5:26
 src/models/shapes.ts:21:24 radius -> src/models/shapes.ts:18:22
 src/models/shapes.ts:21:38 radius -> src/models/shapes.ts:18:22
 src/models/shapes.ts:24:3 grow -> src/models/shapes.ts:24:3
-src/models/shapes.ts:24:3 grow <- src/app/main.ts:59:19
+src/models/shapes.ts:24:3 grow <- src/app/main.ts:59:19 test/shapes.test.ts:10:28
 src/models/shapes.ts:24:8 by -> src/models/shapes.ts:24:8
 src/models/shapes.ts:24:8 by <- src/models/shapes.ts:25:37
 src/models/shapes.ts:24:21 Circle -> src/models/shapes.ts:14:14
@@ -540,3 +540,30 @@ src/util/strings.ts:9:33 s -> src/util/strings.ts:9:33
 src/util/strings.ts:9:33 s <- src/util/strings.ts:10:10
 src/util/strings.ts:10:10 s -> src/util/strings.ts:9:33
 src/util/strings.ts:10:12 toLowerCase -> 
+test/shapes.test.ts:1:10 Circle -> src/models/shapes.ts:14:14
+test/shapes.test.ts:3:1 describe -> 
+test/shapes.test.ts:4:3 it -> 
+test/shapes.test.ts:5:5 expect -> 
+test/shapes.test.ts:5:16 Circle -> src/models/shapes.ts:14:14
+test/shapes.test.ts:5:26 area -> src/models/shapes.ts:20:3
+test/shapes.test.ts:5:34 toBeCloseTo -> 
+test/shapes.test.ts:8:3 describe -> 
+test/shapes.test.ts:9:5 it -> 
+test/shapes.test.ts:9:8 only -> 
+test/shapes.test.ts:10:7 expect -> 
+test/shapes.test.ts:10:18 Circle -> src/models/shapes.ts:14:14
+test/shapes.test.ts:10:28 grow -> src/models/shapes.ts:24:3
+test/shapes.test.ts:10:36 radius -> src/models/shapes.ts:18:22
+test/shapes.test.ts:10:44 toBe -> 
+test/shapes.test.ts:15:1 test -> 
+test/shapes.test.ts:16:9 c -> test/shapes.test.ts:16:9
+test/shapes.test.ts:16:9 c <- test/shapes.test.ts:17:10
+test/shapes.test.ts:16:17 Circle -> src/models/shapes.ts:14:14
+test/shapes.test.ts:17:3 expect -> 
+test/shapes.test.ts:17:10 c -> test/shapes.test.ts:16:9
+test/shapes.test.ts:17:12 radius -> src/models/shapes.ts:18:22
+test/shapes.test.ts:17:20 toBe -> 
+test/shapes.test.ts:21:1 test -> 
+test/shapes.test.ts:22:10 helper -> test/shapes.test.ts:22:10
+test/shapes.test.ts:22:10 helper <- 
+test/shapes.test.ts:23:3 test -> 

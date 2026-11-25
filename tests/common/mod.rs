@@ -101,11 +101,15 @@ pub fn assert_seed_independent(fixture: &str) {
 /// declarations) references, against `tests/snapshots/<fixture>.txt`. Run
 /// with `UPDATE_SNAPSHOTS=1` to accept changes, then review the diff.
 pub fn assert_snapshot(fixture: &str) {
-    let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(format!("tests/snapshots/{fixture}.txt"));
-    let got = snapshot(fixture);
+    assert_text_snapshot(fixture, &snapshot(fixture));
+}
+
+/// `got` against `tests/snapshots/<name>.txt` (`UPDATE_SNAPSHOTS=1` writes it).
+pub fn assert_text_snapshot(name: &str, got: &str) {
+    let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(format!("tests/snapshots/{name}.txt"));
     if std::env::var_os("UPDATE_SNAPSHOTS").is_some() {
         std::fs::create_dir_all(path.parent().unwrap()).unwrap();
-        std::fs::write(&path, &got).unwrap();
+        std::fs::write(&path, got).unwrap();
         return;
     }
     let want = std::fs::read_to_string(&path).unwrap_or_default();
@@ -117,6 +121,6 @@ pub fn assert_snapshot(fixture: &str) {
             .chain(got.lines().filter(|l| !want.lines().any(|w| w == *l)).map(|l| format!("+ {l}")))
             .take(40)
             .collect();
-        panic!("{fixture} snapshot changed (UPDATE_SNAPSHOTS=1 cargo test to accept):\n{}", diff.join("\n"));
+        panic!("{name} snapshot changed (UPDATE_SNAPSHOTS=1 cargo test to accept):\n{}", diff.join("\n"));
     }
 }

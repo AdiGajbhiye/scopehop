@@ -1,0 +1,419 @@
+kotlin/app/Main.kt
+  9-48 class App
+  9-9 property App.start
+  10-10 property App.count
+  12-40 method App.run
+  42-42 method App.pick
+  44-47 method App.shadow
+  50-50 function limit
+  52-52 function total
+  54-58 function untyped
+  60-62 class Shout
+  61-61 method Shout.area
+kotlin/app/Other.kt
+  6-6 function helper
+  8-8 function makeCircle
+kotlin/model/Boxes.kt
+  5-5 class SquareHolder
+  5-5 property SquareHolder.shape
+kotlin/model/Extensions.kt
+  4-4 function diameter
+  8-8 function totalArea
+  11-11 function describe
+kotlin/model/Holders.kt
+  4-4 class RoundHolder
+  4-4 property RoundHolder.shape
+  5-5 class BigRoundHolder
+  5-5 property BigRoundHolder.shape
+kotlin/model/Shapes.kt
+  3-5 class Named
+  4-4 property Named.label
+  7-10 class Shape
+  7-7 property Shape.name
+  8-8 property Shape.label
+  9-9 method Shape.area
+  12-18 class Circle
+  12-12 property Circle.radius
+  13-13 method Circle.area
+  16-16 method Circle.unit
+  20-22 class Square
+  20-20 property Square.side
+  21-21 method Square.area
+  24-29 class Color
+  24-24 property Color.hex
+  25-25 enumEntry Color.RED
+  26-26 enumEntry Color.GREEN
+  28-28 method Color.shout
+  31-31 typeAlias ShapeList
+  33-37 class Outer
+  34-36 class Outer.Inner
+  35-35 method Outer.Inner.ping
+  39-42 class Mode
+  40-40 object Mode.List
+  41-41 object Mode.Grid
+kotlin/other/Decoy.kt
+  5-5 class Circle
+  5-5 property Circle.r
+  7-7 function makeCircle
+kotlin/util/Strings.kt
+  3-3 function shout
+  6-6 function helper
+  8-8 property VERSION
+  10-14 class Limits
+  12-12 property Limits.MAX
+java/app/Main.java
+  9-99 class Main
+  10-10 property Main.count
+  11-11 property Main.start
+  17-68 method Main.run
+  70-72 method Main.pick
+  74-77 method Main.shadow
+  79-82 method Main.first
+  84-98 class Main.Shout
+  89-92 method Main.Shout.area
+  95-97 method Main.Shout.count
+java/app/Other.java
+  6-14 class Other
+  7-9 method Other.helper
+  11-13 method Other.make
+java/model/Circle.java
+  3-19 class Circle
+  4-4 property Circle.radius
+  11-14 method Circle.area
+  16-18 method Circle.unit
+java/model/Color.java
+  3-16 class Color
+  4-4 enumEntry Color.RED
+  5-5 enumEntry Color.GREEN
+  7-7 property Color.hex
+  13-15 method Color.shout
+java/model/Named.java
+  3-7 class Named
+  4-4 property Named.DEFAULT
+  6-6 method Named.label
+java/model/Outer.java
+  3-9 class Outer
+  4-8 class Outer.Inner
+  5-7 method Outer.Inner.ping
+java/model/Point.java
+  3-7 class Point
+  3-3 property Point.x
+  3-3 property Point.y
+  4-6 method Point.sum
+java/model/Shape.java
+  3-26 class Shape
+  4-4 property Shape.name
+  10-12 method Shape.getName
+  14-16 method Shape.area
+  18-20 method Shape.length
+  22-25 method Shape.label
+java/model/Square.java
+  3-15 class Square
+  4-4 property Square.side
+  11-14 method Square.area
+java/other/Circle.java
+  5-7 class Circle
+  6-6 property Circle.r
+java/util/Strings.java
+  3-14 class Strings
+  4-4 property Strings.VERSION
+  6-8 method Strings.shout
+  11-13 method Strings.helper
+mixed/app/App.kt
+  6-13 function main
+mixed/app/Badge.kt
+  3-5 class Badge
+  3-3 property Badge.text
+  4-4 method Badge.label
+mixed/lib/Greeter.java
+  5-26 class Greeter
+  6-6 property Greeter.HELLO
+  8-8 property Greeter.name
+  14-16 method Greeter.greet
+  18-20 method Greeter.of
+  23-25 method Greeter.badged
+python/app/__init__.py
+python/app/main.py
+  8-8 property LIMIT
+  9-9 property counter
+  12-15 function bump
+  18-38 function scopes
+  41-76 class Main
+  42-42 property Main.LIMIT
+  43-43 property Main.TWICE
+  45-48 method Main.__init__
+  50-73 method Main.run
+  75-76 method Main.size
+  79-85 class Named
+  80-82 method Named.run
+  84-85 method Named.label
+  88-89 function any_area
+  92-100 function classify
+python/app/other.py
+  4-5 class Config
+  5-5 property Config.debug
+  8-11 function helper
+python/jvm/Circle.java
+  4-10 class Circle
+  5-5 property Circle.radius
+  7-9 method Circle.area
+python/models/__init__.py
+python/models/color.py
+  1-1 property __all__
+  4-6 class Color
+  5-6 method Color.__init__
+  9-9 property RED
+python/models/shapes.py
+  7-17 class Shape
+  8-8 property Shape.sides
+  10-11 method Shape.__init__
+  13-14 method Shape.area
+  16-17 method Shape.describe
+  20-38 class Circle
+  21-24 method Circle.__init__
+  26-27 method Circle.area
+  29-30 method Circle.grow
+  32-34 property Circle.center
+  36-38 method Circle.unit
+  41-47 class Point
+  43-43 property Point.x
+  44-44 property Point.y
+  46-47 method Point.moved
+  50-51 function make_circle
+  54-54 property DEFAULT
+python/other/__init__.py
+python/other/shapes.py
+  1-6 class Circle
+  2-3 method Circle.__init__
+  5-6 method Circle.area
+python/scripts/run.py
+python/util/__init__.py
+python/util/strings.py
+  1-1 property PREFIX
+  4-5 function shout
+  8-13 function count_words
+go/app/helper.go
+  3-5 function helper
+go/app/main.go
+  11-11 property counter
+  13-16 class Canvas
+  14-14 property Canvas.shapes
+  15-15 property Canvas.circle
+  18-21 method Canvas.Add
+  23-29 method Canvas.Total
+  31-40 function sum
+  42-72 function scopes
+  74-76 function parse
+  78-99 function main
+go/app/tables.go
+  11-11 class Ring
+  13-15 method Canvas.Rings
+  17-44 function tables
+  46-51 function describe
+go/jvm/Circle.java
+  3-6 class Circle
+  4-4 property Circle.Radius
+  5-5 method Circle.Area
+go/models/grow.go
+  4-7 method Circle.Grow
+  9-11 function unit
+  13-15 class Box
+  14-14 property Box.items
+  17-19 method Box.Put
+go/models/shapes.go
+  12-15 class Shape
+  13-13 method Shape.Area
+  17-19 class Named
+  18-18 method Named.Name
+  21-23 class Base
+  22-22 property Base.label
+  25-27 method Base.Name
+  29-31 class Point
+  30-30 property Point.X
+  30-30 property Point.Y
+  33-35 method Point.Moved
+  37-41 class Circle
+  38-38 property Circle.Base
+  39-39 property Circle.Center
+  40-40 property Circle.Radius
+  43-45 function NewCircle
+  47-49 method Circle.Area
+  51-53 method Circle.Describe
+  55-55 property Default
+  57-57 class Color
+  60-60 property Red
+  61-61 property Green
+  64-66 method Color.String
+go/models/shapes_test.go
+  9-14 function TestArea
+go/other/shapes.go
+  4-6 class Circle
+  5-5 property Circle.Radius
+  8-10 method Circle.Area
+go/util/fast.go
+  6-8 function Speed
+go/util/slow.go
+  8-10 function Speed
+go/util/speed_plan9.go
+  4-4 property strings
+  6-8 function Speed
+go/util/strings.go
+  5-5 property Prefix
+  7-9 function Shout
+  11-13 function CountWords
+typescript/py/shapes.py
+  1-3 class Circle
+  2-3 method Circle.area
+typescript/src/app/advanced.ts
+  5-8 class Factory
+  10-10 class Unwrap
+  10-10 property Unwrap.value
+  12-12 class Flags
+  14-24 class Registry
+  15-15 method Registry.find
+  21-21 property Registry.load
+  23-23 property Registry.build
+  26-33 function use
+  35-37 function untyped
+typescript/src/app/helper.ts
+  3-5 function helper
+typescript/src/app/main.ts
+  7-7 property counter
+  9-29 class Canvas
+  10-10 property Canvas.shapes
+  11-11 property Canvas.circle
+  13-16 method Canvas.add
+  18-24 method Canvas.total
+  26-28 method Canvas.first
+  31-54 function scopes
+  56-75 function main
+typescript/src/app/view.tsx
+  3-3 class Props
+  3-3 property Props.circle
+  3-3 property Props.label
+  5-8 function Badge
+  10-13 function App
+typescript/src/legacy/old.js
+  4-13 class Counter
+  5-7 method Counter.constructor
+  9-12 method Counter.increment
+  15-19 function run
+typescript/src/models/color.ts
+  1-4 class Color
+  2-2 enumEntry Color.Red
+  3-3 enumEntry Color.Green
+  6-12 class Palette
+  7-7 property Palette.colors
+  9-11 method Palette.first
+typescript/src/models/index.ts
+typescript/src/models/shapes.ts
+  4-6 class Shape
+  5-5 method Shape.area
+  8-10 class Named
+  9-9 property Named.name
+  12-12 class Point
+  12-12 property Point.x
+  12-12 property Point.y
+  14-39 class Circle
+  15-15 property Circle.name
+  16-16 property Circle.center
+  16-16 property Circle.center.x
+  16-16 property Circle.center.y
+  18-18 method Circle.constructor
+  20-22 method Circle.area
+  24-26 method Circle.grow
+  28-30 method Circle.diameter
+  32-34 method Circle.describe
+  36-38 method Circle.unit
+  41-49 class Ring
+  42-44 method Ring.constructor
+  46-48 method Ring.area
+  51-53 function makeCircle
+  55-55 property DEFAULT
+  57-59 function loadCircles
+typescript/src/other/shapes.ts
+  2-8 class Circle
+  3-3 property Circle.radius
+  5-7 method Circle.area
+typescript/src/util/strings.ts
+  1-3 function shout
+  5-7 function countWords
+  9-11 function whisper
+typescript/test/shapes.test.ts
+  4-6 test Circle > has an area
+  9-11 test Circle > grow > doubles the radius
+  15-18 test parses #1
+  22-24 function helper
+csharp/App/Canvas.cs
+  7-46 class Canvas
+  9-9 property Canvas.shapes
+  10-10 property Canvas.circles
+  11-11 property Canvas.byName
+  13-13 property Canvas.Count
+  15-19 method Canvas.Add
+  21-33 method Canvas.Total
+  35-39 method Canvas.LoadAsync
+  41-45 method Canvas.UseAsync
+  48-60 class Shapes
+  50-50 method Shapes.Twice
+  52-59 method Shapes.Queries
+csharp/App/Globals.cs
+csharp/App/Program.cs
+  10-99 class Program
+  12-12 property Program.count
+  14-44 method Program.Main
+  46-92 method Program.Scopes
+  94-98 method Program.First
+csharp/Models/Circle.Describe.cs
+  3-13 class Circle
+  5-5 method Circle.Describe
+  7-12 class Circle.Builder
+  9-9 property Circle.Builder.Size
+  11-11 method Circle.Builder.Build
+csharp/Models/Shapes.cs
+  5-9 class IShape
+  7-7 method IShape.Area
+  8-8 property IShape.Name
+  11-14 class Point
+  11-11 property Point.X
+  11-11 property Point.Y
+  13-13 method Point.Moved
+  16-46 class Circle
+  18-18 property Circle.Pi
+  19-19 property Circle.Unit
+  20-20 property Circle.radius
+  28-32 property Circle.Radius
+  34-34 property Circle.Center
+  36-36 method Circle.Area
+  38-41 method Circle.Grow
+  43-43 method Circle.Of
+  45-45 property Circle.Name
+  48-52 class Color
+  50-50 enumEntry Color.Red
+  51-51 enumEntry Color.Green
+  54-62 class Box
+  56-56 property Box.Value
+  58-61 method Box.Put
+  64-67 class Box
+  66-66 property Box.Size
+  69-72 class IRepository
+  71-71 method IRepository.Find
+  74-74 typeAlias Measure
+csharp/Other/Shapes.cs
+  3-11 class Circle
+  8-8 property Circle.Radius
+  10-10 method Circle.Area
+csharp/Other/Tools.cs
+  3-10 class Measurer
+  7-7 method Measurer.Of
+  9-9 method Measurer.Unknown
+csharp/Util/Strings.cs
+  5-18 class StringExt
+  7-7 method StringExt.Shout
+  9-9 method StringExt.Doubled
+  11-11 method StringExt.CountWords
+  13-13 method StringExt.Pad
+  15-15 method StringExt.Pad
+  17-17 method StringExt.Pad
+  20-23 class Mathx
+  22-22 method Mathx.Square
