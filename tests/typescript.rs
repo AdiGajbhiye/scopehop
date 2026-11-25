@@ -20,6 +20,7 @@ const STRINGS: &str = "src/util/strings.ts";
 const DECOY: &str = "src/other/shapes.ts";
 const OLD: &str = "src/legacy/old.js";
 const ADVANCED: &str = "src/app/advanced.ts";
+const LAZY: &str = "src/app/lazy.ts";
 
 fn fx() -> Fx {
     Fx::new("typescript")
@@ -232,6 +233,27 @@ fn commonjs_and_assigned_fields() {
 // ---------------------------------------------------------------------------
 // References
 // ---------------------------------------------------------------------------
+
+#[test]
+fn dynamic_imports() {
+    let mut fx = fx();
+    // Destructured names are the module's declarations, like imported ones.
+    assert_def!(fx, LAZY, "const { make|Circle," => SHAPES, "export function make|Circle(");
+    assert_def!(fx, LAZY, "const c = make|Circle(1)" => SHAPES, "export function make|Circle(");
+    assert_def!(fx, LAZY, "new Ro|und(3)" => SHAPES, "export class Ci|rcle implements");
+    // The awaited module is a receiver, and its members keep their types.
+    assert_def!(fx, LAZY, "shapes.make|Circle(2)" => SHAPES, "export function make|Circle(");
+    assert_def!(fx, LAZY, "makeCircle(2).ar|ea()" => SHAPES, "  ar|ea(): number {\n    return 3.14");
+    assert_def!(fx, LAZY, "c.ar|ea()" => SHAPES, "  ar|ea(): number {\n    return 3.14");
+    assert_def!(fx, LAZY, "new Round(3).rad|ius" => SHAPES, "public rad|ius");
+    // Outside the project, the name stays a local.
+    assert_def!(fx, LAZY, "return read|File;" => LAZY, "const { read|File }");
+    // And the uses are references of the declaration.
+    let refs = fx.refs(SHAPES, "export function make|Circle(");
+    assert!(refs.contains(&fx.at(LAZY, "const { make|Circle,")), "{refs:?}");
+    assert!(refs.contains(&fx.at(LAZY, "const c = make|Circle(1)")), "{refs:?}");
+    assert!(refs.contains(&fx.at(LAZY, "shapes.make|Circle(2)")), "{refs:?}");
+}
 
 #[test]
 fn references_across_modules() {

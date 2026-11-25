@@ -191,6 +191,9 @@ pub enum Expr<'t> {
     /// A type written out, as [`Def::type_name`] would spell it
     /// (TypeScript's `Circle[]` or `{ a: Circle }` in `x as ...`).
     TypeName(String),
+    /// A module, named by an import path as written: TypeScript's
+    /// `import("./m.js")`, which gives the module itself.
+    Module(String),
     Unknown,
 }
 

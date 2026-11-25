@@ -1395,6 +1395,11 @@ fn classify_expr<'t>(expr: Node<'t>, src: &str) -> Expr<'t> {
         "super" => Expr::Super,
         "call_expression" => match field(expr, "function") {
             Some(f) if f.kind() == "identifier" && text(f, src) == "require" => Expr::Unknown,
+            // `import("./m.js")`, usually awaited: the module.
+            Some(f) if f.kind() == "import" => field(expr, "arguments")
+                .and_then(|a| a.named_child(0))
+                .and_then(|spec| test_name(spec, src))
+                .map_or(Expr::Unknown, |(spec, _)| Expr::Module(spec)),
             Some(f) => Expr::Call(f),
             None => Expr::Unknown,
         },

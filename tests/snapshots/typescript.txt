@@ -133,6 +133,29 @@ src/app/helper.ts:3:24 canvas <- src/app/helper.ts:4:10
 src/app/helper.ts:3:32 Canvas -> src/app/main.ts:9:14
 src/app/helper.ts:4:10 canvas -> src/app/helper.ts:3:24
 src/app/helper.ts:4:17 total -> src/app/main.ts:18:3
+src/app/lazy.ts:2:23 lazy -> src/app/lazy.ts:2:23
+src/app/lazy.ts:2:23 lazy <- 
+src/app/lazy.ts:2:31 Promise -> 
+src/app/lazy.ts:3:11 makeCircle -> src/models/shapes.ts:51:17
+src/app/lazy.ts:3:23 Circle -> 
+src/app/lazy.ts:3:31 Round -> src/models/shapes.ts:14:14
+src/app/lazy.ts:4:9 shapes -> src/app/lazy.ts:4:9
+src/app/lazy.ts:4:9 shapes <- src/app/lazy.ts:6:10
+src/app/lazy.ts:5:9 c -> src/app/lazy.ts:5:9
+src/app/lazy.ts:5:9 c <- src/app/lazy.ts:6:40
+src/app/lazy.ts:5:13 makeCircle -> src/models/shapes.ts:51:17
+src/app/lazy.ts:6:10 shapes -> src/app/lazy.ts:4:9
+src/app/lazy.ts:6:17 makeCircle -> src/models/shapes.ts:51:17
+src/app/lazy.ts:6:31 area -> src/models/shapes.ts:20:3
+src/app/lazy.ts:6:40 c -> src/app/lazy.ts:5:9
+src/app/lazy.ts:6:42 area -> src/models/shapes.ts:20:3
+src/app/lazy.ts:6:55 Round -> src/models/shapes.ts:14:14
+src/app/lazy.ts:6:64 radius -> src/models/shapes.ts:18:22
+src/app/lazy.ts:10:23 external -> src/app/lazy.ts:10:23
+src/app/lazy.ts:10:23 external <- 
+src/app/lazy.ts:11:11 readFile -> src/app/lazy.ts:11:11
+src/app/lazy.ts:11:11 readFile <- src/app/lazy.ts:12:10
+src/app/lazy.ts:12:10 readFile -> src/app/lazy.ts:11:11
 src/app/main.ts:1:10 Circle -> src/models/shapes.ts:14:14
 src/app/main.ts:1:18 makeCircle -> src/models/shapes.ts:51:17
 src/app/main.ts:1:30 Colour -> src/models/color.ts:1:13
@@ -460,9 +483,9 @@ src/models/shapes.ts:16:27 y <-
 src/models/shapes.ts:18:3 constructor -> src/models/shapes.ts:18:3
 src/models/shapes.ts:18:3 constructor <- 
 src/models/shapes.ts:18:22 radius -> src/models/shapes.ts:18:22
-src/models/shapes.ts:18:22 radius <- src/app/advanced.ts:32:17 src/app/advanced.ts:32:32 src/app/advanced.ts:32:46 src/app/advanced.ts:32:61 src/app/main.ts:34:27 src/app/main.ts:51:14 src/app/main.ts:58:27 src/app/main.ts:60:21 src/app/main.ts:61:41 src/app/view.tsx:6:23 src/models/shapes.ts:21:24 src/models/shapes.ts:21:38 src/models/shapes.ts:25:28 src/models/shapes.ts:29:17 test/shapes.test.ts:10:36 test/shapes.test.ts:17:12
+src/models/shapes.ts:18:22 radius <- src/app/advanced.ts:32:17 src/app/advanced.ts:32:32 src/app/advanced.ts:32:46 src/app/advanced.ts:32:61 src/app/lazy.ts:6:64 src/app/main.ts:34:27 src/app/main.ts:51:14 src/app/main.ts:58:27 src/app/main.ts:60:21 src/app/main.ts:61:41 src/app/view.tsx:6:23 src/models/shapes.ts:21:24 src/models/shapes.ts:21:38 src/models/shapes.ts:25:28 src/models/shapes.ts:29:17 test/shapes.test.ts:10:36 test/shapes.test.ts:17:12
 src/models/shapes.ts:20:3 area -> src/models/shapes.ts:20:3
-src/models/shapes.ts:20:3 area <- src/app/main.ts:58:17 src/app/main.ts:61:57 src/app/main.ts:72:32 src/models/shapes.ts:47:18 test/shapes.test.ts:5:26
+src/models/shapes.ts:20:3 area <- src/app/lazy.ts:6:31 src/app/lazy.ts:6:42 src/app/main.ts:58:17 src/app/main.ts:61:57 src/app/main.ts:72:32 src/models/shapes.ts:47:18 test/shapes.test.ts:5:26
 src/models/shapes.ts:21:24 radius -> src/models/shapes.ts:18:22
 src/models/shapes.ts:21:38 radius -> src/models/shapes.ts:18:22
 src/models/shapes.ts:24:3 grow -> src/models/shapes.ts:24:3
@@ -500,7 +523,7 @@ src/models/shapes.ts:47:18 area -> src/models/shapes.ts:20:3
 src/models/shapes.ts:47:39 inner -> src/models/shapes.ts:42:38
 src/models/shapes.ts:47:52 inner -> src/models/shapes.ts:42:38
 src/models/shapes.ts:51:17 makeCircle -> src/models/shapes.ts:51:17
-src/models/shapes.ts:51:17 makeCircle <- src/app/advanced.ts:1:18 src/app/advanced.ts:18:24 src/app/advanced.ts:21:42 src/app/advanced.ts:23:39 src/app/main.ts:1:18 src/app/main.ts:57:13 src/models/shapes.ts:55:24
+src/models/shapes.ts:51:17 makeCircle <- src/app/advanced.ts:1:18 src/app/advanced.ts:18:24 src/app/advanced.ts:21:42 src/app/advanced.ts:23:39 src/app/lazy.ts:3:11 src/app/lazy.ts:5:13 src/app/lazy.ts:6:17 src/app/main.ts:1:18 src/app/main.ts:57:13 src/models/shapes.ts:55:24
 src/models/shapes.ts:51:28 r -> src/models/shapes.ts:51:28
 src/models/shapes.ts:51:28 r <- src/models/shapes.ts:52:21
 src/models/shapes.ts:51:40 Circle -> src/models/shapes.ts:14:14

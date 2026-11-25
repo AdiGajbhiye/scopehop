@@ -277,6 +277,9 @@ typescript/src/app/advanced.ts
   35-37 function untyped
 typescript/src/app/helper.ts
   3-5 function helper
+typescript/src/app/lazy.ts
+  2-7 function lazy
+  10-13 function external
 typescript/src/app/main.ts
   7-7 property counter
   9-29 class Canvas

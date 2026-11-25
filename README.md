@@ -134,7 +134,10 @@ Go files only resolve to Go declarations.
   the nearest `tsconfig.json` or `jsconfig.json` (comments, trailing commas
   and a relative `extends` are fine), named, default and namespace
   imports, re-exports (`export { a as b } from`, `export * from`,
-  `export { default as X } from`), and top-level `require`. Specifiers and
+  `export { default as X } from`), top-level `require`, and dynamic
+  `import()`: `const { f } = await import("./m.js")` binds the module's
+  `f` as an import would, and `const m = await import("./m.js")` makes
+  `m` the module (`m.f()`). Specifiers and
   names in import statements resolve to the module or declaration.
 - Classes, interfaces, enums and object type aliases have members, with
   `extends` and `implements` as supertypes, so `super.area()` and members
@@ -273,6 +276,8 @@ scopehop outline model/Shapes.kt
 #   13-13    method    Circle.area
 ```
 
+![scopehop outline](docs/media/scopehop-outline.png)
+
 The **context** of a region is every declaration outside it that it uses,
 with the block each one is in, and the blocks elsewhere that use the
 region's own declarations. A region is `FILE#BLOCK` (a qualified name, or a
@@ -293,6 +298,8 @@ scopehop context model/Extensions.kt#diameter
 #   app/Main.kt#App.run (12-40)                      diameter x1
 # unresolved: Double
 ```
+
+![scopehop context](docs/media/scopehop-context.png)
 
 Both take `--rev`, `--root` and `--json` like `def` (`context` also takes
 `--no-callers`). With `--json`, lines are 1-based and inclusive, and columns

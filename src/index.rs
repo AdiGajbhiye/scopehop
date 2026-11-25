@@ -408,6 +408,10 @@ impl Index {
         }
         if lang.is_identifier(t.node) {
             if lang.is_declaration_name(t.node) {
+                let imported = self.destructured_from_module(path, fd, t.node, depth);
+                if !imported.is_empty() {
+                    return imported;
+                }
                 let ty = self.local_type(path, fd, t.node, depth);
                 return vec![Resolved { loc: here(t.start, t.end), ty }];
             }
@@ -432,6 +436,10 @@ impl Index {
                 return vec![Resolved { loc, ty: Ty::Unknown }];
             }
             Some(Scoped::Decl(d)) => {
+                let imported = self.destructured_from_module(path, fd, d, depth);
+                if !imported.is_empty() {
+                    return imported;
+                }
                 let ty = self.local_type(path, fd, d, depth);
                 return vec![Resolved { loc: here(d.start_byte(), d.end_byte()), ty }];
             }
@@ -507,6 +515,22 @@ impl Index {
                 .iter()
                 .any(|d| d.start == loc.start && d.container.is_none())
         })
+    }
+
+    /// A name destructured from a module (`const { f } = await
+    /// import("./m.js")`) is the module's `f`, as an imported name would be,
+    /// so its uses are references of that declaration. Empty for any other
+    /// name.
+    fn destructured_from_module(&self, path: &Path, fd: &FileData, decl: Node, depth: u32) -> Vec<Resolved> {
+        let Some((from, keys)) = fd.lang.destructured(decl, &fd.text) else { return Vec::new() };
+        let Ty::Module(m) = self.type_of(path, fd, from, depth + 1) else { return Vec::new() };
+        let Some((first, rest)) = keys.split_first() else { return Vec::new() };
+        let mut hits = self.resolve_import(fd.lang, &format!("{m}.{first}"), 0);
+        for key in rest {
+            let Some(ty) = likely_type(&hits, path) else { return Vec::new() };
+            hits = self.lookup_members(fd.lang, key, &self.settle(ty, depth), path);
+        }
+        hits
     }
 
     /// Type of a declared name: annotation, `= Foo()`, or the initializer's type.
@@ -648,6 +672,10 @@ impl Index {
             }
             Expr::Wrapper(inner) => self.type_of(path, fd, inner, depth + 1),
             Expr::TypeName(t) => self.class_ty(Some(t), path),
+            Expr::Module(spec) => {
+                let m = lang.absolute_import(&spec, path, &fd.summary, self.source.as_ref());
+                if self.modules.contains_key(&m) { Ty::Module(m) } else { Ty::External }
+            }
             Expr::Index(container) => {
                 let ty = self.type_of(path, fd, container, depth + 1);
                 self.element_of(lang, ty, false, depth)
